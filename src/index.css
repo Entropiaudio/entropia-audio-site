@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* entropia audio — editorial, restrained design system */
+
+@layer base {
+  :root {
+    --background: 44 20% 96%;        /* #f5f4f1 warm off-white */
+    --foreground: 0 0% 8%;           /* near-black */
+
+    --card: 44 20% 96%;
+    --card-foreground: 0 0% 8%;
+
+    --popover: 44 20% 96%;
+    --popover-foreground: 0 0% 8%;
+
+    --primary: 0 0% 8%;
+    --primary-foreground: 44 20% 96%;
+
+    --secondary: 44 14% 91%;
+    --secondary-foreground: 0 0% 8%;
+
+    --muted: 44 14% 91%;
+    --muted-foreground: 0 0% 38%;
+
+    --accent: 12 54% 49%;            /* #c0553a muted rust/terracotta */
+    --accent-foreground: 44 20% 96%;
+
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 44 20% 96%;
+
+    --border: 30 10% 84%;
+    --input: 30 10% 84%;
+    --ring: 0 0% 8%;
+
+    --hairline: 30 8% 78%;
+
+    --plugin-surface: 0 0% 10%;
+    --plugin-surface-foreground: 44 20% 96%;
+
+    --radius: 0.25rem;
+
+    --sidebar-background: 44 20% 96%;
+    --sidebar-foreground: 0 0% 8%;
+    --sidebar-primary: 0 0% 8%;
+    --sidebar-primary-foreground: 44 20% 96%;
+    --sidebar-accent: 44 14% 91%;
+    --sidebar-accent-foreground: 0 0% 8%;
+    --sidebar-border: 30 10% 84%;
+    --sidebar-ring: 0 0% 8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+    letter-spacing: -0.005em;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+}
+
+@layer utilities {
+  .fade-in {
+    animation: fade-in 0.6s ease-out both;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
