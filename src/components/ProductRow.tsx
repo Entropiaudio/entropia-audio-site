@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import PluginScreenshot from "./PluginScreenshot";
 import type { Plugin } from "@/data/plugins";
+import { copy } from "@/copy";
 
 const ProductRow = ({ plugin }: { plugin: Plugin }) => {
+  const c = copy.productRow;
+  const cv = copy.chaosverb;
   const onSale = plugin.regularPrice > plugin.price;
 
   return (
@@ -18,7 +21,7 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
       <div className="flex flex-col gap-8">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-3">
-            01 / plugin
+            {c.eyebrow}
           </div>
           <h2 className="text-4xl md:text-5xl font-display tracking-tight-display leading-[1.05]">
             {plugin.name}
@@ -38,7 +41,7 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
             <>
               <span className="line-through text-foreground/50">${plugin.regularPrice}</span>
               <span className="text-[10px] uppercase tracking-[0.3em] text-accent">
-                launch sale
+                {cv.saleBadge}
               </span>
             </>
           )}
@@ -49,13 +52,13 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
             to={`/plugins/${plugin.slug}`}
             className="text-sm px-6 py-3 bg-foreground text-background hover:bg-accent transition-colors"
           >
-            see chaosverb
+            {c.primaryButton}
           </Link>
           <Link
             to={`/plugins/${plugin.slug}#try`}
             className="text-sm px-6 py-3 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
-            try free
+            {c.secondaryButton}
           </Link>
         </div>
       </div>

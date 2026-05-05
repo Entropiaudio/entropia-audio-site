@@ -1,6 +1,7 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
 import { useAuth } from "@/context/AuthContext";
+import { copy } from "@/copy";
 
 const OrderSuccess = () => {
   const { id } = useParams();
@@ -15,10 +16,10 @@ const OrderSuccess = () => {
     <SiteLayout>
       <div className="max-w-3xl mx-auto px-6 md:px-10 py-20 md:py-28">
         <p className="text-xs uppercase tracking-widest text-accent font-mono mb-3">
-          payment received
+          {copy.orderSuccess.eyebrow}
         </p>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight mb-3">
-          thanks. your licenses are ready.
+          {copy.orderSuccess.headline}
         </h1>
         <p className="text-foreground/60 mb-12">
           order <span className="font-mono">{order.id}</span> · charged to card ending{" "}

@@ -1,7 +1,9 @@
 import { FormEvent, useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { copy } from "@/copy";
 
 const NewsletterSignup = () => {
+  const c = copy.newsletter;
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
@@ -9,10 +11,7 @@ const NewsletterSignup = () => {
     e.preventDefault();
     if (!email) return;
     setSubmitted(true);
-    toast({
-      title: "subscribed.",
-      description: "we'll be in touch sparingly, when there's something worth saying.",
-    });
+    toast({ title: c.successTitle, description: c.successDescription });
     setEmail("");
   };
 
@@ -21,12 +20,12 @@ const NewsletterSignup = () => {
       <div className="grid md:grid-cols-[1fr,1.2fr] gap-10 md:gap-20 items-end">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-4">
-            mailing list
+            {c.eyebrow}
           </div>
           <h3 className="text-3xl md:text-4xl font-display tracking-tight-display leading-tight">
-            we ship rarely.
+            {c.headlineLine1}
             <br />
-            <span className="text-foreground/55">when there's something worth saying, we'll send a short note.</span>
+            <span className="text-foreground/55">{c.headlineLine2}</span>
           </h3>
         </div>
 
@@ -36,7 +35,7 @@ const NewsletterSignup = () => {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="your email"
+            placeholder={c.placeholder}
             aria-label="email address"
             className="flex-1 bg-transparent border-b border-foreground/30 focus:border-foreground outline-none px-1 py-3 text-base placeholder:text-foreground/40 transition-colors"
           />
@@ -44,13 +43,13 @@ const NewsletterSignup = () => {
             type="submit"
             className="text-sm self-start sm:self-auto px-6 py-3 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
-            subscribe
+            {c.button}
           </button>
         </form>
       </div>
       {submitted && (
-        <p className="text-xs text-foreground/60 mt-6 font-mono uppercase tracking-widest">
-          // thanks.
+        <p className="text-xs text-foreground/55 mt-6 font-mono uppercase tracking-widest">
+          {c.afterSubmit}
         </p>
       )}
     </section>

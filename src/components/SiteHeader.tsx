@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import { plugins } from "@/data/plugins";
 import { useCart } from "@/context/CartContext";
+import { copy } from "@/copy";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `transition-colors hover:text-accent ${
@@ -9,6 +10,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 
 const SiteHeader = () => {
   const { count } = useCart();
+  const c = copy.header;
   return (
     <header className="sticky top-0 z-40 bg-background/85 backdrop-blur-sm border-b border-hairline">
       <div className="max-w-6xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
@@ -16,7 +18,7 @@ const SiteHeader = () => {
           to="/"
           className="font-mono text-xs uppercase tracking-[0.3em] hover:text-accent transition-colors"
         >
-          entropia audio
+          {c.wordmark}
         </Link>
 
         <nav className="flex items-center gap-6 md:gap-8 text-sm">
@@ -26,10 +28,10 @@ const SiteHeader = () => {
             </NavLink>
           ))}
           <NavLink to="/about" className={navLinkClass}>
-            about
+            {c.nav.about}
           </NavLink>
           <NavLink to="/account" className={navLinkClass}>
-            account
+            {c.nav.account}
           </NavLink>
           <NavLink
             to="/cart"
@@ -40,8 +42,8 @@ const SiteHeader = () => {
               }`
             }
           >
-            cart
-            <span className="font-mono text-xs text-foreground/45">({count})</span>
+            {c.nav.cart}
+            <span className="font-mono text-xs text-foreground/55">({count})</span>
           </NavLink>
         </nav>
       </div>
