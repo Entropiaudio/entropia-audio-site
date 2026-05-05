@@ -66,7 +66,7 @@ const PluginPage = () => {
       </div>
 
       {/* hero screenshot */}
-      <section className="max-w-6xl mx-auto px-6 md:px-10 pt-16 md:pt-24">
+      <section className="max-w-4xl mx-auto px-6 md:px-10 pt-16 md:pt-24">
         <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-6">
           // {plugin.name} · v{plugin.version}
         </div>
