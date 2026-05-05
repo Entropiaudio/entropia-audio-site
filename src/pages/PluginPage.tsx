@@ -29,25 +29,25 @@ const PluginPage = () => {
     <SiteLayout>
       {/* sticky CTA */}
       <div className="sticky top-16 z-30 bg-background/85 backdrop-blur-sm border-b border-hairline">
-        <div className="max-w-6xl mx-auto px-6 md:px-10 h-12 flex items-center justify-between">
-          <span className="text-sm font-mono uppercase tracking-widest text-foreground/55">
+        <div className="max-w-6xl mx-auto px-6 md:px-10 h-14 flex items-center justify-between">
+          <span className="text-sm font-mono uppercase tracking-widest text-foreground/65">
             {plugin.name}
           </span>
           <div className="flex items-center gap-2">
             <a
               href="#try"
-              className="text-xs md:text-sm px-4 py-2 border border-foreground/20 hover:border-foreground transition-colors"
+              className="text-xs md:text-sm px-4 min-h-[44px] inline-flex items-center border border-foreground/30 hover:border-foreground transition-colors"
             >
               try free
             </a>
             <button
               type="button"
               onClick={() => addToCart("perpetual", true)}
-              className="text-xs md:text-sm px-4 py-2 bg-foreground text-background hover:bg-accent transition-colors inline-flex items-baseline gap-2"
+              className="text-xs md:text-sm px-4 min-h-[44px] bg-foreground text-background hover:bg-accent transition-colors inline-flex items-center gap-2 tabular-nums"
             >
               <span>buy · ${plugin.price}</span>
               {onSale && (
-                <span className="line-through opacity-60 text-[11px] tabular-nums">
+                <span className="line-through opacity-60 text-[11px]">
                   ${plugin.regularPrice}
                 </span>
               )}
@@ -55,7 +55,7 @@ const PluginPage = () => {
             <button
               type="button"
               onClick={() => addToCart("rent-to-own")}
-              className="hidden sm:inline-block text-xs md:text-sm px-4 py-2 border border-foreground/20 hover:border-foreground transition-colors"
+              className="hidden sm:inline-flex items-center text-xs md:text-sm px-4 min-h-[44px] border border-foreground/30 hover:border-foreground transition-colors"
             >
               rent-to-own
             </button>
@@ -65,7 +65,7 @@ const PluginPage = () => {
 
       {/* hero screenshot — full bleed within content max */}
       <section className="max-w-6xl mx-auto px-6 md:px-10 pt-16 md:pt-24">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45 mb-6">
+        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-6">
           // {plugin.name} · v{plugin.version}
         </div>
         <PluginScreenshot name={plugin.name} ratio="hero" />
@@ -83,12 +83,12 @@ const PluginPage = () => {
           {plugin.shortDescription}
         </p>
 
-        <div className="mt-10 flex items-baseline justify-center gap-4 font-mono text-sm">
+        <div className="mt-10 flex items-baseline justify-center gap-4 font-mono text-sm tabular-nums">
           <span className="text-foreground text-base">${plugin.price}</span>
           {onSale && (
             <>
-              <span className="line-through text-foreground/35">${plugin.regularPrice}</span>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-accent">
+              <span className="line-through text-foreground/50">${plugin.regularPrice}</span>
+              <span className="text-[10px] uppercase tracking-[0.3em] text-accent not-italic">
                 launch sale
               </span>
             </>
@@ -104,7 +104,7 @@ const PluginPage = () => {
               key={i}
               className="grid grid-cols-[2.5rem,1fr] gap-4 md:gap-6 text-base md:text-lg leading-relaxed border-t border-hairline pt-5"
             >
-              <span className="font-mono text-xs text-foreground/45 pt-1">
+              <span className="font-mono text-xs text-foreground/60 pt-1">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span>{f}</span>
@@ -126,7 +126,7 @@ const PluginPage = () => {
             >
               <PluginScreenshot name={plugin.name} ratio="square" bare />
               <div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/40 mb-5">
+                <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/55 mb-5">
                   {String(i + 1).padStart(2, "0")} / {plugin.sections.length.toString().padStart(2, "0")}
                 </div>
                 <h3 className="text-3xl md:text-4xl font-display tracking-tight-display leading-tight mb-6">
@@ -143,7 +143,7 @@ const PluginPage = () => {
 
       {/* audio demos */}
       <section className="max-w-3xl mx-auto px-6 md:px-10 py-20 md:py-28 border-t border-hairline">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45 mb-3">
+        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-3">
           listen
         </div>
         <h3 className="text-3xl md:text-4xl font-display tracking-tight-display mb-12">
@@ -158,7 +158,7 @@ const PluginPage = () => {
 
       {/* tech specs */}
       <section className="max-w-3xl mx-auto px-6 md:px-10 py-20 md:py-28 border-t border-hairline">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45 mb-8">
+        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-8">
           specifications
         </div>
         <table className="w-full text-base">
@@ -180,7 +180,7 @@ const PluginPage = () => {
         id="try"
         className="max-w-3xl mx-auto px-6 md:px-10 py-20 md:py-28 border-t border-hairline"
       >
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45 mb-3">
+        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-3">
           try
         </div>
         <h3 className="text-3xl md:text-4xl font-display tracking-tight-display mb-6">

@@ -20,7 +20,7 @@ const NewsletterSignup = () => {
     <section className="max-w-6xl mx-auto px-6 md:px-10 py-28 md:py-40 border-t border-hairline">
       <div className="grid md:grid-cols-[1fr,1.2fr] gap-10 md:gap-20 items-end">
         <div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45 mb-4">
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-4">
             mailing list
           </div>
           <h3 className="text-3xl md:text-4xl font-display tracking-tight-display leading-tight">
@@ -49,7 +49,7 @@ const NewsletterSignup = () => {
         </form>
       </div>
       {submitted && (
-        <p className="text-xs text-foreground/45 mt-6 font-mono uppercase tracking-widest">
+        <p className="text-xs text-foreground/60 mt-6 font-mono uppercase tracking-widest">
           // thanks.
         </p>
       )}

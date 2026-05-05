@@ -4,7 +4,7 @@ const About = () => {
   return (
     <SiteLayout>
       <section className="max-w-4xl mx-auto px-6 md:px-10 pt-28 md:pt-40 pb-12">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45 mb-8">
+        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-8">
           // about
         </div>
         <h1 className="text-5xl md:text-7xl font-display tracking-tightest leading-[0.98]">
@@ -19,7 +19,7 @@ const About = () => {
         <figure className="aspect-[4/5] w-full relative" aria-label="portrait of the entropia audio team">
           <div className="absolute inset-0 border border-foreground/15" />
           <div className="absolute inset-[1px] bg-foreground/[0.04] flex items-center justify-center">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/35">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/50">
               portrait goes here
             </span>
           </div>
@@ -40,7 +40,7 @@ const About = () => {
 
       <section className="max-w-4xl mx-auto px-6 md:px-10 py-20 md:py-28 border-t border-hairline">
         <div className="grid md:grid-cols-[1fr,2fr] gap-10 md:gap-20 items-start">
-          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45 md:pt-2">
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 md:pt-2">
             contact
           </div>
           <div>

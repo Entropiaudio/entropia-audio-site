@@ -17,7 +17,7 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
 
       <div className="flex flex-col gap-8">
         <div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45 mb-3">
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-3">
             01 / plugin
           </div>
           <h2 className="text-4xl md:text-5xl font-display tracking-tight-display leading-[1.05]">
@@ -32,11 +32,11 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
           {plugin.shortDescription}
         </p>
 
-        <div className="flex items-baseline gap-4 font-mono text-sm">
+        <div className="flex items-baseline gap-4 font-mono text-sm tabular-nums">
           <span className="text-foreground text-base">${plugin.price}</span>
           {onSale && (
             <>
-              <span className="line-through text-foreground/35">${plugin.regularPrice}</span>
+              <span className="line-through text-foreground/50">${plugin.regularPrice}</span>
               <span className="text-[10px] uppercase tracking-[0.3em] text-accent">
                 launch sale
               </span>

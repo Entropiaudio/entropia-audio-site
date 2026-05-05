@@ -63,6 +63,27 @@ const AudioDemo = ({ demo, index }: Props) => {
     a.currentTime = Math.max(0, Math.min(duration, ratio * duration));
   };
 
+  const onScrubKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const a = audioRef.current;
+    if (!a || !duration || fileMissing) return;
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      a.currentTime = Math.min(duration, a.currentTime + 2);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      a.currentTime = Math.max(0, a.currentTime - 2);
+    } else if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      toggle();
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      a.currentTime = 0;
+    } else if (e.key === "End") {
+      e.preventDefault();
+      a.currentTime = duration;
+    }
+  };
+
   return (
     <article className="grid md:grid-cols-[auto,1fr] gap-6 md:gap-10 py-10 md:py-14 border-t border-hairline first:border-t-0">
       <div className="font-mono text-xs text-foreground/50 tracking-widest uppercase md:pt-2">
@@ -99,16 +120,18 @@ const AudioDemo = ({ demo, index }: Props) => {
 
           <div
             role="slider"
-            aria-label="scrub"
+            aria-label={`scrub ${demo.title}`}
             aria-valuenow={Math.round(progress * 100)}
             aria-valuemin={0}
             aria-valuemax={100}
             tabIndex={fileMissing ? -1 : 0}
             onClick={scrub}
-            className={`flex-1 h-px bg-foreground/15 relative ${fileMissing ? "" : "cursor-pointer"}`}
+            onKeyDown={onScrubKey}
+            className={`flex-1 h-2 flex items-center relative ${fileMissing ? "" : "cursor-pointer"}`}
           >
+            <div className="absolute inset-x-0 h-px bg-foreground/20" />
             <div
-              className="absolute inset-y-0 left-0 bg-foreground"
+              className="absolute h-px top-1/2 -translate-y-1/2 left-0 bg-foreground"
               style={{ width: `${progress * 100}%` }}
             />
             <div
@@ -124,14 +147,14 @@ const AudioDemo = ({ demo, index }: Props) => {
 
         {hasDry && (
           <div className="mt-4 flex items-center gap-3 text-xs font-mono uppercase tracking-widest">
-            <span className="text-foreground/40">a/b</span>
+            <span className="text-foreground/55">a/b</span>
             <button
               type="button"
               onClick={() => setMode("dry")}
               className={`px-2 py-1 transition-colors ${
                 mode === "dry"
                   ? "text-foreground border-b border-foreground"
-                  : "text-foreground/40 hover:text-foreground"
+                  : "text-foreground/55 hover:text-foreground"
               }`}
             >
               dry
@@ -142,7 +165,7 @@ const AudioDemo = ({ demo, index }: Props) => {
               className={`px-2 py-1 transition-colors ${
                 mode === "wet"
                   ? "text-foreground border-b border-foreground"
-                  : "text-foreground/40 hover:text-foreground"
+                  : "text-foreground/55 hover:text-foreground"
               }`}
             >
               wet
@@ -151,7 +174,7 @@ const AudioDemo = ({ demo, index }: Props) => {
         )}
 
         {fileMissing && (
-          <p className="mt-4 text-xs font-mono text-foreground/40 uppercase tracking-widest">
+          <p className="mt-4 text-xs font-mono text-foreground/55 uppercase tracking-widest">
             // audio coming soon
           </p>
         )}

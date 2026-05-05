@@ -9,7 +9,7 @@ const Index = () => {
     <SiteLayout>
       {/* hero — about Entropia, not Chaosverb */}
       <section className="max-w-6xl mx-auto px-6 md:px-10 pt-32 md:pt-48 pb-24 md:pb-32">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45 mb-8">
+        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-8">
           // entropia audio
         </div>
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-display tracking-tightest leading-[0.98] max-w-4xl">
@@ -24,7 +24,7 @@ const Index = () => {
 
       {/* featured product */}
       <section className="max-w-6xl mx-auto px-6 md:px-10">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45 mb-3 pt-4 border-t border-hairline">
+        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-3 pt-4 border-t border-hairline">
           featured
         </div>
         {plugins.map((p) => (
@@ -35,7 +35,7 @@ const Index = () => {
       {/* about strip */}
       <section className="max-w-6xl mx-auto px-6 md:px-10 py-24 md:py-32 border-t border-hairline">
         <div className="grid md:grid-cols-[1fr,2fr] gap-10 md:gap-20 items-start">
-          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/45 md:pt-3">
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 md:pt-3">
             about
           </div>
           <div>
