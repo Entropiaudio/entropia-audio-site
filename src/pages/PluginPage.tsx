@@ -38,9 +38,14 @@ const PluginPage = () => {
             <button
               type="button"
               onClick={() => addToCart("perpetual", true)}
-              className="text-xs md:text-sm px-4 py-2 bg-foreground text-background hover:bg-accent transition-colors"
+              className="text-xs md:text-sm px-4 py-2 bg-foreground text-background hover:bg-accent transition-colors inline-flex items-baseline gap-2"
             >
-              buy · ${plugin.price}
+              <span>buy · ${plugin.price}</span>
+              {plugin.regularPrice > plugin.price && (
+                <span className="line-through opacity-60 text-[11px]">
+                  ${plugin.regularPrice}
+                </span>
+              )}
             </button>
             <button
               type="button"

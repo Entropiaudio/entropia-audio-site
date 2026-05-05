@@ -4,6 +4,7 @@ export type Plugin = {
   tagline: string;
   shortDescription: string;
   price: number;
+  regularPrice: number;
   features: string[];
   sections: { heading: string; body: string }[];
   specs: { label: string; value: string }[];
@@ -17,7 +18,8 @@ export const plugins: Plugin[] = [
     tagline: "a studio reverb with a chaos engine inside.",
     shortDescription:
       "a versatile reverb that sits beautifully on a mix bus, with a built-in chaos engine for when you want it to fall apart on purpose.",
-    price: 79,
+    price: 36,
+    regularPrice: 50,
     features: [
       "rich, musical reverb tails — plates, halls, rooms, anything in between",
       "a chaos engine for granular smears, frozen textures, and otherworldly tails",
@@ -40,8 +42,8 @@ export const plugins: Plugin[] = [
       },
     ],
     specs: [
-      { label: "Format", value: "VST3" },
-      { label: "OS", value: "Windows 10+ (64-bit)" },
+      { label: "Format", value: "VST3 / AU" },
+      { label: "OS", value: "Windows 10+ / macOS 10.13+ (64-bit)" },
       { label: "Activation", value: "license key, 7-day free trial" },
       { label: "Version", value: "0.0.7b" },
     ],

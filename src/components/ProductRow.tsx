@@ -14,8 +14,18 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
           <h2 className="text-3xl md:text-4xl font-medium tracking-tight">
             {plugin.name}
           </h2>
-          <span className="font-mono text-sm text-foreground/60">
-            ${plugin.price}
+          <span className="font-mono text-sm text-foreground/60 flex items-baseline gap-2">
+            <span className="text-foreground">${plugin.price}</span>
+            {plugin.regularPrice > plugin.price && (
+              <>
+                <span className="line-through text-foreground/40">
+                  ${plugin.regularPrice}
+                </span>
+                <span className="text-[10px] uppercase tracking-widest text-accent">
+                  launch sale
+                </span>
+              </>
+            )}
           </span>
         </div>
 
