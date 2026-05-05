@@ -42,14 +42,14 @@ export const copy = {
    * ------------------------------------------------------------------------- */
   home: {
     eyebrow: "// entropia audio",
-    headlineLine1: "audio tools,",
-    headlineLine2: "built by two nerds who care.",
+    headlineLine1: "audio tools",
+    headlineLine2: "built with love",
     subline:
-      "a small studio making serious plugins. the kind that sit well on a mix bus, and the kind that pull a held note somewhere it wasn't going.",
+      "a small studio making audio stuff. the kind that sit well on a mix bus, or break apart.",
     featuredEyebrow: "featured",
     aboutEyebrow: "about",
     aboutBlurb:
-      "we're two friends who love this. the dsp, the knobs, the way a reverb tail decays just right. small studio, no committee, no filler. if you have feedback, it lands in our inbox.",
+      "we're two friends who love this. it was always our dream to make out own tools, and now that dream comes true. we hope you like it.",
     aboutLink: "more on us",
   },
 
@@ -58,17 +58,17 @@ export const copy = {
    * ------------------------------------------------------------------------- */
   about: {
     eyebrow: "// about",
-    headlineLine1: "two friends,",
-    headlineLine2: "a few good plugins.",
+    headlineLine1: "an introduction",
+    headlineLine2: "and a little message from us",
     portraitPlaceholder: "portrait goes here",
     paragraph1:
-      "entropia audio is a studio of two. we love this: the dsp, the knobs, the way a reverb tail decays just right. we started building plugins because we wanted to make the tools we wished existed, and because there's something honest about shipping a small thing well.",
+      "entropia audio is a studio of two. each of us had our own individual journey in the audio world, until we discovered that we had a shared dream: making the tools we wished existed.",
     paragraph2:
-      "we care about three things, in this order: how it sounds, how it feels to use, how it looks when you open it. we tune knobs by ear. we sweat the typography. we'd rather sit on a release for another week than ship something we don't love.",
+      "yeah so thats about it. we have good plugins. try them and unleash the chaos!",
     paragraph3:
-      "no committee, no filler, no marketing department. if you have feedback (a bug, a feature, a sound you wish the plugin could make), write to us. it lands in our inbox.",
+      "we handle everything personally, from development to socials. if you have any feedback or questions, hit us up.",
     contactEyebrow: "contact",
-    contactSubline: "a real inbox. we read everything. we mostly reply.",
+    contactSubline: "we read everything. we mostly reply.",
   },
 
   /* -------------------------------------------------------------------------
