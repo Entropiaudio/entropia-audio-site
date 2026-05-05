@@ -27,13 +27,13 @@ const About = () => {
 
         <div className="space-y-7 text-lg md:text-xl text-foreground/75 leading-relaxed measure">
           <p>
-            entropia audio is a studio of two. we love this — the dsp, the knobs, the way a reverb tail decays just right. we started building plugins because we wanted to make the tools we wished existed, and because there's something honest about shipping a small thing well.
+            entropia audio is a studio of two. we love this: the dsp, the knobs, the way a reverb tail decays just right. we started building plugins because we wanted to make the tools we wished existed, and because there's something honest about shipping a small thing well.
           </p>
           <p>
             we care about three things, in this order: how it sounds, how it feels to use, how it looks when you open it. we tune knobs by ear. we sweat the typography. we'd rather sit on a release for another week than ship something we don't love.
           </p>
           <p>
-            no committee, no filler, no marketing department. if you have feedback — a bug, a feature, a sound you wish the plugin could make — write to us. it lands in our inbox.
+            no committee, no filler, no marketing department. if you have feedback (a bug, a feature, a sound you wish the plugin could make), write to us. it lands in our inbox.
           </p>
         </div>
       </section>

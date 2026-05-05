@@ -11,7 +11,7 @@ const NewsletterSignup = () => {
     setSubmitted(true);
     toast({
       title: "subscribed.",
-      description: "we'll be in touch — sparingly, when there's something worth saying.",
+      description: "we'll be in touch sparingly, when there's something worth saying.",
     });
     setEmail("");
   };

@@ -34,24 +34,24 @@ export const plugins: Plugin[] = [
     price: 36,
     regularPrice: 50,
     features: [
-      "8-line feedback delay network — plate-leaning core, room to hall topologies",
-      "chaos engine: parameters mutate on a synced interval, locks pin what you love",
-      "tone section — tilt EQ, low/high cut, tape saturation, tuned 200 Hz damping",
-      "motion section — chorus and wow/flutter for analog drift",
-      "built-in ducker, full BPM-sync on pre-delay and mutation interval",
+      "8-line feedback delay network. plate-leaning core, room to hall topologies.",
+      "chaos engine. parameters mutate on a synced interval, locks pin what you love.",
+      "tone section. tilt EQ, low and high cut, tape saturation, tuned 200 Hz damping.",
+      "motion section. chorus and wow/flutter for analog drift.",
+      "built-in ducker. full BPM sync on pre-delay and mutation interval.",
     ],
     sections: [
       {
         heading: "two engines, one reverb.",
-        body: "chaosverb runs two FDN reverbs at once. on whatever interval you set — every bar, every thirty seconds, never — the unlocked parameters randomize and the engine crossfades smoothly to the new state. nothing clicks. nothing jumps. the reverb just becomes something it wasn't a moment ago. lock the knobs you love, let the rest drift.",
+        body: "chaosverb runs two FDN reverbs at once. you pick the interval: every bar, every thirty seconds, never. on each tick, the unlocked parameters randomize and the engine crossfades smoothly to the new state. nothing clicks. nothing jumps. the reverb just becomes something it wasn't a moment ago. lock the knobs you love, let the rest drift.",
       },
       {
         heading: "from mix bus to sound design.",
-        body: "back the chaos off and it's a clean, three-dimensional reverb you can put on anything — a vocal, a snare, a full mix bus. push it up and a snare hit becomes a pad, a held vocal becomes an ambient bed, a drum loop becomes a slow-moving cloud. the same plugin across a whole project, doing different jobs.",
+        body: "back the chaos off and it's a clean, three-dimensional reverb you can put on anything: a vocal, a snare, a full mix bus. push it up and a snare hit becomes a pad, a held vocal becomes an ambient bed, a drum loop becomes a slow-moving cloud. the same plugin across a whole project, doing different jobs.",
       },
       {
         heading: "made by two.",
-        body: "we're entropia audio — two friends who love this. the dsp, the knobs, the way a reverb tail decays just right. small studio, no committee, no filler. if you have feedback, it lands in our inbox.",
+        body: "we're entropia audio. two friends who love this: the dsp, the knobs, the way a reverb tail decays just right. small studio, no committee, no filler. if you have feedback, it lands in our inbox.",
       },
     ],
     demos: [
@@ -59,7 +59,7 @@ export const plugins: Plugin[] = [
         slug: "mix-bus",
         title: "on a mix bus.",
         caption:
-          "drums and vocal through chaosverb at low chaos — wide, three-dimensional, gets out of the way.",
+          "drums and vocal through chaosverb at low chaos. wide, three-dimensional, gets out of the way.",
         src: "",
         drySrc: "",
       },
@@ -82,7 +82,7 @@ export const plugins: Plugin[] = [
       { label: "Format", value: "VST3 / AU / Standalone" },
       { label: "OS", value: "Windows 10+ / macOS 10.13+ (64-bit)" },
       { label: "Activation", value: "license key, 7-day free trial" },
-      { label: "CPU", value: "low — designed to sit on a bus" },
+      { label: "CPU", value: "low. designed to sit on a bus." },
       { label: "Version", value: "0.0.7b" },
     ],
     version: "0.0.7b",

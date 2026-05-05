@@ -187,7 +187,7 @@ const PluginPage = () => {
           the real plugin, free for seven days.
         </h3>
         <p className="text-base md:text-lg text-foreground/65 leading-relaxed measure mb-10">
-          no noise, no silence — the full thing. enter a license key when you're ready, or don't.
+          no noise, no silence. the full thing. enter a license key when you're ready, or don't.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
           <a

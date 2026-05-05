@@ -141,7 +141,7 @@ const AudioDemo = ({ demo, index }: Props) => {
           </div>
 
           <span className="font-mono text-xs text-foreground/50 tabular-nums w-20 text-right">
-            {fileMissing ? "—:— / —:—" : `${formatTime(current)} / ${formatTime(duration)}`}
+            {fileMissing ? "0:00 / 0:00" : `${formatTime(current)} / ${formatTime(duration)}`}
           </span>
         </div>
 

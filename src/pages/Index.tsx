@@ -40,7 +40,7 @@ const Index = () => {
           </div>
           <div>
             <p className="text-2xl md:text-3xl font-display tracking-tight-display leading-snug text-foreground/85">
-              we're two friends who love this — the dsp, the knobs, the way a reverb tail decays just right. small studio, no committee, no filler. if you have feedback, it lands in our inbox.
+              we're two friends who love this. the dsp, the knobs, the way a reverb tail decays just right. small studio, no committee, no filler. if you have feedback, it lands in our inbox.
             </p>
             <Link
               to="/about"

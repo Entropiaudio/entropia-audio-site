@@ -18,7 +18,7 @@ const OrderSuccess = () => {
           payment received
         </p>
         <h1 className="text-3xl md:text-4xl font-medium tracking-tight mb-3">
-          thanks — your licenses are ready.
+          thanks. your licenses are ready.
         </h1>
         <p className="text-foreground/60 mb-12">
           order <span className="font-mono">{order.id}</span> · charged to card ending{" "}
