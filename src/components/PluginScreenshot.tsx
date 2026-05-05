@@ -35,17 +35,17 @@ const PluginScreenshot = ({
       : "aspect-square";
 
   if (src) {
+    // When showing the real screenshot, let the image set its own height so
+    // there is never a black/letterbox band around it. The hairline frame
+    // wraps tight to the actual image bounds.
     return (
-      <figure className={`${aspect} w-full relative ${className}`}>
-        <div className="absolute inset-0 border border-foreground/15" />
-        <div className="absolute inset-[1px] bg-plugin-surface overflow-hidden">
-          <img
-            src={src}
-            alt={alt ?? `${name} plugin interface`}
-            loading="lazy"
-            className={`w-full h-full ${fit === "contain" ? "object-contain" : "object-cover"}`}
-          />
-        </div>
+      <figure className={`w-full relative ${className}`}>
+        <img
+          src={src}
+          alt={alt ?? `${name} plugin interface`}
+          loading="lazy"
+          className="block w-full h-auto border border-foreground/15"
+        />
       </figure>
     );
   }
