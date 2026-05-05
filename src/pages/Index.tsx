@@ -8,8 +8,11 @@ const Index = () => {
     <SiteLayout>
       <section className="max-w-6xl mx-auto px-6 md:px-10 pt-24 md:pt-40 pb-16 md:pb-24">
         <h1 className="text-3xl md:text-5xl font-light tracking-tight leading-tight max-w-3xl">
-          audio tools built with intent.
+          audio tools, built by two nerds who care.
         </h1>
+        <p className="mt-6 text-base md:text-lg text-foreground/60 max-w-2xl leading-relaxed">
+          entropia audio is a small studio making serious plugins for serious sound — designed with care, priced honestly, and built for both the mix and the moments you want to break it.
+        </p>
       </section>
 
       <section className="max-w-6xl mx-auto px-6 md:px-10">

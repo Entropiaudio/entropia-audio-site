@@ -143,7 +143,7 @@ const PluginPage = () => {
           </a>
         </div>
         <p className="text-sm text-foreground/50 mt-6">
-          includes a fully featured 14-day trial.
+          includes a fully featured 7-day trial. no noise, no silence — the real thing.
         </p>
       </section>
     </SiteLayout>

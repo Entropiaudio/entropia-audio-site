@@ -14,38 +14,38 @@ export const plugins: Plugin[] = [
   {
     slug: "chaosverb",
     name: "chaosverb",
-    tagline: "reverb that loses control.",
+    tagline: "a studio reverb with a chaos engine inside.",
     shortDescription:
-      "a generative reverb engine for unstable spaces, modulated tails, and accidents worth keeping.",
+      "a versatile reverb that sits beautifully on a mix bus, with a built-in chaos engine for when you want it to fall apart on purpose.",
     price: 79,
     features: [
-      "Generate dense, evolving reverb tails from any source",
-      "Modulate decay, diffusion, and pitch in real time",
-      "Inject controlled chaos with the entropy macro",
-      "Freeze, smear, and reverse on the fly",
-      "CPU-friendly across full mix sessions",
+      "rich, musical reverb tails — plates, halls, rooms, anything in between",
+      "a chaos engine for granular smears, frozen textures, and otherworldly tails",
+      "tone section with tilt EQ, low/high cut, and tuned 200 Hz damping",
+      "motion section with chorus and wow/flutter for analog drift",
+      "spectral squash, saturation, and a built-in ducker to glue it into the mix",
     ],
     sections: [
       {
-        heading: "an engine, not a preset machine.",
-        body: "chaosverb models reverberation as a system that drifts. every parameter has a slow internal motion, so two passes of the same source rarely sound identical. the result is a reverb that feels alive without sounding effected.",
+        heading: "two engines. one reverb.",
+        body: "chaosverb is built on a hand-tuned feedback delay network for the kind of clean, three-dimensional reverb you actually want on a vocal or a snare. alongside it sits a granular chaos engine — pull it in a little for shimmer and motion, push it further for clouds, freezes, and tails that drift somewhere else entirely. one plugin, two minds, no menu diving.",
       },
       {
-        heading: "entropy, on a single knob.",
-        body: "the entropy macro routes through diffusion, modulation depth, and tail instability simultaneously. at zero, chaosverb behaves like a clean studio plate. at one, it slowly comes apart. everywhere in between is the interesting part.",
+        heading: "from mix bus to sound design.",
+        body: "back the chaos off and chaosverb behaves like a great-sounding studio reverb — wide, musical, low CPU, easy to sit in a busy session. open it up and the same plugin turns into a sound design tool: pads from drum hits, ambient beds from a single note, textures you didn't know were in there. one plugin you can keep across the whole project.",
       },
       {
-        heading: "built for the mix, not the demo.",
-        body: "low CPU draw, true stereo processing, full automation, and tempo sync. designed to sit on a bus across a whole session without complaint.",
+        heading: "made by two audio nerds.",
+        body: "we're entropia audio — two friends who got tired of plugins that sound the same and look like spreadsheets. we build the tools we wished existed: serious sound, honest pricing, the kind of design and craft we'd want for ourselves. small studio, no committee, no filler. if you have feedback, it lands in our inbox, not a ticket queue.",
       },
     ],
     specs: [
-      { label: "Format", value: "VST3 / AU" },
-      { label: "OS", value: "macOS 10.13+ / Windows 10+" },
-      { label: "Activation", value: "serial number, 2 machines" },
-      { label: "Version", value: "1.0.0" },
+      { label: "Format", value: "VST3" },
+      { label: "OS", value: "Windows 10+ (64-bit)" },
+      { label: "Activation", value: "license key, 7-day free trial" },
+      { label: "Version", value: "0.0.7b" },
     ],
-    version: "1.0.0",
+    version: "0.0.7b",
   },
 ];
 
