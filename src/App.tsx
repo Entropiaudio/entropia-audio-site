@@ -7,6 +7,7 @@ import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import Index from "./pages/Index.tsx";
 import PluginPage from "./pages/PluginPage.tsx";
+import About from "./pages/About.tsx";
 import Account from "./pages/Account.tsx";
 import Cart from "./pages/Cart.tsx";
 import Checkout from "./pages/Checkout.tsx";
@@ -26,6 +27,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/plugins/:slug" element={<PluginPage />} />
+              <Route path="/about" element={<About />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/order/:id" element={<OrderSuccess />} />

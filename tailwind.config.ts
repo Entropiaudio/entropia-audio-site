@@ -14,8 +14,17 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Montserrat', 'system-ui', 'sans-serif'],
+        display: ['Montserrat', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+      },
+      letterSpacing: {
+        'tightest': '-0.03em',
+        'tight-display': '-0.02em',
+      },
+      maxWidth: {
+        '2xs': '16rem',
+        'measure': '62ch',
       },
       colors: {
         hairline: "hsl(var(--hairline))",

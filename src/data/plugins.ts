@@ -1,11 +1,25 @@
+export type PluginDemo = {
+  slug: string;
+  title: string;
+  caption: string;
+  /** path under /public, e.g. /demos/chaosverb-mixbus.mp3 — empty until file ships */
+  src: string;
+  /** optional dry track for A/B */
+  drySrc?: string;
+};
+
 export type Plugin = {
   slug: string;
   name: string;
   tagline: string;
   shortDescription: string;
+  /** active sale price */
   price: number;
+  /** crossed-out regular price; shown as "regular" when greater than price */
+  regularPrice: number;
   features: string[];
   sections: { heading: string; body: string }[];
+  demos: PluginDemo[];
   specs: { label: string; value: string }[];
   version: string;
 };
@@ -14,38 +28,64 @@ export const plugins: Plugin[] = [
   {
     slug: "chaosverb",
     name: "chaosverb",
-    tagline: "reverb that loses control.",
+    tagline: "two engines, one reverb.",
     shortDescription:
-      "a generative reverb engine for unstable spaces, modulated tails, and accidents worth keeping.",
-    price: 79,
+      "an 8-line FDN reverb that sits beautifully on a mix bus, with a chaos engine for the moments you want it to drift somewhere else entirely.",
+    price: 36,
+    regularPrice: 50,
     features: [
-      "Generate dense, evolving reverb tails from any source",
-      "Modulate decay, diffusion, and pitch in real time",
-      "Inject controlled chaos with the entropy macro",
-      "Freeze, smear, and reverse on the fly",
-      "CPU-friendly across full mix sessions",
+      "8-line feedback delay network — plate-leaning core, room to hall topologies",
+      "chaos engine: parameters mutate on a synced interval, locks pin what you love",
+      "tone section — tilt EQ, low/high cut, tape saturation, tuned 200 Hz damping",
+      "motion section — chorus and wow/flutter for analog drift",
+      "built-in ducker, full BPM-sync on pre-delay and mutation interval",
     ],
     sections: [
       {
-        heading: "an engine, not a preset machine.",
-        body: "chaosverb models reverberation as a system that drifts. every parameter has a slow internal motion, so two passes of the same source rarely sound identical. the result is a reverb that feels alive without sounding effected.",
+        heading: "two engines, one reverb.",
+        body: "chaosverb runs two FDN reverbs at once. on whatever interval you set — every bar, every thirty seconds, never — the unlocked parameters randomize and the engine crossfades smoothly to the new state. nothing clicks. nothing jumps. the reverb just becomes something it wasn't a moment ago. lock the knobs you love, let the rest drift.",
       },
       {
-        heading: "entropy, on a single knob.",
-        body: "the entropy macro routes through diffusion, modulation depth, and tail instability simultaneously. at zero, chaosverb behaves like a clean studio plate. at one, it slowly comes apart. everywhere in between is the interesting part.",
+        heading: "from mix bus to sound design.",
+        body: "back the chaos off and it's a clean, three-dimensional reverb you can put on anything — a vocal, a snare, a full mix bus. push it up and a snare hit becomes a pad, a held vocal becomes an ambient bed, a drum loop becomes a slow-moving cloud. the same plugin across a whole project, doing different jobs.",
       },
       {
-        heading: "built for the mix, not the demo.",
-        body: "low CPU draw, true stereo processing, full automation, and tempo sync. designed to sit on a bus across a whole session without complaint.",
+        heading: "made by two.",
+        body: "we're entropia audio — two friends who love this. the dsp, the knobs, the way a reverb tail decays just right. small studio, no committee, no filler. if you have feedback, it lands in our inbox.",
+      },
+    ],
+    demos: [
+      {
+        slug: "mix-bus",
+        title: "on a mix bus.",
+        caption:
+          "drums and vocal through chaosverb at low chaos — wide, three-dimensional, gets out of the way.",
+        src: "",
+        drySrc: "",
+      },
+      {
+        slug: "chaos-sweep",
+        title: "the chaos engine, sweeping.",
+        caption:
+          "a sustained synth note with mutation set to one bar. the reverb keeps moving without ever clicking.",
+        src: "",
+      },
+      {
+        slug: "drum-to-pad",
+        title: "drum hit becomes a pad.",
+        caption:
+          "single snare hit, long decay, mutation at four bars, mix at 100%. the source disappears into texture.",
+        src: "",
       },
     ],
     specs: [
-      { label: "Format", value: "VST3 / AU" },
-      { label: "OS", value: "macOS 10.13+ / Windows 10+" },
-      { label: "Activation", value: "serial number, 2 machines" },
-      { label: "Version", value: "1.0.0" },
+      { label: "Format", value: "VST3 / AU / Standalone" },
+      { label: "OS", value: "Windows 10+ / macOS 10.13+ (64-bit)" },
+      { label: "Activation", value: "license key, 7-day free trial" },
+      { label: "CPU", value: "low — designed to sit on a bus" },
+      { label: "Version", value: "0.0.7b" },
     ],
-    version: "1.0.0",
+    version: "0.0.7b",
   },
 ];
 

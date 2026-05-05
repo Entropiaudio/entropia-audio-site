@@ -2,6 +2,11 @@ import { Link, NavLink } from "react-router-dom";
 import { plugins } from "@/data/plugins";
 import { useCart } from "@/context/CartContext";
 
+const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  `transition-colors hover:text-accent ${
+    isActive ? "text-foreground" : "text-foreground/55"
+  }`;
+
 const SiteHeader = () => {
   const { count } = useCart();
   return (
@@ -9,33 +14,21 @@ const SiteHeader = () => {
       <div className="max-w-6xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
         <Link
           to="/"
-          className="text-sm font-medium tracking-tight hover:text-accent transition-colors"
+          className="font-mono text-xs uppercase tracking-[0.3em] hover:text-accent transition-colors"
         >
           entropia audio
         </Link>
 
         <nav className="flex items-center gap-6 md:gap-8 text-sm">
           {plugins.map((p) => (
-            <NavLink
-              key={p.slug}
-              to={`/plugins/${p.slug}`}
-              className={({ isActive }) =>
-                `transition-colors hover:text-accent ${
-                  isActive ? "text-accent" : "text-foreground/70"
-                }`
-              }
-            >
+            <NavLink key={p.slug} to={`/plugins/${p.slug}`} className={navLinkClass}>
               {p.name}
             </NavLink>
           ))}
-          <NavLink
-            to="/account"
-            className={({ isActive }) =>
-              `transition-colors hover:text-accent ${
-                isActive ? "text-accent" : "text-foreground/70"
-              }`
-            }
-          >
+          <NavLink to="/about" className={navLinkClass}>
+            about
+          </NavLink>
+          <NavLink to="/account" className={navLinkClass}>
             account
           </NavLink>
           <NavLink
@@ -43,12 +36,12 @@ const SiteHeader = () => {
             aria-label={`cart, ${count} items`}
             className={({ isActive }) =>
               `transition-colors hover:text-accent flex items-center gap-1 ${
-                isActive ? "text-accent" : "text-foreground/70"
+                isActive ? "text-foreground" : "text-foreground/55"
               }`
             }
           >
             cart
-            <span className="font-mono text-xs text-foreground/50">({count})</span>
+            <span className="font-mono text-xs text-foreground/45">({count})</span>
           </NavLink>
         </nav>
       </div>
