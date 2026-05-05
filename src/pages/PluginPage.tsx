@@ -134,10 +134,10 @@ const PluginPage = () => {
             >
               <PluginScreenshot
                 name={plugin.name}
-                ratio="square"
+                ratio="wide"
                 bare
                 src={plugin.screenshot}
-                fit="cover"
+                fit="contain"
                 alt={`${plugin.name} ${section.heading}`}
               />
               <div>

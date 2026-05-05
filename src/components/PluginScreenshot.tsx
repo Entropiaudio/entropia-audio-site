@@ -25,11 +25,13 @@ const PluginScreenshot = ({
   alt,
   fit = "cover",
 }: Props) => {
+  // Chaosverb screenshot native ratio is ~2.35:1 (2000×850).
+  // hero matches it exactly; "wide" leaves a touch of breathing room.
   const aspect =
     ratio === "wide"
-      ? "aspect-[16/9]"
+      ? "aspect-[20/9]"
       : ratio === "hero"
-      ? "aspect-[2/1]"
+      ? "aspect-[47/20]"
       : "aspect-square";
 
   if (src) {

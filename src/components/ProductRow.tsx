@@ -19,7 +19,7 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
           name={plugin.name}
           ratio="wide"
           src={plugin.screenshot}
-          fit="cover"
+          fit="contain"
           alt={`${plugin.name} plugin interface`}
         />
       </Link>
