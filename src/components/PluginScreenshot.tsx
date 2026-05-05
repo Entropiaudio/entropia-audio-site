@@ -4,18 +4,26 @@ type Props = {
   ratio?: "wide" | "square" | "hero";
   /** When true, render minimal — no labels — useful for grid contexts. */
   bare?: boolean;
+  /** Optional image source. When provided, renders the real screenshot. */
+  src?: string;
+  /** Image alt for accessibility. */
+  alt?: string;
+  /** "contain" preserves full UI (good for hero); "cover" crops (good for grid). */
+  fit?: "contain" | "cover";
 };
 
 /**
- * Placeholder for the real Chaosverb screenshot. Sits in a hairline frame
- * on the warm paper background so it reads like a print object. Real PNGs
- * land in /public/screenshots/ and replace this in PluginScreenshotImage.
+ * Real plugin screenshot when `src` is provided. Otherwise falls back to a
+ * hairline-framed placeholder. Sits like a print object on the warm paper bg.
  */
 const PluginScreenshot = ({
   name,
   className = "",
   ratio = "wide",
   bare = false,
+  src,
+  alt,
+  fit = "cover",
 }: Props) => {
   const aspect =
     ratio === "wide"
@@ -24,17 +32,29 @@ const PluginScreenshot = ({
       ? "aspect-[2/1]"
       : "aspect-square";
 
+  if (src) {
+    return (
+      <figure className={`${aspect} w-full relative ${className}`}>
+        <div className="absolute inset-0 border border-foreground/15" />
+        <div className="absolute inset-[1px] bg-plugin-surface overflow-hidden">
+          <img
+            src={src}
+            alt={alt ?? `${name} plugin interface`}
+            loading="lazy"
+            className={`w-full h-full ${fit === "contain" ? "object-contain" : "object-cover"}`}
+          />
+        </div>
+      </figure>
+    );
+  }
+
   return (
     <figure
       className={`${aspect} w-full relative ${className}`}
       aria-label={`${name} plugin interface`}
     >
-      {/* hairline frame, no shadow — sit it like a gallery object */}
       <div className="absolute inset-0 border border-foreground/15" />
-
-      {/* dark surface stand-in for the actual plugin UI */}
-      <div className="absolute inset-[1px] bg-plugin-surface text-plugin-surface-foreground relative overflow-hidden">
-        {/* extremely faint grid for "object" feel */}
+      <div className="absolute inset-[1px] bg-plugin-surface text-plugin-surface-foreground overflow-hidden">
         <div
           className="absolute inset-0 opacity-[0.04]"
           style={{
@@ -43,21 +63,18 @@ const PluginScreenshot = ({
             backgroundSize: "48px 48px",
           }}
         />
-
         {!bare && (
           <>
             <div className="absolute top-0 inset-x-0 flex items-center justify-between px-5 py-3 text-[10px] font-mono uppercase tracking-[0.25em] text-plugin-surface-foreground/40">
               <span>{name}</span>
               <span>screenshot</span>
             </div>
-
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
               <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-plugin-surface-foreground/30">
                 plugin ui drops here
               </span>
               <span className="h-px w-10 bg-accent/70" />
             </div>
-
             <div className="absolute bottom-0 inset-x-0 flex items-center justify-between px-5 py-3 text-[10px] font-mono uppercase tracking-[0.25em] text-plugin-surface-foreground/30">
               <span>entropia audio</span>
               <span>placeholder</span>

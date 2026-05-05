@@ -15,7 +15,13 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
         aria-label={`open ${plugin.name}`}
         className="block group"
       >
-        <PluginScreenshot name={plugin.name} ratio="wide" />
+        <PluginScreenshot
+          name={plugin.name}
+          ratio="wide"
+          src={plugin.screenshot}
+          fit="cover"
+          alt={`${plugin.name} plugin interface`}
+        />
       </Link>
 
       <div className="flex flex-col gap-8">

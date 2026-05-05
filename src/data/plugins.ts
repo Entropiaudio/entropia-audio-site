@@ -37,6 +37,8 @@ export type Plugin = {
   demos: PluginDemo[];
   specs: readonly { label: string; value: string }[];
   version: string;
+  /** path under /public, e.g. /screenshots/chaosverb.png. empty = placeholder. */
+  screenshot: string;
 };
 
 export const plugins: Plugin[] = [
@@ -61,6 +63,7 @@ export const plugins: Plugin[] = [
       { label: "Version", value: "0.0.7b" },
     ],
     version: "0.0.7b",
+    screenshot: "/screenshots/chaosverb.jpg",
   },
 ];
 

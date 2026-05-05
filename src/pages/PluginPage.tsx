@@ -70,7 +70,13 @@ const PluginPage = () => {
         <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-6">
           // {plugin.name} · v{plugin.version}
         </div>
-        <PluginScreenshot name={plugin.name} ratio="hero" />
+        <PluginScreenshot
+          name={plugin.name}
+          ratio="hero"
+          src={plugin.screenshot}
+          fit="contain"
+          alt={`${plugin.name} plugin interface`}
+        />
       </section>
 
       {/* name + tagline */}
@@ -126,7 +132,14 @@ const PluginPage = () => {
                 reversed ? "md:[&>*:first-child]:order-2" : ""
               }`}
             >
-              <PluginScreenshot name={plugin.name} ratio="square" bare />
+              <PluginScreenshot
+                name={plugin.name}
+                ratio="square"
+                bare
+                src={plugin.screenshot}
+                fit="cover"
+                alt={`${plugin.name} ${section.heading}`}
+              />
               <div>
                 <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/55 mb-5">
                   {String(i + 1).padStart(2, "0")} / {plugin.sections.length.toString().padStart(2, "0")}
