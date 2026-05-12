@@ -1,6 +1,9 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
+import Section from "@/components/primitives/Section";
+import Container from "@/components/primitives/Container";
+import Eyebrow from "@/components/primitives/Eyebrow";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -15,7 +18,10 @@ import { toast } from "@/hooks/use-toast";
 const TAX_RATE = 0.0;
 
 const fieldClass =
-  "bg-transparent border-b border-hairline focus:border-foreground outline-none py-2 text-base w-full";
+  "bg-transparent border-b border-[color:var(--border-soft)] focus:border-[color:var(--accent-raw)] outline-none py-3 text-[15px] font-sans tracking-[0.005em] w-full transition-colors duration-[400ms] ease-editorial";
+
+const labelClass =
+  "text-[11px] font-sans font-medium uppercase tracking-[0.12em] text-[color:var(--text-tertiary)]";
 
 const Checkout = () => {
   const { items, subtotal, clear } = useCart();
@@ -84,194 +90,201 @@ const Checkout = () => {
 
   return (
     <SiteLayout>
-      <div className="max-w-5xl mx-auto px-6 md:px-10 py-20 md:py-28">
-        <h1 className="text-3xl md:text-4xl font-medium tracking-tight mb-12">checkout</h1>
+      <Section pad="xl">
+        <Container width="wide">
+          <div className="md:pl-8 lg:pl-16 max-w-[1080px]">
+            <Eyebrow accent className="mb-8">// checkout</Eyebrow>
+            <h1 className="font-display font-light text-[56px] md:text-[72px] leading-[1.0] tracking-[-0.02em] mb-14 md:mb-16">
+              <span className="font-editorial italic font-normal tracking-[-0.015em]">
+                checkout
+              </span>
+            </h1>
 
-        {!isAuthed && (
-          <div className="mb-10 border border-hairline p-5 text-sm">
-            <span className="text-foreground/70">you&apos;ll need an account to receive licenses. </span>
-            <Link
-              to="/account?next=/checkout"
-              className="underline underline-offset-4 hover:text-accent transition-colors"
-            >
-              sign in or create one →
-            </Link>
-          </div>
-        )}
-
-        <div className="grid md:grid-cols-[1fr_360px] gap-12 md:gap-16">
-          <form onSubmit={submit} className="flex flex-col gap-12">
-            <section>
-              <h2 className="text-sm font-mono uppercase tracking-widest text-foreground/50 mb-6">
-                contact
-              </h2>
-              <label className="flex flex-col gap-2">
-                <span className="text-xs uppercase tracking-widest text-foreground/50 font-mono">
-                  email
+            {!isAuthed && (
+              <div className="mb-12 border border-[color:var(--border-soft)] p-6 text-[14px] font-sans leading-[1.6]">
+                <span className="text-[color:var(--text-secondary)]">
+                  you&apos;ll need an account to receive licenses.{" "}
                 </span>
-                <input
-                  type="email"
-                  required
-                  value={details.email}
-                  onChange={(e) => update("email", e.target.value)}
-                  className={fieldClass}
-                />
-              </label>
-            </section>
-
-            <section>
-              <h2 className="text-sm font-mono uppercase tracking-widest text-foreground/50 mb-6">
-                payment
-              </h2>
-              <div className="grid gap-6">
-                <label className="flex flex-col gap-2">
-                  <span className="text-xs uppercase tracking-widest text-foreground/50 font-mono">
-                    name on card
+                <Link
+                  to="/account?next=/checkout"
+                  className="group inline-flex items-baseline gap-1.5 text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                >
+                  <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[400ms] ease-editorial">
+                    sign in or create one
                   </span>
-                  <input
-                    type="text"
-                    required
-                    value={details.name}
-                    onChange={(e) => update("name", e.target.value)}
-                    className={fieldClass}
-                  />
-                </label>
-                <label className="flex flex-col gap-2">
-                  <span className="text-xs uppercase tracking-widest text-foreground/50 font-mono">
-                    card number
-                  </span>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="cc-number"
-                    required
-                    placeholder="4242 4242 4242 4242"
-                    value={details.cardNumber}
-                    onChange={(e) => update("cardNumber", formatCard(e.target.value))}
-                    className={`${fieldClass} placeholder:text-foreground/30 font-mono`}
-                  />
-                </label>
-                <div className="grid grid-cols-2 gap-6">
-                  <label className="flex flex-col gap-2">
-                    <span className="text-xs uppercase tracking-widest text-foreground/50 font-mono">
-                      expiry
-                    </span>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      autoComplete="cc-exp"
-                      required
-                      placeholder="MM/YY"
-                      value={details.expiry}
-                      onChange={(e) => update("expiry", formatExpiry(e.target.value))}
-                      className={`${fieldClass} placeholder:text-foreground/30 font-mono`}
-                    />
-                  </label>
-                  <label className="flex flex-col gap-2">
-                    <span className="text-xs uppercase tracking-widest text-foreground/50 font-mono">
-                      cvc
-                    </span>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      autoComplete="cc-csc"
-                      required
-                      placeholder="123"
-                      maxLength={4}
-                      value={details.cvc}
-                      onChange={(e) => update("cvc", e.target.value.replace(/\D+/g, ""))}
-                      className={`${fieldClass} placeholder:text-foreground/30 font-mono`}
-                    />
-                  </label>
-                </div>
+                  <span className="transition-transform duration-[400ms] ease-editorial group-hover:translate-x-0.5">→</span>
+                </Link>
               </div>
-            </section>
-
-            <section>
-              <h2 className="text-sm font-mono uppercase tracking-widest text-foreground/50 mb-6">
-                billing address
-              </h2>
-              <div className="grid grid-cols-2 gap-6">
-                <label className="flex flex-col gap-2 col-span-1">
-                  <span className="text-xs uppercase tracking-widest text-foreground/50 font-mono">
-                    country
-                  </span>
-                  <input
-                    type="text"
-                    required
-                    value={details.country}
-                    onChange={(e) => update("country", e.target.value)}
-                    className={fieldClass}
-                  />
-                </label>
-                <label className="flex flex-col gap-2 col-span-1">
-                  <span className="text-xs uppercase tracking-widest text-foreground/50 font-mono">
-                    postal code
-                  </span>
-                  <input
-                    type="text"
-                    required
-                    value={details.postal}
-                    onChange={(e) => update("postal", e.target.value)}
-                    className={fieldClass}
-                  />
-                </label>
-              </div>
-            </section>
-
-            {error && (
-              <p className="text-sm text-destructive font-mono">{error}</p>
             )}
 
-            <button
-              type="submit"
-              disabled={submitting}
-              className="self-start px-6 py-3 bg-foreground text-background hover:bg-accent transition-colors text-sm disabled:opacity-50"
-            >
-              {submitting ? "processing…" : `pay $${total.toFixed(2)}`}
-            </button>
-            <p className="text-xs text-foreground/40 font-mono -mt-8">
-              test cards: 4242 4242 4242 4242 succeeds · ending 0002 declined · 0069 insufficient funds
-            </p>
-          </form>
+            <div className="grid md:grid-cols-[1fr_360px] gap-12 md:gap-20">
+              <form onSubmit={submit} className="flex flex-col gap-14">
+                <section>
+                  <Eyebrow className="mb-7">contact</Eyebrow>
+                  <label className="flex flex-col gap-3">
+                    <span className={labelClass}>email</span>
+                    <input
+                      type="email"
+                      required
+                      value={details.email}
+                      onChange={(e) => update("email", e.target.value)}
+                      className={fieldClass}
+                    />
+                  </label>
+                </section>
 
-          <aside className="md:sticky md:top-28 self-start border-t md:border-t-0 md:border-l border-hairline md:pl-12 pt-10 md:pt-0">
-            <h2 className="text-sm font-mono uppercase tracking-widest text-foreground/50 mb-6">
-              order summary
-            </h2>
-            <ul className="flex flex-col gap-4">
-              {items.map((it) => (
-                <li
-                  key={`${it.slug}:${it.license}`}
-                  className="flex items-baseline justify-between gap-4 text-sm"
-                >
-                  <div>
-                    <div>{it.name}</div>
-                    <div className="text-xs text-foreground/50 font-mono">
-                      {it.license} · qty {it.quantity}
+                <section>
+                  <Eyebrow className="mb-7">payment</Eyebrow>
+                  <div className="grid gap-7">
+                    <label className="flex flex-col gap-3">
+                      <span className={labelClass}>name on card</span>
+                      <input
+                        type="text"
+                        required
+                        value={details.name}
+                        onChange={(e) => update("name", e.target.value)}
+                        className={fieldClass}
+                      />
+                    </label>
+                    <label className="flex flex-col gap-3">
+                      <span className={labelClass}>card number</span>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        autoComplete="cc-number"
+                        required
+                        placeholder="4242 4242 4242 4242"
+                        value={details.cardNumber}
+                        onChange={(e) => update("cardNumber", formatCard(e.target.value))}
+                        className={`${fieldClass} placeholder:text-[color:var(--text-tertiary)] font-mono`}
+                      />
+                    </label>
+                    <div className="grid grid-cols-2 gap-7">
+                      <label className="flex flex-col gap-3">
+                        <span className={labelClass}>expiry</span>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          autoComplete="cc-exp"
+                          required
+                          placeholder="MM/YY"
+                          value={details.expiry}
+                          onChange={(e) => update("expiry", formatExpiry(e.target.value))}
+                          className={`${fieldClass} placeholder:text-[color:var(--text-tertiary)] font-mono`}
+                        />
+                      </label>
+                      <label className="flex flex-col gap-3">
+                        <span className={labelClass}>cvc</span>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          autoComplete="cc-csc"
+                          required
+                          placeholder="123"
+                          maxLength={4}
+                          value={details.cvc}
+                          onChange={(e) => update("cvc", e.target.value.replace(/\D+/g, ""))}
+                          className={`${fieldClass} placeholder:text-[color:var(--text-tertiary)] font-mono`}
+                        />
+                      </label>
                     </div>
                   </div>
-                  <div className="font-mono">${(it.price * it.quantity).toFixed(2)}</div>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-6 border-t border-hairline pt-4 space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-foreground/60">subtotal</span>
-                <span className="font-mono">${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-foreground/60">tax</span>
-                <span className="font-mono">${tax.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t border-hairline">
-                <span>total</span>
-                <span className="font-mono text-base">${total.toFixed(2)}</span>
-              </div>
+                </section>
+
+                <section>
+                  <Eyebrow className="mb-7">billing address</Eyebrow>
+                  <div className="grid grid-cols-2 gap-7">
+                    <label className="flex flex-col gap-3 col-span-1">
+                      <span className={labelClass}>country</span>
+                      <input
+                        type="text"
+                        required
+                        value={details.country}
+                        onChange={(e) => update("country", e.target.value)}
+                        className={fieldClass}
+                      />
+                    </label>
+                    <label className="flex flex-col gap-3 col-span-1">
+                      <span className={labelClass}>postal code</span>
+                      <input
+                        type="text"
+                        required
+                        value={details.postal}
+                        onChange={(e) => update("postal", e.target.value)}
+                        className={fieldClass}
+                      />
+                    </label>
+                  </div>
+                </section>
+
+                {error && (
+                  <p className="text-[13px] text-[color:var(--accent-raw)] font-mono">{error}</p>
+                )}
+
+                <div className="flex flex-col gap-4">
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="group inline-flex items-baseline gap-2 self-start text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed tabular-nums"
+                  >
+                    <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+                      {submitting ? "processing…" : `pay $${total.toFixed(2)}`}
+                    </span>
+                    {!submitting && (
+                      <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                    )}
+                  </button>
+                  <p className="text-[11px] font-mono text-[color:var(--text-tertiary)]">
+                    test cards: 4242 4242 4242 4242 succeeds · ending 0002 declined · 0069 insufficient funds
+                  </p>
+                </div>
+              </form>
+
+              <aside className="md:sticky md:top-32 self-start border-t md:border-t-0 md:border-l border-hairline md:pl-12 pt-10 md:pt-0">
+                <Eyebrow className="mb-7">order summary</Eyebrow>
+                <ul className="flex flex-col gap-5">
+                  {items.map((it) => (
+                    <li
+                      key={`${it.slug}:${it.license}`}
+                      className="flex items-baseline justify-between gap-4"
+                    >
+                      <div>
+                        <div className="font-sans text-[15px] text-[color:var(--text-primary)]">{it.name}</div>
+                        <div className="text-[12px] text-[color:var(--text-tertiary)] font-mono mt-0.5">
+                          {it.license} · qty {it.quantity}
+                        </div>
+                      </div>
+                      <div className="font-mono text-[14px] tabular-nums text-[color:var(--text-secondary)]">
+                        ${(it.price * it.quantity).toFixed(2)}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8 border-t border-hairline pt-5 space-y-3 text-[14px]">
+                  <div className="flex justify-between">
+                    <span className="font-sans text-[color:var(--text-tertiary)]">subtotal</span>
+                    <span className="font-mono tabular-nums text-[color:var(--text-secondary)]">
+                      ${subtotal.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-sans text-[color:var(--text-tertiary)]">tax</span>
+                    <span className="font-mono tabular-nums text-[color:var(--text-secondary)]">
+                      ${tax.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between pt-3 border-t border-hairline items-baseline">
+                    <span className="font-sans text-[color:var(--text-primary)]">total</span>
+                    <span className="font-mono tabular-nums text-[16px] text-[color:var(--text-primary)]">
+                      ${total.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </aside>
             </div>
-          </aside>
-        </div>
-      </div>
+          </div>
+        </Container>
+      </Section>
     </SiteLayout>
   );
 };

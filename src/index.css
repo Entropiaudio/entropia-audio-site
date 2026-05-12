@@ -2,53 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-/* entropia audio — editorial, restrained design system */
+/* entropia audio — editorial, restrained, warm dark.
+   tokens live here. tailwind reads the HSL-channel vars; components can also
+   read the raw hex/rgba vars directly when an exact spec value is required.   */
 
 @layer base {
   :root {
-    --background: 38 30% 93%;        /* #f2ede3 warm bone */
-    --foreground: 30 12% 10%;        /* #1c1815 near-black, warm */
+    /* ---------- raw palette (spec values, used directly when needed) ------ */
+    --bg:                 #14110F;
+    --surface:            #1C1916;
+    --surface-elevated:   #24201D;
+    --border-soft:        rgba(255, 245, 230, 0.08);
+    --text-primary:       #E8E2D6;
+    --text-secondary:     rgba(232, 226, 214, 0.65);
+    --text-tertiary:      rgba(232, 226, 214, 0.40);
+    --accent-raw:         #D4A574;
+    --accent-muted:       rgba(212, 165, 116, 0.15);
 
-    --card: 38 30% 93%;
-    --card-foreground: 30 12% 10%;
+    /* ---------- shadcn / tailwind HSL channels (derived from raw) --------- */
+    --background: 24 14% 7%;          /* #14110F */
+    --foreground: 40 28% 87%;         /* #E8E2D6 */
 
-    --popover: 38 30% 93%;
-    --popover-foreground: 30 12% 10%;
+    --card: 24 14% 7%;
+    --card-foreground: 40 28% 87%;
 
-    --primary: 30 12% 10%;
-    --primary-foreground: 38 30% 93%;
+    --popover: 30 12% 10%;            /* surface */
+    --popover-foreground: 40 28% 87%;
 
-    --secondary: 38 22% 88%;
-    --secondary-foreground: 30 12% 10%;
+    --primary: 40 28% 87%;
+    --primary-foreground: 24 14% 7%;
 
-    --muted: 38 22% 88%;
-    --muted-foreground: 30 8% 38%;
+    --secondary: 30 12% 10%;          /* surface */
+    --secondary-foreground: 40 28% 87%;
 
-    --accent: 14 50% 42%;            /* #a64f30 muted terracotta */
-    --accent-foreground: 38 30% 93%;
+    --muted: 26 11% 13%;              /* surface-elevated */
+    --muted-foreground: 40 14% 65%;
 
-    --destructive: 0 60% 42%;
-    --destructive-foreground: 38 30% 93%;
+    --accent: 31 53% 64%;             /* #D4A574 warm copper */
+    --accent-foreground: 24 14% 7%;
 
-    --border: 30 14% 80%;
-    --input: 30 14% 80%;
-    --ring: 30 12% 10%;
+    --destructive: 0 50% 50%;
+    --destructive-foreground: 40 28% 87%;
 
-    --hairline: 30 12% 10%;          /* foreground; opacity controlled in usage */
+    --border: 40 28% 87%;             /* used with low opacity via .border-hairline */
+    --input: 40 28% 87%;
+    --ring: 31 53% 64%;
 
-    --plugin-surface: 0 0% 6%;
-    --plugin-surface-foreground: 38 30% 93%;
+    --hairline: 40 28% 87%;
+    --plugin-surface: 26 11% 13%;
+    --plugin-surface-foreground: 40 28% 87%;
 
-    --radius: 0.125rem;
+    /* corners stay architectural — never above 4px */
+    --radius: 0.125rem;               /* 2px */
 
-    --sidebar-background: 38 30% 93%;
-    --sidebar-foreground: 30 12% 10%;
-    --sidebar-primary: 30 12% 10%;
-    --sidebar-primary-foreground: 38 30% 93%;
-    --sidebar-accent: 38 22% 88%;
-    --sidebar-accent-foreground: 30 12% 10%;
-    --sidebar-border: 30 14% 80%;
-    --sidebar-ring: 30 12% 10%;
+    --sidebar-background: 24 14% 7%;
+    --sidebar-foreground: 40 28% 87%;
+    --sidebar-primary: 40 28% 87%;
+    --sidebar-primary-foreground: 24 14% 7%;
+    --sidebar-accent: 30 12% 10%;
+    --sidebar-accent-foreground: 40 28% 87%;
+    --sidebar-border: 40 28% 87%;
+    --sidebar-ring: 31 53% 64%;
+
+    /* ---------- motion -------------------------------------------------- */
+    --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+    --duration-slow: 800ms;
+    --duration-base: 600ms;
+    --duration-fast: 400ms;
   }
 }
 
@@ -66,45 +86,27 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
-    font-feature-settings: 'ss01', 'ss02', 'cv11';
-    letter-spacing: -0.005em;
+    font-weight: 400;
   }
 
-  .font-mono {
-    font-family: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  .font-mono,
+  code,
+  kbd,
+  samp {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
-  /* Subtle paper grain on the page background — earns the "gallery" feel */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 256px 256px;
-  }
-
-  #root {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Restrained focus ring — visible on both bone and dark surfaces */
   :where(a, button, [role="button"], input, select, textarea, [tabindex]):focus-visible {
-    outline: 2px solid hsl(var(--accent));
+    outline: 1px solid hsl(var(--accent));
     outline-offset: 3px;
     border-radius: 1px;
   }
 
-  /* Selection */
   ::selection {
-    background: hsl(var(--foreground));
-    color: hsl(var(--background));
+    background: hsl(var(--accent) / 0.4);
+    color: hsl(var(--foreground));
   }
 
-  /* Skip link */
   .skip-link {
     position: absolute;
     left: 1rem;
@@ -115,7 +117,7 @@
     color: hsl(var(--background));
     padding: 0.75rem 1rem;
     font-size: 0.875rem;
-    transition: transform 150ms ease-out;
+    transition: transform 200ms var(--ease-editorial);
   }
   .skip-link:focus-visible {
     transform: translateY(0);
@@ -134,41 +136,48 @@
 }
 
 @layer utilities {
-  .fade-in {
-    animation: fade-in 0.6s ease-out both;
-  }
-
-  /* Hairline using the foreground at 12% opacity, for borders. */
   .border-hairline {
-    border-color: hsl(var(--foreground) / 0.12);
+    border-color: hsl(var(--foreground) / 0.08);
   }
   .divide-hairline > * + * {
-    border-color: hsl(var(--foreground) / 0.12);
+    border-color: hsl(var(--foreground) / 0.08);
   }
 
+  /* font-family helpers — typography utility classes come in Step 2 */
   .font-display {
     font-family: 'Montserrat', system-ui, sans-serif;
     font-weight: 300;
     letter-spacing: -0.02em;
   }
-
-  .font-display-italic {
-    font-family: 'Montserrat', system-ui, sans-serif;
-    font-style: italic;
+  .font-editorial {
+    font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
     font-weight: 400;
-    letter-spacing: -0.015em;
+  }
+  .font-mono-spec {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-weight: 400;
+    letter-spacing: 0;
   }
 
-  /* Magazine-style measure for body copy */
+  /* magazine measure — tuned for ~62ch at 18px Fraunces */
   .measure {
     max-width: 62ch;
   }
   .measure-tight {
     max-width: 48ch;
   }
+
+  .ease-editorial {
+    transition-timing-function: var(--ease-editorial);
+  }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }

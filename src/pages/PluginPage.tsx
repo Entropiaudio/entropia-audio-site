@@ -2,6 +2,9 @@ import { useParams, Navigate, useNavigate } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
 import PluginScreenshot from "@/components/PluginScreenshot";
 import AudioDemo from "@/components/AudioDemo";
+import Section from "@/components/primitives/Section";
+import Container from "@/components/primitives/Container";
+import Eyebrow from "@/components/primitives/Eyebrow";
 import { getPlugin } from "@/data/plugins";
 import { useCart } from "@/context/CartContext";
 import { toast } from "@/hooks/use-toast";
@@ -29,196 +32,240 @@ const PluginPage = () => {
 
   return (
     <SiteLayout>
-      {/* sticky CTA */}
-      <div className="sticky top-16 z-30 bg-background/85 backdrop-blur-sm border-b border-hairline">
-        <div className="max-w-6xl mx-auto px-6 md:px-10 h-14 flex items-center justify-between">
-          <span className="text-sm font-mono uppercase tracking-widest text-foreground/65">
+      {/* ---------- sticky CTA strip ---------- */}
+      <div className="sticky top-20 z-30 bg-[color:var(--bg)]/85 backdrop-blur-md border-b border-hairline">
+        <div className="max-w-wide mx-auto px-6 md:px-10 h-14 flex items-center justify-between">
+          <span className="text-[12px] font-mono uppercase tracking-[0.22em] text-[color:var(--text-primary)]">
             {plugin.name}
           </span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-baseline gap-8">
             <a
               href="#try"
-              className="text-xs md:text-sm px-4 min-h-[44px] inline-flex items-center border border-foreground/30 hover:border-foreground transition-colors"
+              className="text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
             >
               {c.ctaTry}
             </a>
             <button
               type="button"
               onClick={() => addToCart("perpetual", true)}
-              className="text-xs md:text-sm px-4 min-h-[44px] bg-foreground text-background hover:bg-accent transition-colors inline-flex items-center gap-2 tabular-nums"
+              className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial tabular-nums"
             >
-              <span>{c.ctaBuy} · ${plugin.price}</span>
+              <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
+                {c.ctaBuy} · ${plugin.price}
+              </span>
               {onSale && (
-                <span className="line-through opacity-60 text-[11px]">
+                <span className="line-through text-[11px] text-[color:var(--text-tertiary)]">
                   ${plugin.regularPrice}
                 </span>
               )}
-            </button>
-            <button
-              type="button"
-              onClick={() => addToCart("rent-to-own")}
-              className="hidden sm:inline-flex items-center text-xs md:text-sm px-4 min-h-[44px] border border-foreground/30 hover:border-foreground transition-colors"
-            >
-              {c.ctaRent}
             </button>
           </div>
         </div>
       </div>
 
-      {/* hero screenshot */}
-      <section className="max-w-4xl mx-auto px-6 md:px-10 pt-16 md:pt-24">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-6">
-          // {plugin.name} · v{plugin.version}
-        </div>
-        <PluginScreenshot
-          name={plugin.name}
-          ratio="hero"
-          src={plugin.screenshot}
-          fit="contain"
-          alt={`${plugin.name} plugin interface`}
-        />
-      </section>
+      {/* ---------- product hero ---------- */}
+      <Section pad="lg">
+        <Container width="wide">
+          <div className="md:pl-8 lg:pl-16">
+            <Eyebrow className="mb-12">
+              // {plugin.name} · v{plugin.version}
+            </Eyebrow>
+            <div className="max-w-[1080px]">
+              <PluginScreenshot
+                name={plugin.name}
+                ratio="hero"
+                src={plugin.screenshot}
+                fit="contain"
+                alt={`${plugin.name} plugin interface`}
+              />
+            </div>
+          </div>
+        </Container>
+      </Section>
 
-      {/* name + tagline */}
-      <section className="max-w-3xl mx-auto px-6 md:px-10 pt-20 md:pt-28 pb-8 text-center">
-        <h1 className="text-sm md:text-base font-mono uppercase tracking-[0.4em] text-foreground/60">
-          {plugin.name}
-        </h1>
-        <p className="mt-6 text-4xl md:text-6xl font-display tracking-tight-display leading-[1.05]">
-          {plugin.tagline}
-        </p>
-        <p className="mt-8 text-lg md:text-xl text-foreground/65 leading-relaxed measure mx-auto">
-          {plugin.shortDescription}
-        </p>
+      {/* ---------- name + tagline ---------- */}
+      <Section pad="lg">
+        <Container width="wide">
+          <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
+            <div className="md:col-span-3 md:col-start-2 md:pt-4">
+              <Eyebrow>{plugin.name}</Eyebrow>
+            </div>
+            <div className="md:col-span-8">
+              <h1 className="font-display font-light leading-[1.0] tracking-[-0.02em] text-[44px] md:text-[64px] lg:text-[80px]">
+                <span className="font-editorial italic font-normal tracking-[-0.015em]">
+                  {plugin.tagline}
+                </span>
+              </h1>
+              <p className="mt-10 font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[58ch]">
+                {plugin.shortDescription}
+              </p>
 
-        <div className="mt-10 flex items-baseline justify-center gap-4 font-mono text-sm tabular-nums">
-          <span className="text-foreground text-base">${plugin.price}</span>
-          {onSale && (
-            <>
-              <span className="line-through text-foreground/50">${plugin.regularPrice}</span>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-accent not-italic">
-                {c.saleBadge}
-              </span>
-            </>
-          )}
-        </div>
-      </section>
+              <div className="mt-10 flex items-baseline gap-6 font-mono text-[13px] tabular-nums">
+                <span className="text-[color:var(--text-primary)]">${plugin.price}</span>
+                {onSale && (
+                  <>
+                    <span className="line-through text-[color:var(--text-tertiary)]">
+                      ${plugin.regularPrice}
+                    </span>
+                    <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--accent-raw)]">
+                      {c.saleBadge}
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </Container>
+      </Section>
 
-      {/* numbered features */}
-      <section className="max-w-3xl mx-auto px-6 md:px-10 py-20 md:py-28">
-        <ul className="space-y-6 md:space-y-7">
-          {plugin.features.map((f, i) => (
-            <li
-              key={i}
-              className="grid grid-cols-[2.5rem,1fr] gap-4 md:gap-6 text-base md:text-lg leading-relaxed border-t border-hairline pt-5"
-            >
-              <span className="font-mono text-xs text-foreground/60 pt-1">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span>{f}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {/* ---------- numbered features ---------- */}
+      <Section pad="lg" tone="rule-top">
+        <Container width="wide">
+          <div className="md:pl-8 lg:pl-16 max-w-[880px]">
+            <ul>
+              {plugin.features.map((f, i) => (
+                <li
+                  key={i}
+                  className="grid grid-cols-[3rem,1fr] gap-6 md:gap-10 font-sans font-normal text-[17px] md:text-[18px] leading-[1.65] tracking-[0.005em] border-t border-hairline py-7"
+                >
+                  <span className="font-mono text-[12px] tabular-nums text-[color:var(--text-tertiary)] pt-1.5">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-[color:var(--text-primary)]">{f}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Container>
+      </Section>
 
-      {/* alternating image/text sections */}
-      <div className="max-w-6xl mx-auto px-6 md:px-10">
+      {/* ---------- alternating image / text ---------- */}
+      <Container width="wide">
         {plugin.sections.map((section, i) => {
           const reversed = i % 2 === 1;
           return (
-            <section
+            <article
               key={i}
-              className={`grid md:grid-cols-2 gap-10 md:gap-20 items-center py-20 md:py-32 border-t border-hairline ${
+              className={`grid md:grid-cols-12 gap-10 md:gap-16 items-center py-24 md:py-32 border-t border-hairline ${
                 reversed ? "md:[&>*:first-child]:order-2" : ""
               }`}
             >
-              <PluginScreenshot
-                name={plugin.name}
-                ratio="wide"
-                bare
-                src={plugin.screenshot}
-                fit="contain"
-                alt={`${plugin.name} ${section.heading}`}
-              />
-              <div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/55 mb-5">
+              <div className={`md:col-span-6 ${reversed ? "md:col-start-7" : ""}`}>
+                <PluginScreenshot
+                  name={plugin.name}
+                  ratio="wide"
+                  bare
+                  src={plugin.screenshot}
+                  fit="contain"
+                  alt={`${plugin.name} ${section.heading}`}
+                />
+              </div>
+              <div className={`md:col-span-5 ${reversed ? "md:col-start-2" : "md:col-start-8"}`}>
+                <Eyebrow className="mb-6">
                   {String(i + 1).padStart(2, "0")} / {plugin.sections.length.toString().padStart(2, "0")}
-                </div>
-                <h3 className="text-3xl md:text-4xl font-display tracking-tight-display leading-tight mb-6">
+                </Eyebrow>
+                <h3 className="font-display font-light text-[36px] md:text-[44px] leading-[1.05] tracking-[-0.02em] mb-8">
                   {section.heading}
                 </h3>
-                <p className="text-base md:text-lg text-foreground/70 leading-relaxed measure">
+                <p className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[42ch]">
                   {section.body}
                 </p>
               </div>
-            </section>
+            </article>
           );
         })}
-      </div>
+      </Container>
 
-      {/* audio demos */}
-      <section className="max-w-3xl mx-auto px-6 md:px-10 py-20 md:py-28 border-t border-hairline">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-3">
-          {c.listenEyebrow}
-        </div>
-        <h3 className="text-3xl md:text-4xl font-display tracking-tight-display mb-12">
-          {c.listenHeadline}
-        </h3>
-        <div>
-          {plugin.demos.map((d, i) => (
-            <AudioDemo key={d.slug} demo={d} index={i} />
-          ))}
-        </div>
-      </section>
+      {/* ---------- audio demos ---------- */}
+      <Section pad="lg" tone="rule-top">
+        <Container width="wide">
+          <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
+            <div className="md:col-span-3 md:col-start-2 md:pt-4">
+              <Eyebrow>{c.listenEyebrow}</Eyebrow>
+            </div>
+            <div className="md:col-span-8">
+              <h3 className="font-display font-light text-[36px] md:text-[48px] leading-[1.05] tracking-[-0.02em] mb-14">
+                <span className="font-editorial italic font-normal tracking-[-0.015em]">
+                  {c.listenHeadline}
+                </span>
+              </h3>
+              <div>
+                {plugin.demos.map((d, i) => (
+                  <AudioDemo key={d.slug} demo={d} index={i} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </Container>
+      </Section>
 
-      {/* tech specs */}
-      <section className="max-w-3xl mx-auto px-6 md:px-10 py-20 md:py-28 border-t border-hairline">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-8">
-          {c.specsEyebrow}
-        </div>
-        <table className="w-full text-base">
-          <tbody>
-            {plugin.specs.map((spec) => (
-              <tr key={spec.label} className="border-t border-hairline">
-                <td className="py-5 pr-6 text-foreground/55 w-1/3 align-top">
-                  {spec.label}
-                </td>
-                <td className="py-5 font-mono text-sm">{spec.value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      {/* ---------- specs ---------- */}
+      <Section pad="lg" tone="rule-top">
+        <Container width="wide">
+          <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
+            <div className="md:col-span-3 md:col-start-2 md:pt-4">
+              <Eyebrow>{c.specsEyebrow}</Eyebrow>
+            </div>
+            <div className="md:col-span-8">
+              <table className="w-full text-[15px]">
+                <tbody>
+                  {plugin.specs.map((spec) => (
+                    <tr key={spec.label} className="border-t border-hairline">
+                      <td className="py-6 pr-6 text-[color:var(--text-tertiary)] w-1/3 align-top font-sans font-medium text-[13px] uppercase tracking-[0.06em]">
+                        {spec.label}
+                      </td>
+                      <td className="py-6 font-mono text-[13px] text-[color:var(--text-primary)]">
+                        {spec.value}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </Container>
+      </Section>
 
-      {/* download */}
-      <section
-        id="try"
-        className="max-w-3xl mx-auto px-6 md:px-10 py-20 md:py-28 border-t border-hairline"
-      >
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-3">
-          {c.tryEyebrow}
-        </div>
-        <h3 className="text-3xl md:text-4xl font-display tracking-tight-display mb-6">
-          {c.tryHeadline}
-        </h3>
-        <p className="text-base md:text-lg text-foreground/65 leading-relaxed measure mb-10">
-          {c.trySubline}
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-          <a
-            href="#"
-            className="text-sm px-6 py-4 border border-foreground hover:bg-foreground hover:text-background transition-colors text-center"
-          >
-            {c.downloadMac}
-          </a>
-          <a
-            href="#"
-            className="text-sm px-6 py-4 border border-foreground hover:bg-foreground hover:text-background transition-colors text-center"
-          >
-            {c.downloadWin}
-          </a>
-        </div>
-      </section>
+      {/* ---------- try / download ---------- */}
+      <Section pad="lg" tone="rule-top">
+        <Container width="wide" id="try">
+          <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
+            <div className="md:col-span-3 md:col-start-2 md:pt-4">
+              <Eyebrow>{c.tryEyebrow}</Eyebrow>
+            </div>
+            <div className="md:col-span-8">
+              <h3 className="font-display font-light text-[36px] md:text-[48px] leading-[1.05] tracking-[-0.02em] mb-8">
+                <span className="font-editorial italic font-normal tracking-[-0.015em]">
+                  {c.tryHeadline}
+                </span>
+              </h3>
+              <p className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[52ch] mb-12">
+                {c.trySubline}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6 sm:gap-10">
+                <a
+                  href="#"
+                  className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+                >
+                  <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+                    {c.downloadMac}
+                  </span>
+                  <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">↓</span>
+                </a>
+                <a
+                  href="#"
+                  className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+                >
+                  <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+                    {c.downloadWin}
+                  </span>
+                  <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">↓</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </Section>
     </SiteLayout>
   );
 };

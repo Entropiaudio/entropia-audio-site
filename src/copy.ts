@@ -43,13 +43,13 @@ export const copy = {
   home: {
     eyebrow: "// entropia audio",
     headlineLine1: "audio tools",
-    headlineLine2: "built with love",
+    headlineLine2: "built with intent",
     subline:
-      "a small studio making audio stuff. the kind that sit well on a mix bus, or break apart.",
+      "a boutique studio making audio stuff. the kind that makes your mix shine, or destroys it!",
     featuredEyebrow: "featured",
     aboutEyebrow: "about",
     aboutBlurb:
-      "we're two friends who love this. it was always our dream to make out own tools, and now that dream comes true. we hope you like it.",
+      "we're two friends who love this. it was always our dream to make our own tools, and now that dream comes true. we hope you like it.",
     aboutLink: "more on us",
   },
 
@@ -81,32 +81,28 @@ export const copy = {
    * ------------------------------------------------------------------------- */
   chaosverb: {
     name: "chaosverb",
-    tagline: "two engines, one reverb.",
+    tagline: "every destination, one reverb.",
     shortDescription:
-      "an 8-line FDN reverb that sits beautifully on a mix bus, with a chaos engine for the moments you want it to drift somewhere else entirely.",
+      "a gorgeous reverb that can bring any sound to life. densed and lush, chaosverb can go pretty much anywhere on the mix. it also comes with our unique chaos engine, that can randomize every parameter on the device simultaniasly, on the fly. pretty wierd stuff, folks.",
 
     saleBadge: "launch sale",
 
     features: [
-      "8-line feedback delay network. plate-leaning core, room to hall topologies.",
-      "chaos engine. parameters mutate on a synced interval, locks pin what you love.",
-      "tone section. tilt EQ, low and high cut, tape saturation, tuned 200 Hz damping.",
-      "motion section. chorus and wow/flutter for analog drift.",
-      "built-in ducker. full BPM sync on pre-delay and mutation interval.",
+      "pristine reverb engine, fine tuned to produce beautiful rooms and halls",
+      "chaos engine - any parameter you want can mutate on a synced interval, forever.",
+      "spectral and dynamic shaping - compress, eq and saturate your reverb to change its nature and sound.",
+      "motion section - chorus and wow/flutter for some extgra interest.",
+      "built-in ducker - so your sounds dont drown out.",
     ],
 
     sections: [
       {
-        heading: "two engines, one reverb.",
-        body: "chaosverb runs two FDN reverbs at once. you pick the interval: every bar, every thirty seconds, never. on each tick, the unlocked parameters randomize and the engine crossfades smoothly to the new state. nothing clicks. nothing jumps. the reverb just becomes something it wasn't a moment ago. lock the knobs you love, let the rest drift.",
+        heading: "from mixing to sound design.",
+        body: "back the chaos off and it's a clean, three-dimensional reverb you can put on anything: a pad, a snare, your questionable vocal recordings. push it up and wierd stuff begins to happen, and the sounds you thought you knew begin to spiral out of control. the same plugin across a whole project, doing different jobs.",
       },
       {
-        heading: "from mix bus to sound design.",
-        body: "back the chaos off and it's a clean, three-dimensional reverb you can put on anything: a vocal, a snare, a full mix bus. push it up and a snare hit becomes a pad, a held vocal becomes an ambient bed, a drum loop becomes a slow-moving cloud. the same plugin across a whole project, doing different jobs.",
-      },
-      {
-        heading: "made by two.",
-        body: "we're entropia audio. two friends who love this: the dsp, the knobs, the way a reverb tail decays just right. small studio, no committee, no filler. if you have feedback, it lands in our inbox.",
+        heading: "made with care",
+        body: "we built this plugin because we genuinely love this stuff. every parameter and design choice was carefully thought out. it won't save your shitty snare though.",
       },
     ],
 
@@ -142,17 +138,16 @@ export const copy = {
       { label: "CPU", value: "low. designed to sit on a bus." },
     ],
 
-    tryEyebrow: "try",
-    tryHeadline: "the real plugin, free for seven days.",
+    tryEyebrow: "take it for a test drive",
+    tryHeadline: "free for seven days",
     trySubline:
-      "no noise, no silence. the full thing. enter a license key when you're ready, or don't.",
+      "a fully featured trial for you to try. why not give it a go?",
     downloadMac: "download for macOS",
     downloadWin: "download for Windows",
 
     /* sticky CTA bar buttons */
     ctaTry: "try free",
     ctaBuy: "buy",
-    ctaRent: "rent-to-own",
   },
 
   /* -------------------------------------------------------------------------
@@ -169,9 +164,9 @@ export const copy = {
    * ------------------------------------------------------------------------- */
   newsletter: {
     eyebrow: "mailing list",
-    headlineLine1: "we ship rarely.",
+    headlineLine1: "we ship rarely,",
     headlineLine2:
-      "when there's something worth saying, we'll send a short note.",
+      "when there's something worth saying.",
     placeholder: "your email",
     button: "subscribe",
     successTitle: "subscribed.",
@@ -186,7 +181,7 @@ export const copy = {
   footer: {
     title: "entropia audio",
     blurb:
-      "a small studio of two, making serious audio plugins. designed and built with care.",
+      "hit us up",
     siteHeading: "site",
     legalHeading: "legal",
     nav: {
@@ -197,7 +192,7 @@ export const copy = {
       privacy: "privacy",
     },
     copyright: "entropia audio",
-    tagLine: "made by two",
+    tagLine: "unleashing chaos",
   },
 
   /* -------------------------------------------------------------------------
@@ -206,6 +201,94 @@ export const copy = {
   orderSuccess: {
     eyebrow: "payment received",
     headline: "thanks. your licenses are ready.",
+  },
+
+  /* -------------------------------------------------------------------------
+   * legal pages  (/legal/eula  and  /legal/privacy)
+   *
+   * each section becomes a heading + paragraph block.
+   * to add or remove sections, add or remove items in the `sections` array.
+   * the lastUpdated date shows as a small mono caption under the title.
+   * ------------------------------------------------------------------------- */
+  legal: {
+    eula: {
+      eyebrow: "// legal",
+      title: "end user license agreement",
+      lastUpdated: "last updated: 2026-01-01",
+      intro:
+        "this is a placeholder. real legal text should replace what's below before launch. nothing here is binding.",
+      sections: [
+        {
+          heading: "1. license grant",
+          body:
+            "we grant you a non-exclusive, non-transferable license to install and use the software on machines you own, for personal and commercial music production. you do not own the software; you own a license to use it.",
+        },
+        {
+          heading: "2. what you can't do",
+          body:
+            "no redistributing the installer, sharing your license key, reverse-engineering the binaries, or claiming you made it. one license, one human.",
+        },
+        {
+          heading: "3. updates and support",
+          body:
+            "you'll get bug fixes and reasonable updates for the version line you bought. we'll answer email when we can. we're a studio of two; please be patient.",
+        },
+        {
+          heading: "4. no warranty",
+          body:
+            "the software is provided as-is. if it eats your session, we're sorry, but we're not on the hook for lost work. always back up.",
+        },
+        {
+          heading: "5. termination",
+          body:
+            "violating these terms terminates your license. if it gets to that point we'll send an email first.",
+        },
+        {
+          heading: "6. contact",
+          body:
+            "questions, edge cases, polite requests — email us and we'll figure it out together.",
+        },
+      ],
+    },
+    privacy: {
+      eyebrow: "// legal",
+      title: "privacy policy",
+      lastUpdated: "last updated: 2026-01-01",
+      intro:
+        "this is a placeholder. real privacy text should replace what's below before launch. nothing here is binding.",
+      sections: [
+        {
+          heading: "1. what we collect",
+          body:
+            "your email when you buy something, sign up for the mailing list, or write to us. that's it. we don't run analytics that follow you around the web.",
+        },
+        {
+          heading: "2. how we use it",
+          body:
+            "to send you your licenses, the very occasional product email, and replies to your questions. nothing else.",
+        },
+        {
+          heading: "3. who sees it",
+          body:
+            "us, and the services we need to run the studio (payments processor, email delivery). we don't sell, rent, or share your data with anyone else.",
+        },
+        {
+          heading: "4. cookies",
+          body:
+            "we use a small number of strictly necessary cookies — the kind that keeps you logged in and remembers what's in your cart. no tracking cookies.",
+        },
+        {
+          heading: "5. your rights",
+          body:
+            "ask us to delete your data and we will. ask us what we have on you and we'll tell you. email is fine.",
+        },
+        {
+          heading: "6. contact",
+          body:
+            "data questions go to the same address as everything else.",
+        },
+      ],
+    },
   },
 
   /* -------------------------------------------------------------------------

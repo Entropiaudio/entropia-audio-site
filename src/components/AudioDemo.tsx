@@ -86,25 +86,25 @@ const AudioDemo = ({ demo, index }: Props) => {
 
   return (
     <article className="grid md:grid-cols-[auto,1fr] gap-6 md:gap-10 py-10 md:py-14 border-t border-hairline first:border-t-0">
-      <div className="font-mono text-xs text-foreground/50 tracking-widest uppercase md:pt-2">
+      <div className="text-[11px] font-mono tabular-nums tracking-[0.18em] uppercase text-[color:var(--text-tertiary)] md:pt-2">
         {String(index + 1).padStart(2, "0")} / demo
       </div>
 
       <div>
-        <h4 className="text-xl md:text-2xl font-display tracking-tight-display mb-2">
+        <h4 className="font-editorial italic text-[22px] md:text-[26px] leading-[1.25] text-[color:var(--text-primary)] mb-3">
           {demo.title}
         </h4>
-        <p className="text-base text-foreground/65 leading-relaxed measure mb-6">
+        <p className="font-sans font-normal text-[15px] md:text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[48ch] mb-8">
           {demo.caption}
         </p>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-5">
           <button
             type="button"
             onClick={toggle}
             disabled={fileMissing}
             aria-label={playing ? "pause" : "play"}
-            className="w-11 h-11 rounded-full border border-foreground/30 hover:border-foreground hover:text-accent transition-colors flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-11 h-11 rounded-full border border-[color:var(--text-tertiary)] hover:border-[color:var(--accent-raw)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {playing ? (
               <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
@@ -129,32 +129,32 @@ const AudioDemo = ({ demo, index }: Props) => {
             onKeyDown={onScrubKey}
             className={`flex-1 h-2 flex items-center relative ${fileMissing ? "" : "cursor-pointer"}`}
           >
-            <div className="absolute inset-x-0 h-px bg-foreground/20" />
+            <div className="absolute inset-x-0 h-px bg-[color:var(--text-tertiary)]" />
             <div
-              className="absolute h-px top-1/2 -translate-y-1/2 left-0 bg-foreground"
+              className="absolute h-px top-1/2 -translate-y-1/2 left-0 bg-[color:var(--accent-raw)]"
               style={{ width: `${progress * 100}%` }}
             />
             <div
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 bg-foreground rounded-full"
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 bg-[color:var(--accent-raw)] rounded-full"
               style={{ left: `${progress * 100}%`, opacity: fileMissing ? 0 : 1 }}
             />
           </div>
 
-          <span className="font-mono text-xs text-foreground/50 tabular-nums w-20 text-right">
+          <span className="text-[12px] font-mono tabular-nums text-[color:var(--text-tertiary)] w-20 text-right">
             {fileMissing ? "0:00 / 0:00" : `${formatTime(current)} / ${formatTime(duration)}`}
           </span>
         </div>
 
         {hasDry && (
-          <div className="mt-4 flex items-center gap-3 text-xs font-mono uppercase tracking-widest">
-            <span className="text-foreground/55">a/b</span>
+          <div className="mt-5 flex items-center gap-4 text-[11px] font-mono uppercase tracking-[0.18em]">
+            <span className="text-[color:var(--text-tertiary)]">a/b</span>
             <button
               type="button"
               onClick={() => setMode("dry")}
-              className={`px-2 py-1 transition-colors ${
+              className={`pb-1 transition-colors duration-[400ms] ease-editorial ${
                 mode === "dry"
-                  ? "text-foreground border-b border-foreground"
-                  : "text-foreground/55 hover:text-foreground"
+                  ? "text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)]"
+                  : "text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)]"
               }`}
             >
               dry
@@ -162,10 +162,10 @@ const AudioDemo = ({ demo, index }: Props) => {
             <button
               type="button"
               onClick={() => setMode("wet")}
-              className={`px-2 py-1 transition-colors ${
+              className={`pb-1 transition-colors duration-[400ms] ease-editorial ${
                 mode === "wet"
-                  ? "text-foreground border-b border-foreground"
-                  : "text-foreground/55 hover:text-foreground"
+                  ? "text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)]"
+                  : "text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)]"
               }`}
             >
               wet
@@ -174,7 +174,7 @@ const AudioDemo = ({ demo, index }: Props) => {
         )}
 
         {fileMissing && (
-          <p className="mt-4 text-xs font-mono text-foreground/55 uppercase tracking-widest">
+          <p className="mt-5 text-[11px] font-mono text-[color:var(--text-tertiary)] uppercase tracking-[0.18em]">
             // audio coming soon
           </p>
         )}

@@ -2,6 +2,10 @@ import { Link } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
 import ProductRow from "@/components/ProductRow";
 import NewsletterSignup from "@/components/NewsletterSignup";
+import HeroVisual from "@/components/HeroVisual";
+import Section from "@/components/primitives/Section";
+import Container from "@/components/primitives/Container";
+import Eyebrow from "@/components/primitives/Eyebrow";
 import { plugins } from "@/data/plugins";
 import { copy } from "@/copy";
 
@@ -9,52 +13,76 @@ const Index = () => {
   const c = copy.home;
   return (
     <SiteLayout>
-      {/* hero */}
-      <section className="max-w-6xl mx-auto px-6 md:px-10 pt-32 md:pt-48 pb-24 md:pb-32">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-8">
-          {c.eyebrow}
-        </div>
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-display tracking-tightest leading-[0.98] max-w-4xl">
-          {c.headlineLine1}
-          <br />
-          <span className="font-display-italic text-foreground/70">
-            {c.headlineLine2}
-          </span>
-        </h1>
-        <p className="mt-10 md:mt-14 text-xl md:text-2xl text-foreground/65 leading-relaxed measure">
-          {c.subline}
-        </p>
-      </section>
+      {/* ---------- hero ---------- */}
+      <section
+        className="relative isolate overflow-hidden min-h-[88vh] flex items-end pt-32 md:pt-40 pb-20 md:pb-28"
+      >
+        <HeroVisual className="absolute inset-0 z-0" />
 
-      {/* featured product */}
-      <section className="max-w-6xl mx-auto px-6 md:px-10">
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-3 pt-4 border-t border-hairline">
-          {c.featuredEyebrow}
-        </div>
-        {plugins.map((p) => (
-          <ProductRow key={p.slug} plugin={p} />
-        ))}
-      </section>
+        <Container width="wide" className="relative z-10 w-full">
+          <div className="md:pl-8 lg:pl-16 max-w-[920px]">
+            <Eyebrow accent className="mb-10 md:mb-14 animate-fade-in">
+              {c.eyebrow}
+            </Eyebrow>
 
-      {/* about strip */}
-      <section className="max-w-6xl mx-auto px-6 md:px-10 py-24 md:py-32 border-t border-hairline">
-        <div className="grid md:grid-cols-[1fr,2fr] gap-10 md:gap-20 items-start">
-          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/60 md:pt-3">
-            {c.aboutEyebrow}
-          </div>
-          <div>
-            <p className="text-2xl md:text-3xl font-display tracking-tight-display leading-snug text-foreground/85">
-              {c.aboutBlurb}
-            </p>
-            <Link
-              to="/about"
-              className="inline-block mt-8 text-sm font-mono uppercase tracking-widest border-b border-foreground/40 hover:border-foreground hover:text-accent pb-1 transition-colors"
+            <h1
+              className="font-display font-light leading-[0.95] tracking-[-0.02em] text-[clamp(56px,11vw,128px)] animate-fade-up"
+              style={{ animationDelay: "120ms" }}
             >
-              {c.aboutLink} →
-            </Link>
+              <span className="block">{c.headlineLine1}</span>
+              <span
+                className="block font-editorial italic font-normal tracking-[-0.015em] text-[0.88em] text-[color:var(--text-secondary)]"
+              >
+                {c.headlineLine2}
+              </span>
+            </h1>
+
+            <p
+              className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] mt-12 md:mt-16 max-w-[54ch] text-[color:var(--text-secondary)] animate-fade-up"
+              style={{ animationDelay: "240ms" }}
+            >
+              {c.subline}
+            </p>
           </div>
-        </div>
+        </Container>
       </section>
+
+      {/* ---------- featured ---------- */}
+      <Section pad="lg" tone="rule-top">
+        <Container width="wide">
+          <div className="md:pl-8 lg:pl-16 mb-16 md:mb-20">
+            <Eyebrow>{c.featuredEyebrow}</Eyebrow>
+          </div>
+          {plugins.map((p) => (
+            <ProductRow key={p.slug} plugin={p} />
+          ))}
+        </Container>
+      </Section>
+
+      {/* ---------- about strip ---------- */}
+      <Section pad="lg" tone="rule-top">
+        <Container width="wide">
+          <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
+            <div className="md:col-span-3 md:col-start-2 md:pt-3">
+              <Eyebrow>{c.aboutEyebrow}</Eyebrow>
+            </div>
+            <div className="md:col-span-7">
+              <p className="font-editorial italic text-[26px] md:text-[34px] leading-[1.25] text-[color:var(--text-primary)]">
+                {c.aboutBlurb}
+              </p>
+              <Link
+                to="/about"
+                className="group inline-flex items-baseline gap-2 mt-12 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+              >
+                <span className="border-b border-[color:var(--text-tertiary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+                  {c.aboutLink}
+                </span>
+                <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+              </Link>
+            </div>
+          </div>
+        </Container>
+      </Section>
 
       <NewsletterSignup />
     </SiteLayout>
