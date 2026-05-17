@@ -42,8 +42,8 @@ export const copy = {
    * ------------------------------------------------------------------------- */
   home: {
     eyebrow: "// entropia audio",
-    headlineLine1: "audio tools",
-    headlineLine2: "built with intent",
+    headlineLine1: "chaos.",
+    headlineLine2: "precisely built.",
     subline:
       "a boutique studio making audio stuff. the kind that makes your mix shine, or destroys it!",
     featuredEyebrow: "featured",
@@ -83,7 +83,7 @@ export const copy = {
     name: "chaosverb",
     tagline: "every destination, one reverb.",
     shortDescription:
-      "a gorgeous reverb that can bring any sound to life. densed and lush, chaosverb can go pretty much anywhere on the mix. it also comes with our unique chaos engine, that can randomize every parameter on the device simultaniasly, on the fly. pretty wierd stuff, folks.",
+      "a gorgeous reverb that can bring any sound to life. dense and lush, chaosverb can go pretty much anywhere on the mix. it also comes with our unique chaos engine, that can randomize every parameter on the device simultaneously, on the fly. pretty weird stuff, folks.",
 
     saleBadge: "launch sale",
 
@@ -91,8 +91,8 @@ export const copy = {
       "pristine reverb engine, fine tuned to produce beautiful rooms and halls",
       "chaos engine - any parameter you want can mutate on a synced interval, forever.",
       "spectral and dynamic shaping - compress, eq and saturate your reverb to change its nature and sound.",
-      "motion section - chorus and wow/flutter for some extgra interest.",
-      "built-in ducker - so your sounds dont drown out.",
+      "motion section - chorus and wow/flutter for some extra interest.",
+      "built-in ducker - so your sounds don't drown out.",
     ],
 
     sections: [
@@ -216,37 +216,42 @@ export const copy = {
       title: "end user license agreement",
       lastUpdated: "last updated: 2026-01-01",
       intro:
-        "this is a placeholder. real legal text should replace what's below before launch. nothing here is binding.",
+        "By using entropia audio’s products, you accept this agreement. If you do not accept the agreement, do not use the product.",
       sections: [
         {
           heading: "1. license grant",
           body:
-            "we grant you a non-exclusive, non-transferable license to install and use the software on machines you own, for personal and commercial music production. you do not own the software; you own a license to use it.",
+            "We grant you a personal, non-exclusive, non-transferable, royalty-free license to use the software for your own music production, whether for personal or commercial purposes. You may install the software on multiple computers for your own use, provided that the software is used by you and not concurrently by multiple users.",
         },
         {
-          heading: "2. what you can't do",
+          heading: "2. ownership and intellectual property",
           body:
-            "no redistributing the installer, sharing your license key, reverse-engineering the binaries, or claiming you made it. one license, one human.",
+            "All plugins, installers, and content remain the sole property of entropia audio. You do not acquire any ownership rights in the software.",
         },
         {
-          heading: "3. updates and support",
+          heading: "3. restrictions",
           body:
-            "you'll get bug fixes and reasonable updates for the version line you bought. we'll answer email when we can. we're a studio of two; please be patient.",
+            "You may not resell, rent, lease, loan, sublicense, or distribute the software in any way.",
         },
         {
-          heading: "4. no warranty",
+          heading: "4. updates and support",
           body:
-            "the software is provided as-is. if it eats your session, we're sorry, but we're not on the hook for lost work. always back up.",
+            "We will provide bug fixes and reasonable updates for the version line you bought. We will answer emails when we can, but please be patient, we're a small team of two.",
         },
         {
-          heading: "5. termination",
+          heading: "5. no warranty",
           body:
-            "violating these terms terminates your license. if it gets to that point we'll send an email first.",
+            "We do not offer any warranty. The Software is provided 'as is' without warranty of any kind, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement. In no event shall we be liable for any damages arising out of the use or inability to use the Software.",
         },
         {
-          heading: "6. contact",
+          heading: "6. termination",
           body:
-            "questions, edge cases, polite requests — email us and we'll figure it out together.",
+            "We may terminate this agreement immediately if you breach any term. Upon termination, you must stop using the software and delete all copies.",
+        },
+        {
+          heading: "7. contact",
+          body:
+            "Questions, edge cases, polite requests — email us and we'll figure it out together.",
         },
       ],
     },
@@ -255,37 +260,37 @@ export const copy = {
       title: "privacy policy",
       lastUpdated: "last updated: 2026-01-01",
       intro:
-        "this is a placeholder. real privacy text should replace what's below before launch. nothing here is binding.",
+        "We respect your privacy. We do not run analytics that follow you around the web, we don’t use trackers, and we only collect the bare minimum data required to sell you products and send you occasional updates.",
       sections: [
         {
           heading: "1. what we collect",
           body:
-            "your email when you buy something, sign up for the mailing list, or write to us. that's it. we don't run analytics that follow you around the web.",
+            "We only collect the data that is necessary for us to operate. This includes your email address when you purchase a product or sign up for our mailing list. We do not collect any other personal data.",
         },
         {
           heading: "2. how we use it",
           body:
-            "to send you your licenses, the very occasional product email, and replies to your questions. nothing else.",
+            "We use your data solely to provide you with our products and services. This includes sending you your license keys, providing customer support, and sending you occasional marketing emails about new products or updates. We will never sell, rent, or share your data with any third parties.",
         },
         {
           heading: "3. who sees it",
           body:
-            "us, and the services we need to run the studio (payments processor, email delivery). we don't sell, rent, or share your data with anyone else.",
+            "Your data will only be accessible to us and the third-party services we use to operate our business, such as our payment processor and email service provider. We do not sell, rent, or share your data with any other third parties.",
         },
         {
           heading: "4. cookies",
           body:
-            "we use a small number of strictly necessary cookies — the kind that keeps you logged in and remembers what's in your cart. no tracking cookies.",
+            "We use strictly necessary cookies to keep our site running, and to remember your cart and login state. We do not use tracking cookies, fingerprinting, or other third-party analytics.",
         },
         {
           heading: "5. your rights",
           body:
-            "ask us to delete your data and we will. ask us what we have on you and we'll tell you. email is fine.",
+            "You have the right to request access to your data, as well as the right to request that your data be deleted. If you would like to exercise these rights, please contact us at [EMAIL_ADDRESS].",
         },
         {
           heading: "6. contact",
           body:
-            "data questions go to the same address as everything else.",
+            "If you have any questions about this Privacy Policy or our data practices, please contact us via email.",
         },
       ],
     },
