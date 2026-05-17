@@ -15,18 +15,18 @@ const Index = () => {
     <SiteLayout>
       {/* ---------- hero ---------- */}
       <section
-        className="relative isolate overflow-hidden min-h-[88vh] flex items-end pt-32 md:pt-40 pb-20 md:pb-28"
+        className="relative isolate overflow-hidden min-h-[78vh] md:min-h-[88vh] flex items-end pt-24 md:pt-40 pb-14 md:pb-28"
       >
         <HeroVisual className="absolute inset-0 z-0" />
 
         <Container width="wide" className="relative z-10 w-full">
           <div className="md:pl-8 lg:pl-16 max-w-[920px]">
-            <Eyebrow accent className="mb-10 md:mb-14 animate-fade-in">
+            <Eyebrow accent className="mb-7 md:mb-14 animate-fade-in">
               {c.eyebrow}
             </Eyebrow>
 
             <h1
-              className="font-display font-light leading-[0.95] tracking-[-0.02em] text-[clamp(56px,11vw,128px)] animate-fade-up"
+              className="font-display font-light leading-[0.95] tracking-[-0.02em] text-[clamp(48px,11vw,128px)] animate-fade-up"
               style={{ animationDelay: "120ms" }}
             >
               <span className="block">{c.headlineLine1}</span>
@@ -38,7 +38,7 @@ const Index = () => {
             </h1>
 
             <p
-              className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] mt-12 md:mt-16 max-w-[54ch] text-[color:var(--text-secondary)] animate-fade-up"
+              className="font-sans font-normal text-[16px] md:text-[18px] leading-[1.65] tracking-[0.005em] mt-8 md:mt-16 max-w-[54ch] text-[color:var(--text-secondary)] animate-fade-up"
               style={{ animationDelay: "240ms" }}
             >
               {c.subline}

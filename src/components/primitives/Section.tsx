@@ -12,10 +12,10 @@ interface SectionProps extends HTMLAttributes<HTMLElement> {
 }
 
 const padClass = {
-  sm: "py-24 md:py-32",
-  md: "py-32 md:py-40",
-  lg: "py-32 md:py-48",
-  xl: "py-40 md:py-64",
+  sm: "py-16 md:py-32",
+  md: "py-20 md:py-40",
+  lg: "py-24 md:py-48",
+  xl: "py-28 md:py-64",
 };
 
 const toneClass: Record<SectionTone, string> = {
