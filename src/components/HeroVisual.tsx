@@ -66,8 +66,8 @@ export const HeroVisual = ({
     };
 
     const step = () => {
-      // erase with a low-alpha bg paint to leave faint trails
-      ctx.fillStyle = "rgba(20, 17, 15, 0.10)";
+      // erase with a low-alpha bg paint to leave faint trails — higher alpha = faster fade, less stacking
+      ctx.fillStyle = "rgba(20, 17, 15, 0.18)";
       ctx.fillRect(0, 0, width, height);
 
       t += 0.00022; // slow time — one full sinusoid cycle ≈ 8 minutes
