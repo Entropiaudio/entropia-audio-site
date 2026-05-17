@@ -27,7 +27,7 @@ export const Logo = ({ size = 24, className, ...rest }: LogoProps) => {
       fill="currentColor"
       aria-hidden="true"
       focusable="false"
-      className={cn("block shrink-0 -rotate-90", className)}
+      className={cn("block shrink-0", className)}
       {...rest}
     >
       <defs>

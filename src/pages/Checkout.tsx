@@ -1,3 +1,8 @@
+// MOONBASE INTEGRATION SEAM — this whole page becomes a thin redirect / mount
+// point once Moonbase is live. Moonbase's embedded storefront renders its own
+// checkout UI (card, tax, order placement, license issuance), so the form,
+// validatePayment helper, and attachOrder call below all go away. Keep the
+// route mounted so existing `/checkout` links resolve.
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";

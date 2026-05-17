@@ -63,7 +63,7 @@ export const plugins: Plugin[] = [
       { label: "Version", value: "0.0.7b" },
     ],
     version: "0.0.7b",
-    screenshot: "/screenshots/chaosverb.jpg",
+    screenshot: "/screenshots/chaosverb.png",
   },
 ];
 

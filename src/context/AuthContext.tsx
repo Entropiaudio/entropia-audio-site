@@ -1,3 +1,10 @@
+// MOONBASE INTEGRATION SEAM — replace this whole module when wiring the real
+// account. Moonbase's embedded storefront owns auth (sign-in / sign-up /
+// password / session); keep the User shape exported here as the consumer-facing
+// type and have the new implementation map Moonbase's session object onto it.
+// Consumers touch `useAuth()` only, so swapping the provider is the single
+// change point. Until VITE_MOONBASE_URL is set, the localStorage prototype
+// below stays in play.
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { safeGet, safeSet } from "@/lib/storage";
 

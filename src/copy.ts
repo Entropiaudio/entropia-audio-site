@@ -301,7 +301,7 @@ export const copy = {
   /* -------------------------------------------------------------------------
    * contact email — used in footer + about page
    * ------------------------------------------------------------------------- */
-  contactEmail: "entropia.audio@gmail.com",
+  contactEmail: "contact@entropiaudio.com",
 } as const;
 
 export type Copy = typeof copy;

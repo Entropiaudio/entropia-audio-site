@@ -70,7 +70,7 @@ export const HeroVisual = ({
       ctx.fillStyle = "rgba(20, 17, 15, 0.10)";
       ctx.fillRect(0, 0, width, height);
 
-      t += 0.0009; // slow time — one full sinusoid cycle ≈ 2 minutes
+      t += 0.00022; // slow time — one full sinusoid cycle ≈ 8 minutes
 
       for (const p of particles) {
         // flow field: sum of two slow sinusoids in space + time
@@ -78,8 +78,8 @@ export const HeroVisual = ({
         const ay = Math.cos(p.x * 0.0030 - t * 0.9) + Math.sin(p.y * 0.0036 + t * 0.6);
         const angle = (ax + ay) * 0.9;
 
-        p.vx = (p.vx + Math.cos(angle) * 0.025) * 0.95;
-        p.vy = (p.vy + Math.sin(angle) * 0.025) * 0.95;
+        p.vx = (p.vx + Math.cos(angle) * 0.006) * 0.95;
+        p.vy = (p.vy + Math.sin(angle) * 0.006) * 0.95;
 
         p.x += p.vx;
         p.y += p.vy;
@@ -90,7 +90,7 @@ export const HeroVisual = ({
         else if (p.y > height + 8) p.y = -8;
 
         p.life++;
-        const pulse = 0.5 + 0.5 * Math.sin(p.life * 0.004 + p.phase);
+        const pulse = 0.5 + 0.5 * Math.sin(p.life * 0.001 + p.phase);
         const alpha = intensity * (0.25 + 0.75 * pulse);
 
         ctx.fillStyle = `rgba(212, 165, 116, ${alpha.toFixed(3)})`;

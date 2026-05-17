@@ -1,3 +1,9 @@
+// MOONBASE INTEGRATION SEAM — Moonbase owns the cart once enabled. Keep the
+// CartItem / CartState shape exported here so call sites don't churn; the new
+// provider should source items from Moonbase's session and route mutations
+// (add / remove / setQuantity / clear) through the SDK. Checkout itself moves
+// to Moonbase's flow, so `clear()` will mostly be triggered by a Moonbase
+// success webhook / event rather than by Checkout.tsx as it is today.
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { safeGet, safeSet } from "@/lib/storage";
 
