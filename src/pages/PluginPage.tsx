@@ -34,21 +34,21 @@ const PluginPage = () => {
     <SiteLayout>
       {/* ---------- sticky CTA strip ---------- */}
       <div className="sticky top-20 z-30 bg-[color:var(--bg)]/85 backdrop-blur-md border-b border-hairline">
-        <div className="max-w-wide mx-auto px-6 md:px-10 h-14 flex items-center justify-between">
-          <span className="text-[12px] font-mono uppercase tracking-[0.22em] text-[color:var(--text-primary)]">
+        <div className="max-w-wide mx-auto px-6 md:px-10 h-14 flex items-center justify-between gap-4">
+          <span className="hidden md:inline text-[12px] font-mono uppercase tracking-[0.22em] text-[color:var(--text-primary)]">
             {plugin.name}
           </span>
-          <div className="flex items-baseline gap-8">
+          <div className="flex-1 md:flex-none flex items-baseline justify-between md:justify-end gap-5 md:gap-8 whitespace-nowrap">
             <a
               href="#try"
-              className="text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+              className="text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
             >
               {c.ctaTry}
             </a>
             <button
               type="button"
               onClick={() => addToCart("perpetual", true)}
-              className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial tabular-nums"
+              className="group inline-flex items-baseline gap-2 text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial tabular-nums"
             >
               <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
                 {c.ctaBuy} · ${plugin.price}
