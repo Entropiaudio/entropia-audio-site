@@ -80,10 +80,10 @@ export const copy = {
    * specs:    the technical specifications table.
    * ------------------------------------------------------------------------- */
   chaosverb: {
-    name: "chaosverb",
+    name: "Chaosverb",
     tagline: "every destination, one reverb.",
     shortDescription:
-      "a gorgeous reverb that can bring any sound to life. dense and lush, chaosverb can go pretty much anywhere on the mix. it also comes with our unique chaos engine, that can randomize every parameter on the device simultaneously, on the fly. pretty weird stuff, folks.",
+      "a gorgeous reverb that can bring any sound to life. dense and lush, Chaosverb can go pretty much anywhere on the mix. it also comes with our unique chaos engine, that can randomize every parameter on the device simultaneously, on the fly. pretty weird stuff, folks.",
 
     saleBadge: "launch sale",
 
@@ -114,7 +114,7 @@ export const copy = {
         slug: "mix-bus",
         title: "on a mix bus.",
         caption:
-          "drums and vocal through chaosverb at low chaos. wide, three-dimensional, gets out of the way.",
+          "drums and vocal through Chaosverb at low chaos. wide, three-dimensional, gets out of the way.",
       },
       {
         slug: "chaos-sweep",
@@ -155,7 +155,7 @@ export const copy = {
    * ------------------------------------------------------------------------- */
   productRow: {
     eyebrow: "01 / plugin",
-    primaryButton: "see chaosverb",
+    primaryButton: "see Chaosverb",
     secondaryButton: "try free",
   },
 
@@ -185,7 +185,7 @@ export const copy = {
     siteHeading: "site",
     legalHeading: "legal",
     nav: {
-      chaosverb: "chaosverb",
+      chaosverb: "Chaosverb",
       about: "about",
       account: "account",
       eula: "eula",

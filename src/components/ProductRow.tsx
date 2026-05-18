@@ -28,7 +28,7 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
       <div className="md:col-span-4 md:col-start-9 flex flex-col gap-8">
         <div>
           <Eyebrow className="mb-5">{c.eyebrow}</Eyebrow>
-          <h2 className="font-display font-light text-[44px] md:text-[56px] leading-[1.0] tracking-[-0.02em] lowercase">
+          <h2 className="font-display font-light text-[44px] md:text-[56px] leading-[1.0] tracking-[-0.02em] normal-case">
             {plugin.name}
           </h2>
           <p className="mt-5 font-editorial italic text-[20px] md:text-[22px] leading-[1.35] text-[color:var(--text-secondary)]">

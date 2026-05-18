@@ -2,7 +2,7 @@
 
 The marketing + storefront site for **entropia audio**, a small studio building serious audio plugins for serious sound.
 
-The flagship product is **chaosverb**: a studio reverb with a chaos engine inside.
+The flagship product is **Chaosverb**: a studio reverb with a chaos engine inside.
 
 ## stack
 

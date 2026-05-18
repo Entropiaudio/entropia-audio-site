@@ -34,7 +34,7 @@ const SiteFooter = () => {
               <Eyebrow className="mb-2">{c.siteHeading}</Eyebrow>
               <Link
                 to="/plugins/chaosverb"
-                className="text-[14px] font-mono lowercase tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                className="text-[14px] font-mono normal-case tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
               >
                 {c.nav.chaosverb}
               </Link>
