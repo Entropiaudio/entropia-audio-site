@@ -3,6 +3,10 @@ import SiteLayout from "@/components/SiteLayout";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
+import Reveal from "@/components/motion/Reveal";
+import RevealWords from "@/components/motion/RevealWords";
+import MagneticLink from "@/components/motion/MagneticLink";
+import { MOTION } from "@/components/motion/timing";
 import { useAuth } from "@/context/AuthContext";
 import { copy } from "@/copy";
 
@@ -20,20 +24,29 @@ const OrderSuccess = () => {
       <Section pad="xl">
         <Container width="wide">
           <div className="md:pl-8 lg:pl-16 max-w-[920px]">
-            <Eyebrow accent className="mb-8">
-              {copy.orderSuccess.eyebrow}
-            </Eyebrow>
+            <Reveal variant="up" {...MOTION.page.eyebrow}>
+              <Eyebrow accent className="mb-8">
+                {copy.orderSuccess.eyebrow}
+              </Eyebrow>
+            </Reveal>
             <h1 className="font-display font-light text-[44px] md:text-[56px] leading-[1.05] tracking-[-0.02em]">
-              <span className="font-editorial italic font-normal tracking-[-0.015em]">
+              <RevealWords
+                as="span"
+                className="font-editorial italic font-normal tracking-[-0.015em]"
+                {...MOTION.page.headline1}
+                stagger={MOTION.stagger.word}
+              >
                 {copy.orderSuccess.headline}
-              </span>
+              </RevealWords>
             </h1>
-            <p className="mt-8 font-sans text-[15px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] mb-16 md:mb-20">
-              order <span className="font-mono tabular-nums text-[color:var(--text-primary)]">{order.id}</span> · charged to card ending{" "}
-              <span className="font-mono tabular-nums text-[color:var(--text-primary)]">{order.paymentLast4}</span>
-            </p>
+            <Reveal variant="up" {...MOTION.page.body0}>
+              <p className="mt-8 font-sans text-[15px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] mb-16 md:mb-20">
+                order <span className="font-mono tabular-nums text-[color:var(--text-primary)]">{order.id}</span> · charged to card ending{" "}
+                <span className="font-mono tabular-nums text-[color:var(--text-primary)]">{order.paymentLast4}</span>
+              </p>
+            </Reveal>
 
-            <section className="mb-16 border-t border-hairline pt-10">
+            <Reveal variant="up" {...MOTION.section.headline} as="section" className="mb-16 border-t border-hairline pt-10">
               <Eyebrow className="mb-8">licenses issued</Eyebrow>
               <table className="w-full">
                 <tbody>
@@ -52,9 +65,9 @@ const OrderSuccess = () => {
                   ))}
                 </tbody>
               </table>
-            </section>
+            </Reveal>
 
-            <section className="border-t border-hairline pt-10 mb-16">
+            <Reveal variant="up" {...MOTION.section.body} as="section" className="border-t border-hairline pt-10 mb-16">
               <Eyebrow className="mb-8">order</Eyebrow>
               <ul className="space-y-4 text-[15px]">
                 {order.items.map((it) => (
@@ -77,25 +90,28 @@ const OrderSuccess = () => {
                   </span>
                 </li>
               </ul>
-            </section>
+            </Reveal>
 
-            <div className="flex flex-wrap items-baseline gap-10">
-              <Link
-                to="/account"
-                className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
-              >
-                <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
-                  go to account
-                </span>
-                <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
-              </Link>
-              <Link
-                to="/"
-                className="text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[600ms] ease-editorial"
-              >
-                keep browsing
-              </Link>
-            </div>
+            <Reveal variant="up" {...MOTION.section.cta}>
+              <div className="flex flex-wrap items-baseline gap-10">
+                <MagneticLink
+                  to="/account"
+                  strength={6}
+                  className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+                >
+                  <span className="link-draw pb-1">
+                    go to account
+                  </span>
+                  <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                </MagneticLink>
+                <Link
+                  to="/"
+                  className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[600ms] ease-editorial"
+                >
+                  keep browsing
+                </Link>
+              </div>
+            </Reveal>
           </div>
         </Container>
       </Section>

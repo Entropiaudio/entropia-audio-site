@@ -42,8 +42,8 @@ export const copy = {
    * ------------------------------------------------------------------------- */
   home: {
     eyebrow: "// entropia audio",
-    headlineLine1: "chaos.",
-    headlineLine2: "precisely built.",
+    headlineLine1: "chaos,",
+    headlineLine2: "built precisely.",
     subline:
       "a boutique studio making audio stuff. the kind that makes your mix shine, or destroys it!",
     featuredEyebrow: "featured",

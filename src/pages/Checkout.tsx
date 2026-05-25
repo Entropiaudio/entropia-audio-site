@@ -9,6 +9,9 @@ import SiteLayout from "@/components/SiteLayout";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
+import Reveal from "@/components/motion/Reveal";
+import RevealWords from "@/components/motion/RevealWords";
+import { MOTION } from "@/components/motion/timing";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -98,11 +101,18 @@ const Checkout = () => {
       <Section pad="xl">
         <Container width="wide">
           <div className="md:pl-8 lg:pl-16 max-w-[1080px]">
-            <Eyebrow accent className="mb-8">// checkout</Eyebrow>
+            <Reveal variant="up" {...MOTION.page.eyebrow}>
+              <Eyebrow accent className="mb-8">// checkout</Eyebrow>
+            </Reveal>
             <h1 className="font-display font-light text-[56px] md:text-[72px] leading-[1.0] tracking-[-0.02em] mb-14 md:mb-16">
-              <span className="font-editorial italic font-normal tracking-[-0.015em]">
+              <RevealWords
+                as="span"
+                className="font-editorial italic font-normal tracking-[-0.015em]"
+                {...MOTION.page.headline1}
+                stagger={MOTION.stagger.word}
+              >
                 checkout
-              </span>
+              </RevealWords>
             </h1>
 
             {!isAuthed && (

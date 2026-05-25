@@ -3,6 +3,10 @@ import SiteLayout from "@/components/SiteLayout";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
+import Reveal from "@/components/motion/Reveal";
+import RevealWords from "@/components/motion/RevealWords";
+import MagneticLink from "@/components/motion/MagneticLink";
+import { MOTION } from "@/components/motion/timing";
 import { useCart } from "@/context/CartContext";
 
 const Cart = () => {
@@ -14,30 +18,38 @@ const Cart = () => {
       <Section pad="xl">
         <Container width="wide">
           <div className="md:pl-8 lg:pl-16 max-w-[1080px]">
-            <Eyebrow accent className="mb-8">// cart</Eyebrow>
+            <Reveal variant="up" {...MOTION.page.eyebrow}>
+              <Eyebrow accent className="mb-8">// cart</Eyebrow>
+            </Reveal>
             <h1 className="font-display font-light text-[56px] md:text-[72px] leading-[1.0] tracking-[-0.02em] mb-16 md:mb-20">
-              <span className="font-editorial italic font-normal tracking-[-0.015em]">
+              <RevealWords
+                as="span"
+                className="font-editorial italic font-normal tracking-[-0.015em]"
+                {...MOTION.page.headline1}
+                stagger={MOTION.stagger.word}
+              >
                 cart
-              </span>
+              </RevealWords>
             </h1>
 
             {items.length === 0 ? (
-              <div className="py-12 border-t border-hairline">
+              <Reveal variant="up" {...MOTION.page.body0} className="py-12 border-t border-hairline">
                 <p className="font-sans text-[17px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] mb-8">
                   your cart is empty.
                 </p>
-                <Link
+                <MagneticLink
                   to="/"
+                  strength={6}
                   className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
                 >
-                  <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+                  <span className="link-draw pb-1">
                     browse plugins
                   </span>
-                  <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
-                </Link>
-              </div>
+                  <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                </MagneticLink>
+              </Reveal>
             ) : (
-              <>
+              <Reveal variant="up" {...MOTION.page.body0}>
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[640px]">
                     <thead>
@@ -126,19 +138,19 @@ const Cart = () => {
                     <p className="text-[12px] font-mono lowercase tracking-[0.04em] text-[color:var(--text-tertiary)] mt-2">
                       taxes calculated at checkout.
                     </p>
-                    <button
+                    <MagneticLink
+                      as="button"
                       type="button"
+                      strength={6}
                       onClick={() => navigate("/checkout")}
-                      className="group inline-flex items-baseline gap-2 mt-8 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+                      className="accent-glow group inline-flex items-baseline gap-2 mt-8 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
                     >
-                      <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
-                        checkout
-                      </span>
-                      <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
-                    </button>
+                      <span>checkout</span>
+                      <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                    </MagneticLink>
                   </div>
                 </div>
-              </>
+              </Reveal>
             )}
           </div>
         </Container>

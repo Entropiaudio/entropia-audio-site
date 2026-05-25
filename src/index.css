@@ -181,3 +181,132 @@
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+
+/* ---------- editorial scroll-reveal ---------- */
+
+/* base — set everything reveal-tagged to an idle (pre-enter) state */
+[data-reveal="up"] {
+  opacity: 0;
+  transform: translateY(36px);
+  transition:
+    opacity var(--reveal-duration, 900ms) var(--ease-editorial) var(--reveal-delay, 0ms),
+    transform var(--reveal-duration, 900ms) var(--ease-editorial) var(--reveal-delay, 0ms);
+}
+[data-reveal="up"][data-revealed="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+[data-reveal="blur"] {
+  opacity: 0;
+  filter: blur(12px);
+  transition:
+    opacity var(--reveal-duration, 1100ms) var(--ease-editorial) var(--reveal-delay, 0ms),
+    filter var(--reveal-duration, 1100ms) var(--ease-editorial) var(--reveal-delay, 0ms);
+}
+[data-reveal="blur"][data-revealed="true"] {
+  opacity: 1;
+  filter: blur(0);
+}
+
+[data-reveal="mask"] {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--reveal-duration, 1200ms) var(--ease-editorial) var(--reveal-delay, 0ms);
+}
+[data-reveal="mask"][data-revealed="true"] {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ---------- marquee ---------- */
+@keyframes marquee-left {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes marquee-right {
+  from { transform: translate3d(-50%, 0, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+
+/* ---------- subtle hover scale wrappers ---------- */
+.hover-zoom { overflow: hidden; }
+.hover-zoom > * {
+  transition: transform 1200ms var(--ease-editorial), filter 1200ms var(--ease-editorial);
+}
+.hover-zoom:hover > * {
+  transform: scale(1.04);
+}
+
+/* ---------- the link underline draw ---------- */
+.link-draw {
+  position: relative;
+  display: inline-block;
+}
+.link-draw::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform-origin: right center;
+  transform: scaleX(0);
+  transition: transform 600ms var(--ease-editorial);
+}
+.link-draw:hover::after,
+.link-draw:focus-visible::after {
+  transform-origin: left center;
+  transform: scaleX(1);
+}
+
+/* ---------- soft accent glow utility for hero CTAs ---------- */
+.accent-glow {
+  box-shadow:
+    inset 0 0 0 1px rgba(212, 165, 116, 0.45),
+    0 0 0 0 rgba(212, 165, 116, 0);
+  transition: box-shadow 600ms var(--ease-editorial),
+              background-color 600ms var(--ease-editorial),
+              color 600ms var(--ease-editorial);
+}
+.accent-glow:hover {
+  background-color: rgba(212, 165, 116, 0.08);
+  box-shadow:
+    inset 0 0 0 1px rgba(212, 165, 116, 0.85),
+    0 0 32px -8px rgba(212, 165, 116, 0.35);
+}
+
+/* ---------- floating scroll indicator ---------- */
+@keyframes scroll-cue {
+  0%   { transform: translateY(0);   opacity: 0.4; }
+  40%  { transform: translateY(8px); opacity: 1; }
+  100% { transform: translateY(16px); opacity: 0; }
+}
+
+/* reduced motion: kill long reveals/marquee */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+  }
+  .marquee-mask > * {
+    animation: none !important;
+  }
+}

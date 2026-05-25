@@ -2,6 +2,9 @@ import SiteLayout from "@/components/SiteLayout";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
+import Reveal from "@/components/motion/Reveal";
+import RevealWords from "@/components/motion/RevealWords";
+import { MOTION } from "@/components/motion/timing";
 import { copy } from "@/copy";
 
 type Kind = "eula" | "privacy";
@@ -14,26 +17,41 @@ const Legal = ({ kind }: { kind: Kind }) => {
       <Section pad="xl">
         <Container width="wide">
           <div className="md:pl-8 lg:pl-16 max-w-[920px]">
-            <Eyebrow accent className="mb-8">
-              {c.eyebrow}
-            </Eyebrow>
+            <Reveal variant="up" {...MOTION.page.eyebrow}>
+              <Eyebrow accent className="mb-8">
+                {c.eyebrow}
+              </Eyebrow>
+            </Reveal>
             <h1 className="font-display font-light leading-[1.0] tracking-[-0.02em] text-[clamp(40px,7vw,80px)]">
-              <span className="font-editorial italic font-normal tracking-[-0.015em]">
+              <RevealWords
+                as="span"
+                className="font-editorial italic font-normal tracking-[-0.015em]"
+                {...MOTION.page.headline1}
+                stagger={MOTION.stagger.word}
+              >
                 {c.title}
-              </span>
+              </RevealWords>
             </h1>
-            <p className="mt-6 text-[12px] font-mono lowercase tracking-[0.06em] text-[color:var(--text-tertiary)]">
-              {c.lastUpdated}
-            </p>
+            <Reveal variant="up" delay={MOTION.page.headline2.delay} duration={MOTION.duration.base}>
+              <p className="mt-6 text-[12px] font-mono lowercase tracking-[0.06em] text-[color:var(--text-tertiary)]">
+                {c.lastUpdated}
+              </p>
+            </Reveal>
 
-            <p className="mt-12 font-sans text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[58ch]">
-              {c.intro}
-            </p>
+            <Reveal variant="up" {...MOTION.page.body0}>
+              <p className="mt-12 font-sans text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[58ch]">
+                {c.intro}
+              </p>
+            </Reveal>
 
             <div className="mt-16 md:mt-20">
               {c.sections.map((s, i) => (
-                <article
+                <Reveal
                   key={i}
+                  variant="up"
+                  duration={MOTION.duration.base}
+                  delay={i * MOTION.stagger.list}
+                  as="article"
                   className="grid md:grid-cols-[3rem,1fr] gap-6 md:gap-10 border-t border-hairline py-8 md:py-10"
                 >
                   <span className="font-mono text-[12px] tabular-nums text-[color:var(--text-tertiary)] md:pt-2">
@@ -47,7 +65,7 @@ const Legal = ({ kind }: { kind: Kind }) => {
                       {s.body}
                     </p>
                   </div>
-                </article>
+                </Reveal>
               ))}
             </div>
           </div>
