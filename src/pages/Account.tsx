@@ -4,6 +4,10 @@ import SiteLayout from "@/components/SiteLayout";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
+import Reveal from "@/components/motion/Reveal";
+import RevealWords from "@/components/motion/RevealWords";
+import MagneticLink from "@/components/motion/MagneticLink";
+import { MOTION } from "@/components/motion/timing";
 import { toast } from "@/hooks/use-toast";
 import { useAuth, License, Order } from "@/context/AuthContext";
 
@@ -13,11 +17,19 @@ const fieldClass =
 const labelClass =
   "text-[11px] font-sans font-medium uppercase tracking-[0.12em] text-[color:var(--text-tertiary)]";
 
+/** Only allow same-origin paths so `?next=https://evil.com` can't be used. */
+const safeNext = (raw: string | null): string => {
+  if (!raw) return "/account";
+  // Reject protocol-relative ("//evil.com") and anything not starting with "/".
+  if (!raw.startsWith("/") || raw.startsWith("//")) return "/account";
+  return raw;
+};
+
 const LoggedOut = () => {
   const { signIn, signUp } = useAuth();
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const next = params.get("next") || "/account";
+  const next = safeNext(params.get("next"));
 
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
@@ -50,17 +62,27 @@ const LoggedOut = () => {
     <Section pad="xl">
       <Container width="wide">
         <div className="md:pl-8 lg:pl-16 max-w-[480px]">
-          <Eyebrow accent className="mb-8">// account</Eyebrow>
+          <Reveal variant="up" {...MOTION.page.eyebrow}>
+            <Eyebrow accent className="mb-8">// account</Eyebrow>
+          </Reveal>
           <h1 className="font-display font-light text-[48px] md:text-[56px] leading-[1.05] tracking-[-0.02em] mb-4">
-            <span className="font-editorial italic font-normal tracking-[-0.015em]">
+            <RevealWords
+              key={mode}
+              as="span"
+              className="font-editorial italic font-normal tracking-[-0.015em]"
+              {...MOTION.page.headline1}
+              stagger={MOTION.stagger.word}
+            >
               {mode === "login" ? "sign in" : "create account"}
-            </span>
+            </RevealWords>
           </h1>
-          <p className="font-sans text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] mb-12">
-            {mode === "login"
-              ? "access your licenses and downloads."
-              : "set up an entropia audio account."}
-          </p>
+          <Reveal variant="up" {...MOTION.page.body0}>
+            <p className="font-sans text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] mb-12">
+              {mode === "login"
+                ? "access your licenses and downloads."
+                : "set up an entropia audio account."}
+            </p>
+          </Reveal>
 
           <form onSubmit={submit} className="flex flex-col gap-7">
             <label className="flex flex-col gap-3">
@@ -139,12 +161,22 @@ const LicenseRow = ({ license }: { license: License }) => {
         </button>
       </td>
       <td className="py-5 pr-4">
-        <a
-          href="#"
-          className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] border-b border-[color:var(--text-primary)] hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[400ms] ease-editorial"
-        >
-          download
-        </a>
+        {license.downloadUrl ? (
+          <a
+            href={license.downloadUrl}
+            className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] border-b border-[color:var(--text-primary)] hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[400ms] ease-editorial"
+          >
+            download
+          </a>
+        ) : (
+          <span
+            aria-disabled="true"
+            title="installer coming soon"
+            className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] opacity-60 cursor-not-allowed"
+          >
+            soon
+          </span>
+        )}
       </td>
       <td className="py-5 font-mono text-[13px] text-[color:var(--text-tertiary)] tabular-nums">{license.date}</td>
     </tr>
@@ -183,14 +215,54 @@ const LoggedIn = () => {
   const { user, signOut, updateEmail, updatePassword } = useAuth();
   const [newEmail, setNewEmail] = useState(user?.email ?? "");
   const [newPassword, setNewPassword] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [emailBusy, setEmailBusy] = useState(false);
+  const [passwordBusy, setPasswordBusy] = useState(false);
 
   if (!user) return null;
+
+  const onEmailSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (emailBusy) return;
+    setEmailError(null);
+    setEmailBusy(true);
+    try {
+      const result = await updateEmail(newEmail);
+      if (!result.ok) {
+        setEmailError(result.error);
+        return;
+      }
+      toast({ title: "email updated." });
+    } finally {
+      setEmailBusy(false);
+    }
+  };
+
+  const onPasswordSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (passwordBusy) return;
+    if (!newPassword) return;
+    setPasswordError(null);
+    setPasswordBusy(true);
+    try {
+      const result = await updatePassword(newPassword);
+      if (!result.ok) {
+        setPasswordError(result.error);
+        return;
+      }
+      setNewPassword("");
+      toast({ title: "password updated." });
+    } finally {
+      setPasswordBusy(false);
+    }
+  };
 
   return (
     <Section pad="xl">
       <Container width="wide">
         <div className="md:pl-8 lg:pl-16 max-w-[1080px]">
-          <div className="flex items-start justify-between gap-6 flex-wrap mb-20">
+          <Reveal variant="up" {...MOTION.page.eyebrow} className="flex items-start justify-between gap-6 flex-wrap mb-20">
             <div>
               <Eyebrow accent className="mb-3">// signed in as</Eyebrow>
               <p className="font-display font-light text-[28px] md:text-[36px] tracking-[-0.015em] text-[color:var(--text-primary)]">
@@ -202,10 +274,10 @@ const LoggedIn = () => {
               onClick={signOut}
               className="group inline-flex items-baseline gap-2 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial md:pt-7"
             >
-              <span>sign out</span>
+              <span className="link-draw">sign out</span>
               <span className="transition-transform duration-[400ms] ease-editorial group-hover:translate-x-0.5">→</span>
             </button>
-          </div>
+          </Reveal>
 
           <section className="mb-24">
             <Eyebrow className="mb-8">licenses</Eyebrow>
@@ -270,56 +342,56 @@ const LoggedIn = () => {
           <section>
             <Eyebrow className="mb-8">account settings</Eyebrow>
             <div className="grid md:grid-cols-2 gap-12 max-w-3xl">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  updateEmail(newEmail);
-                  toast({ title: "email updated." });
-                }}
-                className="flex flex-col gap-4"
-              >
+              <form onSubmit={onEmailSubmit} className="flex flex-col gap-4">
                 <label className={labelClass}>change email</label>
                 <input
                   type="email"
                   value={newEmail}
-                  onChange={(e) => setNewEmail(e.target.value)}
+                  onChange={(e) => {
+                    setNewEmail(e.target.value);
+                    if (emailError) setEmailError(null);
+                  }}
+                  aria-invalid={emailError ? true : undefined}
                   className={fieldClass}
                 />
+                {emailError && (
+                  <p className="text-[12px] text-[color:var(--accent-raw)] font-mono">{emailError}</p>
+                )}
                 <button
                   type="submit"
-                  className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                  disabled={emailBusy}
+                  className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
-                    save
+                    {emailBusy ? "…" : "save"}
                   </span>
                 </button>
               </form>
 
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!newPassword) return;
-                  updatePassword(newPassword);
-                  setNewPassword("");
-                  toast({ title: "password updated." });
-                }}
-                className="flex flex-col gap-4"
-              >
+              <form onSubmit={onPasswordSubmit} className="flex flex-col gap-4">
                 <label className={labelClass}>change password</label>
                 <input
                   type="password"
                   value={newPassword}
                   placeholder="new password"
                   minLength={6}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  onChange={(e) => {
+                    setNewPassword(e.target.value);
+                    if (passwordError) setPasswordError(null);
+                  }}
+                  aria-invalid={passwordError ? true : undefined}
                   className={`${fieldClass} placeholder:text-[color:var(--text-tertiary)]`}
                 />
+                {passwordError && (
+                  <p className="text-[12px] text-[color:var(--accent-raw)] font-mono">{passwordError}</p>
+                )}
                 <button
                   type="submit"
-                  className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                  disabled={passwordBusy}
+                  className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
-                    save
+                    {passwordBusy ? "…" : "save"}
                   </span>
                 </button>
               </form>

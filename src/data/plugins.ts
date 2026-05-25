@@ -39,6 +39,9 @@ export type Plugin = {
   version: string;
   /** path under /public, e.g. /screenshots/chaosverb.png. empty = placeholder. */
   screenshot: string;
+  /** Public installer URLs. Leave undefined to show a "coming soon" state. */
+  downloadMacUrl?: string;
+  downloadWinUrl?: string;
 };
 
 export const plugins: Plugin[] = [

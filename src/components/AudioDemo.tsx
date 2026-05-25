@@ -44,6 +44,16 @@ const AudioDemo = ({ demo, index }: Props) => {
     };
   }, [activeSrc]);
 
+  // When the audio source changes (wet/dry toggle), the <audio> element resets
+  // to time 0 and pauses. Mirror that in React state so the UI doesn't claim
+  // to be playing while the element is actually paused at the start.
+  useEffect(() => {
+    setPlaying(false);
+    setCurrent(0);
+    setProgress(0);
+    setDuration(0);
+  }, [activeSrc]);
+
   const toggle = () => {
     const a = audioRef.current;
     if (!a || fileMissing) return;

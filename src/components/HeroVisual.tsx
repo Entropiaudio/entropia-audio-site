@@ -10,23 +10,22 @@ interface HeroVisualProps {
 }
 
 /**
- * Slow-breathing flow-field particle drift on canvas. Honors prefers-reduced-motion
+ * Slow-breathing flow-field particle drift on canvas. Cursor-reactive: a soft
+ * gravitational pull warps the field around the pointer. Honors prefers-reduced-motion
  * by rendering a single static frame with no rAF loop.
- *
- * Motion budget: each particle moves ~0.2–0.5 px/frame at 60fps. The flow field is
- * a sum of two slow-rotating sinusoids, which gives an organic perlin-ish feel
- * without shipping a noise library.
  */
 export const HeroVisual = ({
   className,
-  density = 0.18,
-  intensity = 0.22,
+  density = 0.22,
+  intensity = 0.26,
 }: HeroVisualProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const wrap = wrapRef.current;
+    if (!canvas || !wrap) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -38,6 +37,13 @@ export const HeroVisual = ({
     let particles: Array<{ x: number; y: number; vx: number; vy: number; life: number; phase: number }> = [];
     let rafId: number | null = null;
     let t = 0;
+
+    // pointer state — normalized canvas coords, smoothed
+    let pxTarget = -9999;
+    let pyTarget = -9999;
+    let pxSmooth = -9999;
+    let pySmooth = -9999;
+    let pointerActive = false;
 
     const seedParticles = () => {
       const count = Math.max(80, Math.floor((width * height) / 10000 * density));
@@ -66,20 +72,49 @@ export const HeroVisual = ({
     };
 
     const step = () => {
-      // erase with a low-alpha bg paint to leave faint trails — higher alpha = faster fade, less stacking
-      ctx.fillStyle = "rgba(20, 17, 15, 0.18)";
+      ctx.fillStyle = "rgba(20, 17, 15, 0.16)";
       ctx.fillRect(0, 0, width, height);
 
-      t += 0.00022; // slow time — one full sinusoid cycle ≈ 8 minutes
+      t += 0.00022;
+
+      // smooth pointer toward target
+      if (pointerActive) {
+        pxSmooth = pxSmooth === -9999 ? pxTarget : pxSmooth + (pxTarget - pxSmooth) * 0.08;
+        pySmooth = pySmooth === -9999 ? pyTarget : pySmooth + (pyTarget - pySmooth) * 0.08;
+      } else {
+        // drift back to off-screen
+        pxSmooth += (-9999 - pxSmooth) * 0.02;
+        pySmooth += (-9999 - pySmooth) * 0.02;
+      }
+
+      const pullRadius = Math.min(width, height) * 0.35;
+      const pullRadiusSq = pullRadius * pullRadius;
 
       for (const p of particles) {
-        // flow field: sum of two slow sinusoids in space + time
         const ax = Math.sin(p.x * 0.0035 + t * 1.0) + Math.cos(p.y * 0.0028 - t * 0.7);
         const ay = Math.cos(p.x * 0.0030 - t * 0.9) + Math.sin(p.y * 0.0036 + t * 0.6);
         const angle = (ax + ay) * 0.9;
 
-        p.vx = (p.vx + Math.cos(angle) * 0.006) * 0.95;
-        p.vy = (p.vy + Math.sin(angle) * 0.006) * 0.95;
+        let fx = Math.cos(angle) * 0.006;
+        let fy = Math.sin(angle) * 0.006;
+
+        // pointer attraction with a perpendicular swirl
+        if (pointerActive && pxSmooth > -1000) {
+          const dx = pxSmooth - p.x;
+          const dy = pySmooth - p.y;
+          const dsq = dx * dx + dy * dy;
+          if (dsq < pullRadiusSq && dsq > 1) {
+            const d = Math.sqrt(dsq);
+            const falloff = 1 - d / pullRadius;
+            const radial = falloff * 0.04;
+            const swirl = falloff * 0.06;
+            fx += (dx / d) * radial + (-dy / d) * swirl;
+            fy += (dy / d) * radial + (dx / d) * swirl;
+          }
+        }
+
+        p.vx = (p.vx + fx) * 0.95;
+        p.vy = (p.vy + fy) * 0.95;
 
         p.x += p.vx;
         p.y += p.vy;
@@ -113,29 +148,50 @@ export const HeroVisual = ({
     if (reducedMotion) {
       renderStaticFrame();
     } else {
-      // warm-up: settle particles before showing trails
       for (let i = 0; i < 40; i++) step();
       if (rafId !== null) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(step);
     }
 
-    const onResize = () => resize();
+    // Coalesce resize bursts (window drag, devtools toggle) into one rAF.
+    let resizeRaf = 0;
+    const onResize = () => {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(() => {
+        resizeRaf = 0;
+        resize();
+      });
+    };
+    const onPointerMove = (e: PointerEvent) => {
+      const r = canvas.getBoundingClientRect();
+      pxTarget = e.clientX - r.left;
+      pyTarget = e.clientY - r.top;
+      pointerActive = true;
+    };
+    const onPointerLeave = () => {
+      pointerActive = false;
+    };
+
     window.addEventListener("resize", onResize);
+    wrap.addEventListener("pointermove", onPointerMove);
+    wrap.addEventListener("pointerleave", onPointerLeave);
 
     return () => {
       if (rafId !== null) cancelAnimationFrame(rafId);
+      if (resizeRaf) cancelAnimationFrame(resizeRaf);
       window.removeEventListener("resize", onResize);
+      wrap.removeEventListener("pointermove", onPointerMove);
+      wrap.removeEventListener("pointerleave", onPointerLeave);
     };
   }, [density, intensity]);
 
   return (
-    <div className={cn("relative w-full h-full", className)} aria-hidden="true">
-      {/* barely-visible radial behind the canvas — only gradient on the page */}
+    <div ref={wrapRef} className={cn("relative w-full h-full", className)} aria-hidden="true">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 65% 45%, rgba(212, 165, 116, 0.06), transparent 70%)",
+            "radial-gradient(ellipse 80% 60% at 65% 45%, rgba(212, 165, 116, 0.08), transparent 70%)",
         }}
       />
       <canvas
@@ -143,9 +199,17 @@ export const HeroVisual = ({
         className="block w-full h-full"
         style={{
           maskImage:
-            "radial-gradient(ellipse 55% 60% at 55% 50%, #000 35%, rgba(0,0,0,0.55) 65%, transparent 92%)",
+            "radial-gradient(ellipse 60% 65% at 55% 50%, #000 35%, rgba(0,0,0,0.55) 65%, transparent 92%)",
           WebkitMaskImage:
-            "radial-gradient(ellipse 55% 60% at 55% 50%, #000 35%, rgba(0,0,0,0.55) 65%, transparent 92%)",
+            "radial-gradient(ellipse 60% 65% at 55% 50%, #000 35%, rgba(0,0,0,0.55) 65%, transparent 92%)",
+        }}
+      />
+      {/* second very-soft radial that breathes with the page */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle 40% at 20% 100%, rgba(212, 165, 116, 0.05), transparent 70%)",
         }}
       />
     </div>

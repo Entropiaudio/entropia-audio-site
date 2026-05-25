@@ -5,10 +5,76 @@ import AudioDemo from "@/components/AudioDemo";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
+import Reveal from "@/components/motion/Reveal";
+import RevealWords from "@/components/motion/RevealWords";
+import MagneticLink from "@/components/motion/MagneticLink";
+import { MOTION } from "@/components/motion/timing";
+import { useParallax } from "@/hooks/useScrollMotion";
 import { getPlugin } from "@/data/plugins";
 import { useCart } from "@/context/CartContext";
 import { toast } from "@/hooks/use-toast";
 import { copy } from "@/copy";
+
+const AlternatingSection = ({
+  heading,
+  body,
+  index,
+  total,
+  pluginName,
+  screenshot,
+}: {
+  heading: string;
+  body: string;
+  index: number;
+  total: number;
+  pluginName: string;
+  screenshot?: string;
+}) => {
+  const reversed = index % 2 === 1;
+  const { ref: parallaxRef, offset } = useParallax<HTMLDivElement>(28);
+  return (
+    <article
+      className={`grid md:grid-cols-12 gap-10 md:gap-16 items-center py-24 md:py-32 border-t border-hairline ${
+        reversed ? "md:[&>*:first-child]:order-2" : ""
+      }`}
+    >
+      <Reveal
+        variant="up"
+        {...MOTION.section.image}
+        className={`md:col-span-6 hover-zoom ${reversed ? "md:col-start-7" : ""}`}
+      >
+        <div
+          ref={parallaxRef}
+          style={{ transform: `translate3d(0, ${offset.toFixed(2)}px, 0)` }}
+        >
+          <PluginScreenshot
+            name={pluginName}
+            ratio="wide"
+            bare
+            src={screenshot}
+            fit="contain"
+            alt={`${pluginName} ${heading}`}
+          />
+        </div>
+      </Reveal>
+      <div className={`md:col-span-5 ${reversed ? "md:col-start-2" : "md:col-start-8"}`}>
+        <Reveal variant="up" {...MOTION.section.eyebrow}>
+          <Eyebrow className="mb-6">
+            {String(index + 1).padStart(2, "0")} / {total.toString().padStart(2, "0")}
+          </Eyebrow>
+          <h3 className="font-display font-light text-[36px] md:text-[44px] leading-[1.05] tracking-[-0.02em] mb-8">
+            {heading}
+          </h3>
+        </Reveal>
+        <Reveal variant="up" {...MOTION.section.headline}>
+          <p className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[42ch]">
+            {body}
+          </p>
+        </Reveal>
+      </div>
+    </article>
+  );
+};
 
 const PluginPage = () => {
   const { slug } = useParams();
@@ -41,16 +107,18 @@ const PluginPage = () => {
           <div className="flex-1 md:flex-none flex items-baseline justify-between md:justify-end gap-5 md:gap-8 whitespace-nowrap">
             <a
               href="#try"
-              className="text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+              className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
             >
               {c.ctaTry}
             </a>
-            <button
+            <MagneticLink
+              as="button"
               type="button"
+              strength={5}
               onClick={() => addToCart("perpetual", true)}
               className="group inline-flex items-baseline gap-2 text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial tabular-nums"
             >
-              <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
+              <span className="link-draw pb-1">
                 {c.ctaBuy} · ${plugin.price}
               </span>
               {onSale && (
@@ -58,7 +126,7 @@ const PluginPage = () => {
                   ${plugin.regularPrice}
                 </span>
               )}
-            </button>
+            </MagneticLink>
           </div>
         </div>
       </div>
@@ -67,10 +135,17 @@ const PluginPage = () => {
       <Section pad="lg">
         <Container width="wide">
           <div className="md:pl-8 lg:pl-16">
-            <Eyebrow className="mb-12">
-              // {plugin.name} · v{plugin.version}
-            </Eyebrow>
-            <div className="max-w-[1080px]">
+            <Reveal variant="up" {...MOTION.page.eyebrow}>
+              <Eyebrow className="mb-12">
+                // {plugin.name} · v{plugin.version}
+              </Eyebrow>
+            </Reveal>
+            <Reveal
+              variant="up"
+              delay={MOTION.page.headline1.delay}
+              duration={MOTION.duration.image}
+              className="max-w-[1080px] hover-zoom block"
+            >
               <PluginScreenshot
                 name={plugin.name}
                 ratio="hero"
@@ -78,7 +153,7 @@ const PluginPage = () => {
                 fit="contain"
                 alt={`${plugin.name} plugin interface`}
               />
-            </div>
+            </Reveal>
           </div>
         </Container>
       </Section>
@@ -87,32 +162,41 @@ const PluginPage = () => {
       <Section pad="lg">
         <Container width="wide">
           <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
-            <div className="md:col-span-3 md:col-start-2 md:pt-4">
+            <Reveal variant="up" {...MOTION.section.eyebrow} className="md:col-span-3 md:col-start-2 md:pt-4">
               <Eyebrow>{plugin.name}</Eyebrow>
-            </div>
+            </Reveal>
             <div className="md:col-span-8">
               <h1 className="font-display font-light leading-[1.0] tracking-[-0.02em] text-[44px] md:text-[64px] lg:text-[80px]">
-                <span className="font-editorial italic font-normal tracking-[-0.015em]">
+                <RevealWords
+                  as="span"
+                  className="font-editorial italic font-normal tracking-[-0.015em]"
+                  {...MOTION.section.headline}
+                  stagger={MOTION.stagger.word}
+                >
                   {plugin.tagline}
-                </span>
+                </RevealWords>
               </h1>
-              <p className="mt-10 font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[58ch]">
-                {plugin.shortDescription}
-              </p>
+              <Reveal variant="up" {...MOTION.section.body}>
+                <p className="mt-10 font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[58ch]">
+                  {plugin.shortDescription}
+                </p>
+              </Reveal>
 
-              <div className="mt-10 flex items-baseline gap-6 font-mono text-[13px] tabular-nums">
-                <span className="text-[color:var(--text-primary)]">${plugin.price}</span>
-                {onSale && (
-                  <>
-                    <span className="line-through text-[color:var(--text-tertiary)]">
-                      ${plugin.regularPrice}
-                    </span>
-                    <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--accent-raw)]">
-                      {c.saleBadge}
-                    </span>
-                  </>
-                )}
-              </div>
+              <Reveal variant="up" {...MOTION.section.cta}>
+                <div className="mt-10 flex items-baseline gap-6 font-mono text-[13px] tabular-nums">
+                  <span className="text-[color:var(--text-primary)]">${plugin.price}</span>
+                  {onSale && (
+                    <>
+                      <span className="line-through text-[color:var(--text-tertiary)]">
+                        ${plugin.regularPrice}
+                      </span>
+                      <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--accent-raw)]">
+                        {c.saleBadge}
+                      </span>
+                    </>
+                  )}
+                </div>
+              </Reveal>
             </div>
           </div>
         </Container>
@@ -124,15 +208,19 @@ const PluginPage = () => {
           <div className="md:pl-8 lg:pl-16 max-w-[880px]">
             <ul>
               {plugin.features.map((f, i) => (
-                <li
+                <Reveal
                   key={i}
+                  variant="up"
+                  duration={MOTION.duration.base}
+                  delay={i * MOTION.stagger.list}
+                  as="li"
                   className="grid grid-cols-[3rem,1fr] gap-6 md:gap-10 font-sans font-normal text-[17px] md:text-[18px] leading-[1.65] tracking-[0.005em] border-t border-hairline py-7"
                 >
                   <span className="font-mono text-[12px] tabular-nums text-[color:var(--text-tertiary)] pt-1.5">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="text-[color:var(--text-primary)]">{f}</span>
-                </li>
+                </Reveal>
               ))}
             </ul>
           </div>
@@ -141,57 +229,44 @@ const PluginPage = () => {
 
       {/* ---------- alternating image / text ---------- */}
       <Container width="wide">
-        {plugin.sections.map((section, i) => {
-          const reversed = i % 2 === 1;
-          return (
-            <article
-              key={i}
-              className={`grid md:grid-cols-12 gap-10 md:gap-16 items-center py-24 md:py-32 border-t border-hairline ${
-                reversed ? "md:[&>*:first-child]:order-2" : ""
-              }`}
-            >
-              <div className={`md:col-span-6 ${reversed ? "md:col-start-7" : ""}`}>
-                <PluginScreenshot
-                  name={plugin.name}
-                  ratio="wide"
-                  bare
-                  src={plugin.screenshot}
-                  fit="contain"
-                  alt={`${plugin.name} ${section.heading}`}
-                />
-              </div>
-              <div className={`md:col-span-5 ${reversed ? "md:col-start-2" : "md:col-start-8"}`}>
-                <Eyebrow className="mb-6">
-                  {String(i + 1).padStart(2, "0")} / {plugin.sections.length.toString().padStart(2, "0")}
-                </Eyebrow>
-                <h3 className="font-display font-light text-[36px] md:text-[44px] leading-[1.05] tracking-[-0.02em] mb-8">
-                  {section.heading}
-                </h3>
-                <p className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[42ch]">
-                  {section.body}
-                </p>
-              </div>
-            </article>
-          );
-        })}
+        {plugin.sections.map((section, i) => (
+          <AlternatingSection
+            key={i}
+            heading={section.heading}
+            body={section.body}
+            index={i}
+            total={plugin.sections.length}
+            pluginName={plugin.name}
+            screenshot={plugin.screenshot}
+          />
+        ))}
       </Container>
 
       {/* ---------- audio demos ---------- */}
       <Section pad="lg" tone="rule-top">
         <Container width="wide">
           <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
-            <div className="md:col-span-3 md:col-start-2 md:pt-4">
+            <Reveal variant="up" {...MOTION.section.eyebrow} className="md:col-span-3 md:col-start-2 md:pt-4">
               <Eyebrow>{c.listenEyebrow}</Eyebrow>
-            </div>
+            </Reveal>
             <div className="md:col-span-8">
-              <h3 className="font-display font-light text-[36px] md:text-[48px] leading-[1.05] tracking-[-0.02em] mb-14">
-                <span className="font-editorial italic font-normal tracking-[-0.015em]">
-                  {c.listenHeadline}
-                </span>
-              </h3>
+              <Reveal variant="up" {...MOTION.section.headline}>
+                <h3 className="font-display font-light text-[36px] md:text-[48px] leading-[1.05] tracking-[-0.02em] mb-14">
+                  <span className="font-editorial italic font-normal tracking-[-0.015em]">
+                    {c.listenHeadline}
+                  </span>
+                </h3>
+              </Reveal>
               <div>
                 {plugin.demos.map((d, i) => (
-                  <AudioDemo key={d.slug} demo={d} index={i} />
+                  <Reveal
+                    key={d.slug}
+                    variant="up"
+                    duration={MOTION.duration.base}
+                    delay={MOTION.section.body.delay + i * MOTION.stagger.body}
+                  >
+                    <AudioDemo demo={d} index={i} />
+                  </Reveal>
                 ))}
               </div>
             </div>
@@ -203,10 +278,10 @@ const PluginPage = () => {
       <Section pad="lg" tone="rule-top">
         <Container width="wide">
           <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
-            <div className="md:col-span-3 md:col-start-2 md:pt-4">
+            <Reveal variant="up" {...MOTION.section.eyebrow} className="md:col-span-3 md:col-start-2 md:pt-4">
               <Eyebrow>{c.specsEyebrow}</Eyebrow>
-            </div>
-            <div className="md:col-span-8">
+            </Reveal>
+            <Reveal variant="up" {...MOTION.section.headline} className="md:col-span-8">
               <table className="w-full text-[15px]">
                 <tbody>
                   {plugin.specs.map((spec) => (
@@ -221,7 +296,7 @@ const PluginPage = () => {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </Reveal>
           </div>
         </Container>
       </Section>
@@ -230,38 +305,66 @@ const PluginPage = () => {
       <Section pad="lg" tone="rule-top">
         <Container width="wide" id="try">
           <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
-            <div className="md:col-span-3 md:col-start-2 md:pt-4">
+            <Reveal variant="up" {...MOTION.section.eyebrow} className="md:col-span-3 md:col-start-2 md:pt-4">
               <Eyebrow>{c.tryEyebrow}</Eyebrow>
-            </div>
+            </Reveal>
             <div className="md:col-span-8">
-              <h3 className="font-display font-light text-[36px] md:text-[48px] leading-[1.05] tracking-[-0.02em] mb-8">
-                <span className="font-editorial italic font-normal tracking-[-0.015em]">
-                  {c.tryHeadline}
-                </span>
-              </h3>
-              <p className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[52ch] mb-12">
-                {c.trySubline}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-6 sm:gap-10">
-                <a
-                  href="#"
-                  className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
-                >
-                  <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
-                    {c.downloadMac}
+              <Reveal variant="up" {...MOTION.section.headline}>
+                <h3 className="font-display font-light text-[36px] md:text-[48px] leading-[1.05] tracking-[-0.02em] mb-8">
+                  <span className="font-editorial italic font-normal tracking-[-0.015em]">
+                    {c.tryHeadline}
                   </span>
-                  <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">↓</span>
-                </a>
-                <a
-                  href="#"
-                  className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
-                >
-                  <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
-                    {c.downloadWin}
-                  </span>
-                  <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">↓</span>
-                </a>
-              </div>
+                </h3>
+              </Reveal>
+              <Reveal variant="up" {...MOTION.section.body}>
+                <p className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[52ch] mb-12">
+                  {c.trySubline}
+                </p>
+              </Reveal>
+              <Reveal variant="up" {...MOTION.section.cta}>
+                <div className="flex flex-col sm:flex-row gap-6 sm:gap-10">
+                  {plugin.downloadMacUrl ? (
+                    <MagneticLink
+                      as="a"
+                      href={plugin.downloadMacUrl}
+                      strength={6}
+                      className="accent-glow group inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
+                    >
+                      <span>{c.downloadMac}</span>
+                      <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-y-0.5">↓</span>
+                    </MagneticLink>
+                  ) : (
+                    <span
+                      aria-disabled="true"
+                      title="installer coming soon"
+                      className="inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] border border-[color:var(--border-soft)] opacity-60 cursor-not-allowed select-none"
+                    >
+                      <span>{c.downloadMac}</span>
+                      <span aria-hidden="true" className="text-[10px]">soon</span>
+                    </span>
+                  )}
+                  {plugin.downloadWinUrl ? (
+                    <MagneticLink
+                      as="a"
+                      href={plugin.downloadWinUrl}
+                      strength={6}
+                      className="accent-glow group inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
+                    >
+                      <span>{c.downloadWin}</span>
+                      <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-y-0.5">↓</span>
+                    </MagneticLink>
+                  ) : (
+                    <span
+                      aria-disabled="true"
+                      title="installer coming soon"
+                      className="inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] border border-[color:var(--border-soft)] opacity-60 cursor-not-allowed select-none"
+                    >
+                      <span>{c.downloadWin}</span>
+                      <span aria-hidden="true" className="text-[10px]">soon</span>
+                    </span>
+                  )}
+                </div>
+              </Reveal>
             </div>
           </div>
         </Container>

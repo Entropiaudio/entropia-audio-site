@@ -74,11 +74,30 @@ const issueLicenses = (orderId: string, items: CartItem[]): License[] => {
   );
 };
 
+const LICENSE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+/** Crypto-grade random bytes. The 32-char alphabet divides 256 evenly (8 × 32),
+ *  so `b % 32` is unbiased. */
+const cryptoRandomBlock = (length: number) => {
+  const buf = new Uint8Array(length);
+  crypto.getRandomValues(buf);
+  let out = "";
+  for (let i = 0; i < length; i++) out += LICENSE_CHARS[buf[i] % LICENSE_CHARS.length];
+  return out;
+};
+
 const generateLicenseKey = (slug: string) => {
   const prefix = slug.slice(0, 3).toUpperCase();
-  const block = () =>
-    Array.from({ length: 4 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
-  return `${prefix}1-${block()}-${block()}-${block()}-${block()}`;
+  return `${prefix}1-${cryptoRandomBlock(4)}-${cryptoRandomBlock(4)}-${cryptoRandomBlock(4)}-${cryptoRandomBlock(4)}`;
+};
+
+const generateOrderId = () => {
+  // Timestamp prefix keeps IDs roughly sortable; random suffix avoids
+  // same-millisecond collisions when checkout fires in parallel.
+  const buf = new Uint8Array(6);
+  crypto.getRandomValues(buf);
+  const rand = Array.from(buf, (b) => b.toString(16).padStart(2, "0")).join("");
+  return `ord_${Date.now().toString(36)}_${rand}`;
 };
 
 export const mockProvider: PaymentProvider = {
@@ -89,7 +108,7 @@ export const mockProvider: PaymentProvider = {
     if (last4 === "0002") return { ok: false, error: "card declined." };
     if (last4 === "0069") return { ok: false, error: "insufficient funds." };
 
-    const orderId = `ord_${Date.now().toString(36)}`;
+    const orderId = generateOrderId();
     const order: Order = {
       id: orderId,
       date: new Date().toISOString(),
