@@ -53,6 +53,13 @@ const SiteHeader = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Expose current header height as a CSS variable so other sticky bars
+  // (PluginPage's buy/try-free strip) can sit flush against the header
+  // whether it's in shrunken or full height. Matches h-20 / h-16 above.
+  useEffect(() => {
+    document.documentElement.style.setProperty("--header-h", scrolled ? "4rem" : "5rem");
+  }, [scrolled]);
+
   return (
     <header
       className={`sticky top-0 z-40 transition-[background-color,backdrop-filter,height,border-color] duration-[500ms] ease-editorial ${

@@ -1,15 +1,15 @@
 import { FormEvent, useState } from "react";
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
 import RevealWords from "@/components/motion/RevealWords";
-import MagneticLink from "@/components/motion/MagneticLink";
 import { MOTION } from "@/components/motion/timing";
 import { toast } from "@/hooks/use-toast";
 import { useAuth, License, Order } from "@/context/AuthContext";
+import { isMoonbaseEnabled, Moonbase } from "@/lib/moonbase";
 
 const fieldClass =
   "bg-transparent border-b border-[color:var(--border-soft)] focus:border-[color:var(--accent-raw)] outline-none py-3 text-[15px] font-sans tracking-[0.005em] w-full transition-colors duration-[400ms] ease-editorial";
@@ -25,7 +25,84 @@ const safeNext = (raw: string | null): string => {
   return raw;
 };
 
-const LoggedOut = () => {
+/* ------------------------------------------------------------------ */
+/* Logged-out view — branches on backend.                              */
+/* ------------------------------------------------------------------ */
+
+const LoggedOutMoonbase = () => {
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [email, setEmail] = useState("");
+
+  const open = (e: FormEvent) => {
+    e.preventDefault();
+    if (mode === "login") Moonbase.sign_in(email ? { email } : undefined);
+    else Moonbase.sign_up(email ? { email } : undefined);
+  };
+
+  return (
+    <Section pad="xl">
+      <Container width="wide">
+        <div className="md:pl-8 lg:pl-16 max-w-[480px]">
+          <Reveal variant="up" {...MOTION.page.eyebrow}>
+            <Eyebrow accent className="mb-8">// account</Eyebrow>
+          </Reveal>
+          <h1 className="font-display font-light text-[48px] md:text-[56px] leading-[1.05] tracking-[-0.02em] mb-4">
+            <RevealWords
+              key={mode}
+              as="span"
+              className="font-editorial italic font-normal tracking-[-0.015em]"
+              {...MOTION.page.headline1}
+              stagger={MOTION.stagger.word}
+            >
+              {mode === "login" ? "sign in" : "create account"}
+            </RevealWords>
+          </h1>
+          <Reveal variant="up" {...MOTION.page.body0}>
+            <p className="font-sans text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] mb-12">
+              {mode === "login"
+                ? "access your licenses and downloads."
+                : "set up an entropia audio account."}
+            </p>
+          </Reveal>
+
+          <form onSubmit={open} className="flex flex-col gap-7">
+            <label className="flex flex-col gap-3">
+              <span className={labelClass}>email (optional, prefills the form)</span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={fieldClass}
+              />
+            </label>
+
+            <button
+              type="submit"
+              className="group inline-flex items-baseline gap-2 self-start mt-4 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+            >
+              <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+                {mode === "login" ? "sign in" : "create account"}
+              </span>
+              <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+            </button>
+          </form>
+
+          <button
+            type="button"
+            onClick={() => setMode(mode === "login" ? "signup" : "login")}
+            className="mt-10 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+          >
+            {mode === "login"
+              ? "no account? create one →"
+              : "already have an account? sign in →"}
+          </button>
+        </div>
+      </Container>
+    </Section>
+  );
+};
+
+const LoggedOutLocal = () => {
   const { signIn, signUp } = useAuth();
   const [params] = useSearchParams();
   const navigate = useNavigate();
@@ -143,6 +220,12 @@ const LoggedOut = () => {
   );
 };
 
+const LoggedOut = () => (isMoonbaseEnabled ? <LoggedOutMoonbase /> : <LoggedOutLocal />);
+
+/* ------------------------------------------------------------------ */
+/* Logged-in view — table layout shared, settings section branches.    */
+/* ------------------------------------------------------------------ */
+
 const LicenseRow = ({ license }: { license: License }) => {
   const [revealed, setRevealed] = useState(false);
   const masked = "••••-••••-••••-••••-" + license.key.slice(-4);
@@ -194,7 +277,7 @@ const OrderRow = ({ order }: { order: Order }) => (
         <div key={`${order.id}:${it.slug}:${it.license}`} className="text-[color:var(--text-primary)]">
           {it.name}{" "}
           <span className="text-[color:var(--text-tertiary)] font-mono text-[12px]">
-            × {it.quantity} ({it.license})
+            × {it.quantity}
           </span>
         </div>
       ))}
@@ -211,8 +294,8 @@ const OrderRow = ({ order }: { order: Order }) => (
 const tableHeadRow =
   "text-left text-[11px] font-sans font-medium uppercase tracking-[0.12em] text-[color:var(--text-tertiary)]";
 
-const LoggedIn = () => {
-  const { user, signOut, updateEmail, updatePassword } = useAuth();
+const SettingsLocal = () => {
+  const { user, updateEmail, updatePassword } = useAuth();
   const [newEmail, setNewEmail] = useState(user?.email ?? "");
   const [newPassword, setNewPassword] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -257,6 +340,93 @@ const LoggedIn = () => {
       setPasswordBusy(false);
     }
   };
+
+  return (
+    <section>
+      <Eyebrow className="mb-8">account settings</Eyebrow>
+      <div className="grid md:grid-cols-2 gap-12 max-w-3xl">
+        <form onSubmit={onEmailSubmit} className="flex flex-col gap-4">
+          <label className={labelClass}>change email</label>
+          <input
+            type="email"
+            value={newEmail}
+            onChange={(e) => {
+              setNewEmail(e.target.value);
+              if (emailError) setEmailError(null);
+            }}
+            aria-invalid={emailError ? true : undefined}
+            className={fieldClass}
+          />
+          {emailError && (
+            <p className="text-[12px] text-[color:var(--accent-raw)] font-mono">{emailError}</p>
+          )}
+          <button
+            type="submit"
+            disabled={emailBusy}
+            className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
+              {emailBusy ? "…" : "save"}
+            </span>
+          </button>
+        </form>
+
+        <form onSubmit={onPasswordSubmit} className="flex flex-col gap-4">
+          <label className={labelClass}>change password</label>
+          <input
+            type="password"
+            value={newPassword}
+            placeholder="new password"
+            minLength={6}
+            onChange={(e) => {
+              setNewPassword(e.target.value);
+              if (passwordError) setPasswordError(null);
+            }}
+            aria-invalid={passwordError ? true : undefined}
+            className={`${fieldClass} placeholder:text-[color:var(--text-tertiary)]`}
+          />
+          {passwordError && (
+            <p className="text-[12px] text-[color:var(--accent-raw)] font-mono">{passwordError}</p>
+          )}
+          <button
+            type="submit"
+            disabled={passwordBusy}
+            className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
+              {passwordBusy ? "…" : "save"}
+            </span>
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+};
+
+const SettingsMoonbase = () => (
+  <section>
+    <Eyebrow className="mb-8">account settings</Eyebrow>
+    <p className="font-sans text-[15px] leading-[1.7] text-[color:var(--text-secondary)] max-w-[52ch] mb-8">
+      change your email, password, or marketing preferences in the moonbase
+      account panel.
+    </p>
+    <button
+      type="button"
+      onClick={() => Moonbase.view_account()}
+      className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+    >
+      <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
+        manage account
+      </span>
+      <span className="transition-transform duration-[400ms] ease-editorial group-hover:translate-x-1">→</span>
+    </button>
+  </section>
+);
+
+const LoggedIn = () => {
+  const { user, signOut } = useAuth();
+
+  if (!user) return null;
 
   return (
     <Section pad="xl">
@@ -339,64 +509,7 @@ const LoggedIn = () => {
             )}
           </section>
 
-          <section>
-            <Eyebrow className="mb-8">account settings</Eyebrow>
-            <div className="grid md:grid-cols-2 gap-12 max-w-3xl">
-              <form onSubmit={onEmailSubmit} className="flex flex-col gap-4">
-                <label className={labelClass}>change email</label>
-                <input
-                  type="email"
-                  value={newEmail}
-                  onChange={(e) => {
-                    setNewEmail(e.target.value);
-                    if (emailError) setEmailError(null);
-                  }}
-                  aria-invalid={emailError ? true : undefined}
-                  className={fieldClass}
-                />
-                {emailError && (
-                  <p className="text-[12px] text-[color:var(--accent-raw)] font-mono">{emailError}</p>
-                )}
-                <button
-                  type="submit"
-                  disabled={emailBusy}
-                  className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
-                    {emailBusy ? "…" : "save"}
-                  </span>
-                </button>
-              </form>
-
-              <form onSubmit={onPasswordSubmit} className="flex flex-col gap-4">
-                <label className={labelClass}>change password</label>
-                <input
-                  type="password"
-                  value={newPassword}
-                  placeholder="new password"
-                  minLength={6}
-                  onChange={(e) => {
-                    setNewPassword(e.target.value);
-                    if (passwordError) setPasswordError(null);
-                  }}
-                  aria-invalid={passwordError ? true : undefined}
-                  className={`${fieldClass} placeholder:text-[color:var(--text-tertiary)]`}
-                />
-                {passwordError && (
-                  <p className="text-[12px] text-[color:var(--accent-raw)] font-mono">{passwordError}</p>
-                )}
-                <button
-                  type="submit"
-                  disabled={passwordBusy}
-                  className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
-                    {passwordBusy ? "…" : "save"}
-                  </span>
-                </button>
-              </form>
-            </div>
-          </section>
+          {isMoonbaseEnabled ? <SettingsMoonbase /> : <SettingsLocal />}
         </div>
       </Container>
     </Section>

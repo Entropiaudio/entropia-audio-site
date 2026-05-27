@@ -1,8 +1,9 @@
-// MOONBASE INTEGRATION SEAM — this whole page becomes a thin redirect / mount
-// point once Moonbase is live. Moonbase's embedded storefront renders its own
-// checkout UI (card, tax, order placement, license issuance), so the form,
-// validatePayment helper, and attachOrder call below all go away. Keep the
-// route mounted so existing `/checkout` links resolve.
+// Checkout — branches by storefront backend.
+//
+// With Moonbase: this page becomes a thin mount point. We fire
+// Moonbase.checkout() on mount, listen for CheckoutCompleted (→ /order/:id)
+// and CheckoutClosed (→ /cart). The card form and validatePayment helpers
+// below only run for the localStorage prototype.
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
@@ -22,6 +23,7 @@ import {
   validatePayment,
 } from "@/lib/payments";
 import { toast } from "@/hooks/use-toast";
+import { isMoonbaseEnabled, Moonbase, MoonbaseEvent } from "@/lib/moonbase";
 
 const TAX_RATE = 0.0;
 
@@ -31,7 +33,76 @@ const fieldClass =
 const labelClass =
   "text-[11px] font-sans font-medium uppercase tracking-[0.12em] text-[color:var(--text-tertiary)]";
 
-const Checkout = () => {
+/* ------------------------------------------------------------------ */
+/* Moonbase mount — opens the storefront checkout, waits for outcome.   */
+/* ------------------------------------------------------------------ */
+
+const MoonbaseCheckoutMount = () => {
+  const { items } = useCart();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (items.length === 0) {
+      navigate("/cart", { replace: true });
+      return;
+    }
+    Moonbase.checkout();
+
+    Moonbase.on(MoonbaseEvent.CheckoutCompleted, ({ order }: { order: { id?: string } }) => {
+      if (order?.id) navigate(`/order/${order.id}`, { replace: true });
+      else navigate("/account", { replace: true });
+    });
+    Moonbase.on(MoonbaseEvent.CheckoutClosed, () => {
+      // The user dismissed the Moonbase modal without completing. Return
+      // them to the cart so they don't sit on an empty checkout shell.
+      navigate("/cart", { replace: true });
+    });
+  }, [items.length, navigate]);
+
+  return (
+    <SiteLayout>
+      <Section pad="xl">
+        <Container width="wide">
+          <div className="md:pl-8 lg:pl-16 max-w-[720px]">
+            <Reveal variant="up" {...MOTION.page.eyebrow}>
+              <Eyebrow accent className="mb-8">// checkout</Eyebrow>
+            </Reveal>
+            <h1 className="font-display font-light text-[56px] md:text-[72px] leading-[1.0] tracking-[-0.02em] mb-10">
+              <RevealWords
+                as="span"
+                className="font-editorial italic font-normal tracking-[-0.015em]"
+                {...MOTION.page.headline1}
+                stagger={MOTION.stagger.word}
+              >
+                opening checkout
+              </RevealWords>
+            </h1>
+            <Reveal variant="up" {...MOTION.page.body0}>
+              <p className="font-sans text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[52ch]">
+                if the checkout window doesn&apos;t appear, your browser may be
+                blocking pop-ups.{" "}
+                <button
+                  type="button"
+                  onClick={() => Moonbase.checkout()}
+                  className="text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[400ms] ease-editorial"
+                >
+                  open it manually
+                </button>
+                .
+              </p>
+            </Reveal>
+          </div>
+        </Container>
+      </Section>
+    </SiteLayout>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/* Local prototype checkout — kept for dev without a Moonbase account.  */
+/* ------------------------------------------------------------------ */
+
+const LocalCheckout = () => {
   const { items, subtotal, clear } = useCart();
   const { user, isAuthed, attachOrder } = useAuth();
   const navigate = useNavigate();
@@ -303,5 +374,7 @@ const Checkout = () => {
     </SiteLayout>
   );
 };
+
+const Checkout = () => (isMoonbaseEnabled ? <MoonbaseCheckoutMount /> : <LocalCheckout />);
 
 export default Checkout;

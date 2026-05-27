@@ -1,13 +1,16 @@
-// MOONBASE INTEGRATION SEAM — replace this whole module when wiring the real
-// account. Moonbase's embedded storefront owns auth (sign-in / sign-up /
-// password / session); keep the User / AuthResult / AuthState shapes exported
-// here as the consumer-facing types and have the new implementation map
-// Moonbase's session object onto them. Consumers touch `useAuth()` only, so
-// swapping the provider is the single change point. Until VITE_MOONBASE_URL is
-// set, the localStorage prototype below stays in play.
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+// Dual-mode auth provider.
+//
+// When VITE_MOONBASE_URL is set, the user / licenses / orders come from the
+// Moonbase event mirror (lib/moonbase-state.ts) and sign-in / sign-up /
+// sign-out / account-management actions fire Moonbase modal intents. When
+// unset, the original localStorage prototype runs unchanged so dev without
+// an account keeps working.
+//
+// Consumers call `useAuth()` either way — the shape is the same.
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { safeGet, safeSet } from "@/lib/storage";
-import { isMoonbaseEnabled } from "@/lib/moonbase";
+import { isMoonbaseEnabled, Moonbase } from "@/lib/moonbase";
+import { getUserSnapshot, subscribeUser } from "@/lib/moonbase-state";
 
 export type License = {
   plugin: string;
@@ -40,8 +43,11 @@ export type AuthResult = { ok: true } | { ok: false; error: string };
 type AuthState = {
   user: User | null;
   isAuthed: boolean;
-  signIn: (email: string, password: string) => Promise<User>;
-  signUp: (email: string, password: string) => Promise<User>;
+  /** With Moonbase enabled, `password` is ignored — the Moonbase modal owns
+   *  credentials. `email` is forwarded as a prefill so the user doesn't
+   *  retype it. */
+  signIn: (email: string, password?: string) => Promise<User | void>;
+  signUp: (email: string, password?: string) => Promise<User | void>;
   signOut: () => void;
   updateEmail: (email: string) => Promise<AuthResult>;
   updatePassword: (password: string) => Promise<AuthResult>;
@@ -81,7 +87,72 @@ if (typeof window !== "undefined" && import.meta.env.PROD && !isMoonbaseEnabled)
 
 const AuthContext = createContext<AuthState | null>(null);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+/* ------------------------------------------------------------------ */
+/* Moonbase-backed provider — fires intents, mirrors user via events.  */
+/* ------------------------------------------------------------------ */
+
+const MoonbaseAuthProvider = ({ children }: { children: ReactNode }) => {
+  const user = useSyncExternalStore(subscribeUser, getUserSnapshot);
+
+  const signIn = useCallback(async (email: string) => {
+    Moonbase.sign_in(email ? { email } : undefined);
+    // Resolution comes back via MoonbaseEvent.SignedIn → moonbase-state
+    // updates the store → consumers re-render. We can't return the User
+    // synchronously here; callers should react to `user` instead.
+  }, []);
+
+  const signUp = useCallback(async (email: string) => {
+    Moonbase.sign_up(email ? { email } : undefined);
+  }, []);
+
+  const signOut = useCallback(() => {
+    // The SDK doesn't expose a programmatic sign-out intent. Sending the
+    // customer into their account view gives them the sign-out control,
+    // and we get the SignedOut event back on confirmation.
+    Moonbase.view_account();
+  }, []);
+
+  // Email / password edits live inside the Moonbase account modal — opening
+  // it is the closest analogue to the site's old inline form.
+  const updateEmail = useCallback(async (): Promise<AuthResult> => {
+    Moonbase.view_account();
+    return { ok: true };
+  }, []);
+
+  const updatePassword = useCallback(async (): Promise<AuthResult> => {
+    Moonbase.view_account();
+    return { ok: true };
+  }, []);
+
+  // No-op — Moonbase issues licenses + orders, the StorefrontUpdated event
+  // delivers them. The local prototype's attachOrder was only there to fake
+  // post-checkout persistence.
+  const attachOrder = useCallback(() => {
+    /* intentional no-op */
+  }, []);
+
+  const value = useMemo<AuthState>(
+    () => ({
+      user,
+      isAuthed: !!user,
+      signIn,
+      signUp,
+      signOut,
+      updateEmail,
+      updatePassword,
+      attachOrder,
+    }),
+    [user, signIn, signUp, signOut, updateEmail, updatePassword, attachOrder],
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+/* ------------------------------------------------------------------ */
+/* Local prototype — kept for dev without a Moonbase account.          */
+/* ------------------------------------------------------------------ */
+
+const LocalAuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => safeGet<User | null>(USER_KEY, null));
   // Skip the initial persistence write (we already loaded from this key).
   const initialMount = useRef(true);
@@ -112,9 +183,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const signIn = useCallback(async (email: string, password: string) => {
+  const signIn = useCallback(async (email: string, password?: string) => {
     const key = normalizeEmail(email);
     if (!EMAIL_RE.test(key)) throw new Error("please enter a valid email.");
+    if (!password) throw new Error("password is required.");
     const db = loadDb();
     const record = db[key];
     if (!record) throw new Error("no account found for that email.");
@@ -123,10 +195,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return record.user;
   }, []);
 
-  const signUp = useCallback(async (email: string, password: string) => {
+  const signUp = useCallback(async (email: string, password?: string) => {
     const key = normalizeEmail(email);
     if (!EMAIL_RE.test(key)) throw new Error("please enter a valid email.");
-    if (password.length < MIN_PASSWORD_LEN) {
+    if (!password || password.length < MIN_PASSWORD_LEN) {
       throw new Error(`password must be at least ${MIN_PASSWORD_LEN} characters.`);
     }
     const db = loadDb();
@@ -238,6 +310,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
+export const AuthProvider = ({ children }: { children: ReactNode }) =>
+  isMoonbaseEnabled ? (
+    <MoonbaseAuthProvider>{children}</MoonbaseAuthProvider>
+  ) : (
+    <LocalAuthProvider>{children}</LocalAuthProvider>
+  );
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);

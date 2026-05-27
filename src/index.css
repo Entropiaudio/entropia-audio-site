@@ -243,14 +243,11 @@
   );
 }
 
-/* ---------- subtle hover scale wrappers ---------- */
+/* ---------- subtle hover scale wrappers ----------
+   .hover-zoom keeps `overflow: hidden` for the parallax + image wrappers that
+   rely on clipping (PluginPage hero, alternating sections, ProductRow, About).
+   The hover scale itself is disabled per design call — images stay static. */
 .hover-zoom { overflow: hidden; }
-.hover-zoom > * {
-  transition: transform 1200ms var(--ease-editorial), filter 1200ms var(--ease-editorial);
-}
-.hover-zoom:hover > * {
-  transform: scale(1.04);
-}
 
 /* ---------- the link underline draw ---------- */
 .link-draw {

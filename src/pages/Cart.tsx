@@ -8,6 +8,7 @@ import RevealWords from "@/components/motion/RevealWords";
 import MagneticLink from "@/components/motion/MagneticLink";
 import { MOTION } from "@/components/motion/timing";
 import { useCart } from "@/context/CartContext";
+import { isMoonbaseEnabled, Moonbase } from "@/lib/moonbase";
 
 const Cart = () => {
   const { items, subtotal, setQuantity, remove, clear } = useCart();
@@ -76,27 +77,35 @@ const Cart = () => {
                             {it.license}
                           </td>
                           <td className="py-6 pr-4">
-                            <div className="inline-flex items-center border border-[color:var(--border-soft)]">
-                              <button
-                                type="button"
-                                onClick={() => setQuantity(it.slug, it.license, it.quantity - 1)}
-                                className="px-3 py-1.5 text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
-                                aria-label="decrease"
-                              >
-                                −
-                              </button>
-                              <span className="px-3 font-mono text-[13px] tabular-nums w-8 text-center">
+                            {isMoonbaseEnabled ? (
+                              // Moonbase owns cart-line mutations inside its
+                              // drawer; render qty as plain text here.
+                              <span className="font-mono text-[13px] tabular-nums text-[color:var(--text-secondary)]">
                                 {it.quantity}
                               </span>
-                              <button
-                                type="button"
-                                onClick={() => setQuantity(it.slug, it.license, it.quantity + 1)}
-                                className="px-3 py-1.5 text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
-                                aria-label="increase"
-                              >
-                                +
-                              </button>
-                            </div>
+                            ) : (
+                              <div className="inline-flex items-center border border-[color:var(--border-soft)]">
+                                <button
+                                  type="button"
+                                  onClick={() => setQuantity(it.slug, it.license, it.quantity - 1)}
+                                  className="px-3 py-1.5 text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                                  aria-label="decrease"
+                                >
+                                  −
+                                </button>
+                                <span className="px-3 font-mono text-[13px] tabular-nums w-8 text-center">
+                                  {it.quantity}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => setQuantity(it.slug, it.license, it.quantity + 1)}
+                                  className="px-3 py-1.5 text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                                  aria-label="increase"
+                                >
+                                  +
+                                </button>
+                              </div>
+                            )}
                           </td>
                           <td className="py-6 pr-4 text-right font-mono text-[13px] tabular-nums text-[color:var(--text-secondary)]">
                             ${it.price.toFixed(2)}
@@ -105,13 +114,15 @@ const Cart = () => {
                             <div className="font-mono text-[14px] tabular-nums text-[color:var(--text-primary)]">
                               ${(it.price * it.quantity).toFixed(2)}
                             </div>
-                            <button
-                              type="button"
-                              onClick={() => remove(it.slug, it.license)}
-                              className="mt-2 text-[11px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
-                            >
-                              remove
-                            </button>
+                            {!isMoonbaseEnabled && (
+                              <button
+                                type="button"
+                                onClick={() => remove(it.slug, it.license)}
+                                className="mt-2 text-[11px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                              >
+                                remove
+                              </button>
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -120,13 +131,23 @@ const Cart = () => {
                 </div>
 
                 <div className="mt-16 flex flex-col md:flex-row md:items-end md:justify-between gap-10 border-t border-hairline pt-10">
-                  <button
-                    type="button"
-                    onClick={clear}
-                    className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial self-start"
-                  >
-                    clear cart
-                  </button>
+                  {isMoonbaseEnabled ? (
+                    <button
+                      type="button"
+                      onClick={() => Moonbase.view_cart()}
+                      className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial self-start"
+                    >
+                      edit cart →
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={clear}
+                      className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial self-start"
+                    >
+                      clear cart
+                    </button>
+                  )}
 
                   <div className="md:text-right">
                     <div className="flex md:justify-end items-baseline gap-6">

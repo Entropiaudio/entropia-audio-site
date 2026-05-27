@@ -33,6 +33,23 @@ npm run test:watch # watch mode
 - `src/components/` — shared UI
 - `public/screenshots/` — product imagery
 
+## storefront (moonbase)
+
+Commerce is delegated to a Moonbase embedded storefront. The integration is
+**path B** — the site's marketing/account/cart pages stay; Moonbase's modal
+owns sign-in, sign-up, cart mutations, checkout, and account management.
+
+To enable in any environment:
+
+1. Set `VITE_MOONBASE_URL` to the storefront URL (e.g. `https://entropiaudio.moonbase.sh`).
+2. In the Moonbase admin, whitelist every origin that needs to embed —
+   `https://entropiaudio.com`, the Netlify URL, and `http://localhost:8080`.
+3. For Netlify, add the same env var under
+   *site settings → environment variables* and trigger a fresh deploy.
+
+Leaving `VITE_MOONBASE_URL` unset keeps the localStorage prototype in play —
+useful for offline dev. The prototype is **not** safe for real customer data.
+
 ## deploy
 
 The site auto-deploys from `main` via Netlify.

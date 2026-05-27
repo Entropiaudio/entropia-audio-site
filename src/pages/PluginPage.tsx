@@ -87,19 +87,24 @@ const PluginPage = () => {
   const c = copy.chaosverb;
   const onSale = plugin.regularPrice > plugin.price;
 
-  const addToCart = (license: "perpetual" | "rent-to-own", goToCart = false) => {
-    add({ slug: plugin.slug, name: plugin.name, price: plugin.price, license });
+  const addToCart = (goToCart = false) => {
+    add({ slug: plugin.slug, name: plugin.name, price: plugin.price, license: "perpetual" });
     if (goToCart) {
       navigate("/cart");
     } else {
-      toast({ title: copy.shared.addedToCart(plugin.name), description: license });
+      toast({ title: copy.shared.addedToCart(plugin.name), description: "perpetual" });
     }
   };
 
   return (
     <SiteLayout>
-      {/* ---------- sticky CTA strip ---------- */}
-      <div className="sticky top-20 z-30 bg-[color:var(--bg)]/85 backdrop-blur-md border-b border-hairline">
+      {/* ---------- sticky CTA strip ----------
+           top tracks SiteHeader's --header-h variable so the strip sits flush
+           against the header both at full height (5rem) and shrunken (4rem). */}
+      <div
+        className="sticky z-30 bg-[color:var(--bg)]/85 backdrop-blur-md border-b border-hairline transition-[top] duration-[500ms] ease-editorial"
+        style={{ top: "var(--header-h, 5rem)" }}
+      >
         <div className="max-w-wide mx-auto px-6 md:px-10 h-14 flex items-center justify-between gap-4">
           <span className="hidden md:inline text-[12px] font-mono uppercase tracking-[0.22em] text-[color:var(--text-primary)]">
             {plugin.name}
@@ -115,7 +120,7 @@ const PluginPage = () => {
               as="button"
               type="button"
               strength={5}
-              onClick={() => addToCart("perpetual", true)}
+              onClick={() => addToCart(true)}
               className="group inline-flex items-baseline gap-2 text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial tabular-nums"
             >
               <span className="link-draw pb-1">
