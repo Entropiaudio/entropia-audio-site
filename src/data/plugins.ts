@@ -17,10 +17,12 @@ export type PluginDemo = {
   slug: string;
   title: string;
   caption: string;
-  /** path under /public, e.g. /demos/chaosverb-mixbus.mp3. empty until file ships. */
-  src: string;
-  /** optional dry track for A/B */
+  /** path under /public for the dry-only stem */
   drySrc?: string;
+  /** path under /public for the dry + wet mix (the default mode) */
+  dryWetSrc?: string;
+  /** path under /public for the wet-only stem */
+  wetSrc?: string;
 };
 
 export type Plugin = {
@@ -58,15 +60,17 @@ export const plugins: Plugin[] = [
       slug: d.slug,
       title: d.title,
       caption: d.caption,
-      src: "",
-      drySrc: undefined,
+      drySrc: `/demos/${d.slug}-dry.wav`,
+      dryWetSrc: `/demos/${d.slug}-dry-and-wet.wav`,
+      wetSrc: `/demos/${d.slug}-wet.wav`,
     })),
     specs: [
       ...copy.chaosverb.specs,
-      { label: "Version", value: "0.0.7b" },
+      { label: "Version", value: "0.10.0" },
     ],
-    version: "0.0.7b",
+    version: "0.10.0",
     screenshot: "/screenshots/chaosverb.png",
+    downloadWinUrl: "/downloads/Chaosverb-0.10.0-Windows-x64.exe",
   },
 ];
 

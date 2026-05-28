@@ -3,7 +3,7 @@
 // When VITE_MOONBASE_URL is set, items are sourced from the Moonbase event
 // mirror (see lib/moonbase-state.ts) and mutations fire Moonbase intents.
 // When unset, the original localStorage prototype runs unchanged so dev
-// without an account keeps working. Consumers call `useCart()` either way —
+// without an account keeps working. Consumers call `useCart()` either way,
 // the surface is the same.
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { safeGet, safeSet } from "@/lib/storage";
@@ -11,7 +11,7 @@ import { isMoonbaseEnabled, Moonbase } from "@/lib/moonbase";
 import { getCartSnapshot, subscribeCart } from "@/lib/moonbase-state";
 import { useAuth } from "./AuthContext";
 
-/** Narrowed to perpetual — the only Moonbase license model the storefront ships. */
+/** Narrowed to perpetual, the only Moonbase license model the storefront ships. */
 export type CartLicense = "perpetual";
 
 export type CartItem = {
@@ -54,7 +54,7 @@ const clampQty = (n: number) => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Moonbase-backed provider — Path B: site UI, Moonbase backend.       */
+/* Moonbase-backed provider, Path B: site UI, Moonbase backend.       */
 /* ------------------------------------------------------------------ */
 
 const MoonbaseCartProvider = ({ children }: { children: ReactNode }) => {
@@ -71,7 +71,7 @@ const MoonbaseCartProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Moonbase doesn't expose direct quantity / remove primitives on the
-  // public SDK — those mutations live inside the cart drawer. Opening
+  // public SDK, those mutations live inside the cart drawer. Opening
   // view_cart() lets the customer adjust there; we keep the seam so the
   // site's cart buttons still work without dropping clicks on the floor.
   const remove: CartState["remove"] = useCallback(() => {
@@ -82,7 +82,7 @@ const MoonbaseCartProvider = ({ children }: { children: ReactNode }) => {
     Moonbase.view_cart();
   }, []);
 
-  // Same reasoning — Moonbase doesn't expose a programmatic clear. View
+  // Same reasoning, Moonbase doesn't expose a programmatic clear. View
   // the cart and let the customer empty it from the drawer.
   const clear = useCallback(() => {
     Moonbase.view_cart();
@@ -98,7 +98,7 @@ const MoonbaseCartProvider = ({ children }: { children: ReactNode }) => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Local prototype — kept for dev without a Moonbase account.          */
+/* Local prototype, kept for dev without a Moonbase account.          */
 /* ------------------------------------------------------------------ */
 
 const LocalCartProvider = ({ children }: { children: ReactNode }) => {
@@ -119,7 +119,7 @@ const LocalCartProvider = ({ children }: { children: ReactNode }) => {
     safeSet(currentKey, items);
   }, [items, currentKey]);
 
-  // Cross-tab sync — only mirror changes to *our* key.
+  // Cross-tab sync, only mirror changes to *our* key.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const onStorage = (e: StorageEvent) => {
@@ -139,7 +139,7 @@ const LocalCartProvider = ({ children }: { children: ReactNode }) => {
   // On user transition, load the partition that belongs to the new identity.
   // The guest → signed-in case still adopts the guest cart (so "browse, fill,
   // sign up, check out" flows uninterrupted), but only when the new user's
-  // partition is empty — never overwrite an existing per-user cart.
+  // partition is empty, never overwrite an existing per-user cart.
   useEffect(() => {
     const currentId = user?.id ?? null;
     const prevId = prevUserIdRef.current;
@@ -151,14 +151,14 @@ const LocalCartProvider = ({ children }: { children: ReactNode }) => {
       safeSet(currentKey, items);
       safeSet(GUEST_CART_KEY, []);
     } else {
-      // Signed-out, or switched user, or signed-in with existing cart — load
+      // Signed-out, or switched user, or signed-in with existing cart, load
       // whatever is persisted for this partition (never leak the previous
       // identity's items).
       initialMount.current = true;
       setItems(stored);
     }
     prevUserIdRef.current = currentId;
-    // intentionally omit `items` from deps — we only want to act on identity
+    // intentionally omit `items` from deps, we only want to act on identity
     // changes, not on cart mutations.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, currentKey]);

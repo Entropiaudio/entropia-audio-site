@@ -5,7 +5,7 @@ import ScrollProgress from "./motion/ScrollProgress";
 import Grain from "./motion/Grain";
 
 const SiteLayout = ({ children }: { children: ReactNode }) => (
-  // overflow-x-clip (not overflow-x-hidden) — `hidden` creates a scroll
+  // overflow-x-clip (not overflow-x-hidden), `hidden` creates a scroll
   // container, which silently breaks `position: sticky` for SiteHeader and
   // PluginPage's buy/try-free strip. `clip` clips overflow visually without
   // creating a scroll context, so sticky stays sticky.

@@ -1,96 +1,362 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { PluginDemo } from "@/data/plugins";
+import {
+  claimPlayback,
+  getAudioContext,
+  loadAudioBuffer,
+  releasePlayback,
+} from "@/lib/audioPlayback";
 
 type Props = {
   demo: PluginDemo;
   index: number;
 };
 
+type Mode = "dry" | "dryWet" | "wet";
+
+const MODE_ORDER: ReadonlyArray<Mode> = ["dry", "dryWet", "wet"];
+const MODE_LABELS: Record<Mode, string> = {
+  dry: "dry",
+  dryWet: "dry + wet",
+  wet: "wet",
+};
+
 const formatTime = (s: number) => {
-  if (!isFinite(s)) return "0:00";
+  if (!isFinite(s) || s < 0) return "0:00";
   const m = Math.floor(s / 60);
   const sec = Math.floor(s % 60).toString().padStart(2, "0");
   return `${m}:${sec}`;
 };
 
+const stemUrl = (demo: PluginDemo, mode: Mode): string | undefined => {
+  if (mode === "dry") return demo.drySrc;
+  if (mode === "wet") return demo.wetSrc;
+  return demo.dryWetSrc;
+};
+
+const FADE_SECONDS = 0.025;
+
 const AudioDemo = ({ demo, index }: Props) => {
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const [mode, setMode] = useState<Mode>("dryWet");
   const [playing, setPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [duration, setDuration] = useState(0);
-  const [current, setCurrent] = useState(0);
-  const [mode, setMode] = useState<"wet" | "dry">("wet");
+  const [currentSec, setCurrentSec] = useState(0);
 
-  const hasDry = !!demo.drySrc;
-  const activeSrc = mode === "dry" ? demo.drySrc ?? demo.src : demo.src;
-  const fileMissing = !activeSrc;
+  // Live Web Audio nodes. Recreated on every (re)start and on every seek.
+  const sourcesRef = useRef<Partial<Record<Mode, AudioBufferSourceNode>>>({});
+  const gainsRef = useRef<Partial<Record<Mode, GainNode>>>({});
+  // Decoded buffers, cached for synchronous seek (avoids waiting for
+  // `loadAudioBuffer`'s promise on every scrub commit).
+  const buffersRef = useRef<Partial<Record<Mode, AudioBuffer>>>({});
+  const startTimeRef = useRef(0);
+  const durationRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+  const lastSecondRef = useRef(-1);
+  // True while the user is dragging the knob, so the rAF tick stops fighting
+  // the drag preview for control of the bar.
+  const draggingRef = useRef(false);
+  // If the user scrubs before pressing play, this is the offset start()
+  // will pick up.
+  const pendingOffsetRef = useRef(0);
+  // Latest mode in a ref so the seek path can read it without re-binding.
+  const modeRef = useRef<Mode>(mode);
+  modeRef.current = mode;
+  const playingRef = useRef(playing);
+  playingRef.current = playing;
 
-  useEffect(() => {
-    const a = audioRef.current;
-    if (!a) return;
-    const onTime = () => {
-      setCurrent(a.currentTime);
-      setProgress(a.duration ? a.currentTime / a.duration : 0);
-    };
-    const onMeta = () => setDuration(a.duration || 0);
-    const onEnd = () => setPlaying(false);
-    a.addEventListener("timeupdate", onTime);
-    a.addEventListener("loadedmetadata", onMeta);
-    a.addEventListener("ended", onEnd);
-    return () => {
-      a.removeEventListener("timeupdate", onTime);
-      a.removeEventListener("loadedmetadata", onMeta);
-      a.removeEventListener("ended", onEnd);
-    };
-  }, [activeSrc]);
+  const progressFillRef = useRef<HTMLDivElement | null>(null);
+  const progressKnobRef = useRef<HTMLDivElement | null>(null);
+  const progressBarRef = useRef<HTMLDivElement | null>(null);
 
-  // When the audio source changes (wet/dry toggle), the <audio> element resets
-  // to time 0 and pauses. Mirror that in React state so the UI doesn't claim
-  // to be playing while the element is actually paused at the start.
-  useEffect(() => {
+  const availableModes = MODE_ORDER.filter((m) => !!stemUrl(demo, m));
+  const anyStem = availableModes.length > 0;
+
+  const setVisualPosition = (offset: number) => {
+    const dur = durationRef.current;
+    if (dur <= 0) return;
+    const pct = Math.max(0, Math.min(100, (offset / dur) * 100));
+    if (progressFillRef.current) progressFillRef.current.style.width = `${pct}%`;
+    if (progressKnobRef.current) progressKnobRef.current.style.left = `${pct}%`;
+  };
+
+  const stop = useCallback(() => {
+    const sources = sourcesRef.current;
+    const gains = gainsRef.current;
+    for (const m of MODE_ORDER) {
+      try {
+        sources[m]?.stop();
+      } catch {
+        /* already stopped */
+      }
+      try {
+        sources[m]?.disconnect();
+      } catch {
+        /* noop */
+      }
+      try {
+        gains[m]?.disconnect();
+      } catch {
+        /* noop */
+      }
+    }
+    sourcesRef.current = {};
+    gainsRef.current = {};
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    setVisualPosition(0);
+    lastSecondRef.current = -1;
+    pendingOffsetRef.current = 0;
     setPlaying(false);
-    setCurrent(0);
-    setProgress(0);
-    setDuration(0);
-  }, [activeSrc]);
+    setCurrentSec(0);
+  }, []);
 
-  const toggle = () => {
-    const a = audioRef.current;
-    if (!a || fileMissing) return;
+  // Stop + release the playback registry slot on unmount.
+  useEffect(() => {
+    return () => {
+      stop();
+      releasePlayback(stop);
+    };
+  }, [stop]);
+
+  // Mode-switch crossfade — only when actively playing. Out of band the new
+  // mode is just remembered for the next start.
+  useEffect(() => {
+    if (!playing) return;
+    const ctx = getAudioContext();
+    const now = ctx.currentTime;
+    for (const m of MODE_ORDER) {
+      const g = gainsRef.current[m];
+      if (!g) continue;
+      const target = m === mode ? 1 : 0;
+      const startVal = g.gain.value;
+      g.gain.cancelScheduledValues(now);
+      g.gain.setValueAtTime(startVal, now);
+      g.gain.linearRampToValueAtTime(target, now + FADE_SECONDS);
+    }
+  }, [mode, playing]);
+
+  /** Build + start the per-stem source/gain nodes at the supplied offset.
+   *  Assumes buffers are already in `buffersRef`. Caller handles cleanup of
+   *  any previous nodes. */
+  const spinUp = (offset: number, leadIn = 0.04) => {
+    const ctx = getAudioContext();
+    const startAt = ctx.currentTime + leadIn;
+    const newSources: Partial<Record<Mode, AudioBufferSourceNode>> = {};
+    const newGains: Partial<Record<Mode, GainNode>> = {};
+
+    for (const m of MODE_ORDER) {
+      const buffer = buffersRef.current[m];
+      if (!buffer) continue;
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.loop = true;
+
+      const gain = ctx.createGain();
+      gain.gain.value = m === modeRef.current ? 1 : 0;
+
+      source.connect(gain).connect(ctx.destination);
+      // start(when, offset) — schedules looped playback to begin at `startAt`
+      // with the source already advanced to `offset` seconds into its buffer.
+      source.start(startAt, offset);
+
+      newSources[m] = source;
+      newGains[m] = gain;
+    }
+
+    sourcesRef.current = newSources;
+    gainsRef.current = newGains;
+    // Pivot the "virtual start" so `ctx.currentTime - startTimeRef = elapsed`
+    // even though we started mid-buffer.
+    startTimeRef.current = startAt - offset;
+  };
+
+  /** Seek to `offset` seconds (clamped). Works while playing (recreates
+   *  sources) or paused (stages the offset for the next start). */
+  const seekToOffset = useCallback((rawOffset: number) => {
+    const dur = durationRef.current;
+    if (dur <= 0 || !anyStem) return;
+    const offset = Math.max(0, Math.min(dur - 0.01, rawOffset));
+
+    setVisualPosition(offset);
+    setCurrentSec(offset);
+    lastSecondRef.current = Math.floor(offset);
+
+    if (!playingRef.current) {
+      pendingOffsetRef.current = offset;
+      return;
+    }
+
+    // Tear down current nodes immediately, then build fresh ones at the new
+    // offset. With buffers cached this is synchronous + cheap.
+    const sources = sourcesRef.current;
+    const gains = gainsRef.current;
+    for (const m of MODE_ORDER) {
+      try {
+        sources[m]?.stop();
+      } catch {
+        /* noop */
+      }
+      try {
+        sources[m]?.disconnect();
+      } catch {
+        /* noop */
+      }
+      try {
+        gains[m]?.disconnect();
+      } catch {
+        /* noop */
+      }
+    }
+    spinUp(offset, 0.01);
+  }, [anyStem]);
+
+  const tickProgress = useCallback(() => {
+    const ctx = getAudioContext();
+    const dur = durationRef.current;
+    if (dur > 0 && !draggingRef.current) {
+      const elapsed = ctx.currentTime - startTimeRef.current;
+      const loopPos = ((elapsed % dur) + dur) % dur;
+      setVisualPosition(loopPos);
+      const sec = Math.floor(loopPos);
+      if (sec !== lastSecondRef.current) {
+        lastSecondRef.current = sec;
+        setCurrentSec(loopPos);
+      }
+    }
+    rafRef.current = requestAnimationFrame(tickProgress);
+  }, []);
+
+  const start = useCallback(async () => {
+    if (!anyStem) return;
+    setLoading(true);
+    try {
+      const ctx = getAudioContext();
+      if (ctx.state === "suspended") await ctx.resume();
+
+      // Fetch + decode every available stem in parallel (cached, so only the
+      // first play pays the cost).
+      const loaded = await Promise.all(
+        availableModes.map((m) =>
+          loadAudioBuffer(stemUrl(demo, m)!).then(
+            (buf) => [m, buf] as const,
+          ),
+        ),
+      );
+
+      const newBuffers: Partial<Record<Mode, AudioBuffer>> = {};
+      let maxDuration = 0;
+      for (const [m, buffer] of loaded) {
+        newBuffers[m] = buffer;
+        maxDuration = Math.max(maxDuration, buffer.duration);
+      }
+      buffersRef.current = newBuffers;
+      durationRef.current = maxDuration;
+      setDuration(maxDuration);
+
+      // Claim mutual exclusion AFTER decoding succeeds, so a slow-loading
+      // demo doesn't preemptively kill a demo that's already playing.
+      claimPlayback(stop);
+
+      const offset = pendingOffsetRef.current;
+      pendingOffsetRef.current = 0;
+      spinUp(offset, 0.06);
+      setPlaying(true);
+
+      if (rafRef.current === null) {
+        rafRef.current = requestAnimationFrame(tickProgress);
+      }
+    } catch (err) {
+      console.error("audio demo failed to start", err);
+      stop();
+    } finally {
+      setLoading(false);
+    }
+  }, [anyStem, availableModes, demo, stop, tickProgress]);
+
+  const onToggle = () => {
     if (playing) {
-      a.pause();
-      setPlaying(false);
+      stop();
+      releasePlayback(stop);
     } else {
-      a.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      void start();
     }
   };
 
-  const scrub = (e: React.MouseEvent<HTMLDivElement>) => {
-    const a = audioRef.current;
-    if (!a || !duration || fileMissing) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const ratio = (e.clientX - rect.left) / rect.width;
-    a.currentTime = Math.max(0, Math.min(duration, ratio * duration));
+  // --------------------------------------------------------------------
+  // Scrub / drag handling on the progress bar.
+  // --------------------------------------------------------------------
+  const offsetFromPointer = (clientX: number): number => {
+    const el = progressBarRef.current;
+    if (!el || durationRef.current <= 0) return 0;
+    const r = el.getBoundingClientRect();
+    const ratio = (clientX - r.left) / r.width;
+    return Math.max(0, Math.min(1, ratio)) * durationRef.current;
   };
 
-  const onScrubKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const a = audioRef.current;
-    if (!a || !duration || fileMissing) return;
+  const onBarPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!anyStem || durationRef.current <= 0) return;
+    // Ignore the keyboard-driven synthetic clicks (no real pointer).
+    if (e.button !== undefined && e.button !== 0) return;
+    const el = e.currentTarget;
+    el.setPointerCapture(e.pointerId);
+    draggingRef.current = true;
+
+    const previewAt = (clientX: number) => {
+      const offset = offsetFromPointer(clientX);
+      setVisualPosition(offset);
+      setCurrentSec(offset);
+      lastSecondRef.current = Math.floor(offset);
+    };
+
+    previewAt(e.clientX);
+
+    const onMove = (ev: PointerEvent) => {
+      previewAt(ev.clientX);
+    };
+
+    const finish = (ev: PointerEvent) => {
+      try {
+        el.releasePointerCapture(ev.pointerId);
+      } catch {
+        /* noop */
+      }
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerup", finish);
+      el.removeEventListener("pointercancel", finish);
+      draggingRef.current = false;
+      seekToOffset(offsetFromPointer(ev.clientX));
+    };
+
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerup", finish);
+    el.addEventListener("pointercancel", finish);
+  };
+
+  const onBarKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!anyStem || durationRef.current <= 0) return;
+    const dur = durationRef.current;
+    const cur = pendingOffsetRef.current ||
+      (playingRef.current
+        ? (getAudioContext().currentTime - startTimeRef.current) % dur
+        : 0);
     if (e.key === "ArrowRight") {
       e.preventDefault();
-      a.currentTime = Math.min(duration, a.currentTime + 2);
+      seekToOffset(Math.min(dur, cur + 5));
     } else if (e.key === "ArrowLeft") {
       e.preventDefault();
-      a.currentTime = Math.max(0, a.currentTime - 2);
-    } else if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
-      toggle();
+      seekToOffset(Math.max(0, cur - 5));
     } else if (e.key === "Home") {
       e.preventDefault();
-      a.currentTime = 0;
+      seekToOffset(0);
     } else if (e.key === "End") {
       e.preventDefault();
-      a.currentTime = duration;
+      seekToOffset(Math.max(0, dur - 0.1));
+    } else if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      onToggle();
     }
   };
 
@@ -111,16 +377,17 @@ const AudioDemo = ({ demo, index }: Props) => {
         <div className="flex items-center gap-5">
           <button
             type="button"
-            onClick={toggle}
-            disabled={fileMissing}
-            aria-label={playing ? "pause" : "play"}
+            onClick={onToggle}
+            disabled={!anyStem || loading}
+            aria-label={playing ? "stop" : "play"}
             className="w-11 h-11 rounded-full border border-[color:var(--text-tertiary)] hover:border-[color:var(--accent-raw)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {playing ? (
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
-                <rect x="2" y="1" width="3" height="10" />
-                <rect x="7" y="1" width="3" height="10" />
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden>
+                <rect x="0" y="0" width="10" height="10" />
               </svg>
+            ) : loading ? (
+              <span className="block w-2 h-2 rounded-full bg-current animate-pulse" />
             ) : (
               <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
                 <path d="M2 1 L11 6 L2 11 Z" />
@@ -129,67 +396,70 @@ const AudioDemo = ({ demo, index }: Props) => {
           </button>
 
           <div
+            ref={progressBarRef}
             role="slider"
             aria-label={`scrub ${demo.title}`}
-            aria-valuenow={Math.round(progress * 100)}
+            aria-valuenow={duration > 0 ? Math.round((currentSec / duration) * 100) : 0}
             aria-valuemin={0}
             aria-valuemax={100}
-            tabIndex={fileMissing ? -1 : 0}
-            onClick={scrub}
-            onKeyDown={onScrubKey}
-            className={`flex-1 h-2 flex items-center relative ${fileMissing ? "" : "cursor-pointer"}`}
+            aria-disabled={!anyStem || undefined}
+            tabIndex={anyStem ? 0 : -1}
+            onPointerDown={onBarPointerDown}
+            onKeyDown={onBarKeyDown}
+            className={`flex-1 h-6 flex items-center relative touch-none select-none ${
+              anyStem ? "cursor-pointer" : ""
+            }`}
           >
             <div className="absolute inset-x-0 h-px bg-[color:var(--text-tertiary)]" />
             <div
+              ref={progressFillRef}
               className="absolute h-px top-1/2 -translate-y-1/2 left-0 bg-[color:var(--accent-raw)]"
-              style={{ width: `${progress * 100}%` }}
+              style={{ width: "0%" }}
             />
             <div
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 bg-[color:var(--accent-raw)] rounded-full"
-              style={{ left: `${progress * 100}%`, opacity: fileMissing ? 0 : 1 }}
+              ref={progressKnobRef}
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-[color:var(--accent-raw)] rounded-full"
+              style={{ left: "0%", opacity: anyStem ? 1 : 0 }}
             />
           </div>
 
           <span className="text-[12px] font-mono tabular-nums text-[color:var(--text-tertiary)] w-20 text-right">
-            {fileMissing ? "0:00 / 0:00" : `${formatTime(current)} / ${formatTime(duration)}`}
+            {anyStem
+              ? `${formatTime(currentSec)} / ${formatTime(duration)}`
+              : "0:00 / 0:00"}
           </span>
         </div>
 
-        {hasDry && (
+        {anyStem && (
           <div className="mt-5 flex items-center gap-4 text-[11px] font-mono uppercase tracking-[0.18em]">
-            <span className="text-[color:var(--text-tertiary)]">a/b</span>
-            <button
-              type="button"
-              onClick={() => setMode("dry")}
-              className={`pb-1 transition-colors duration-[400ms] ease-editorial ${
-                mode === "dry"
-                  ? "text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)]"
-                  : "text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)]"
-              }`}
-            >
-              dry
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("wet")}
-              className={`pb-1 transition-colors duration-[400ms] ease-editorial ${
-                mode === "wet"
-                  ? "text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)]"
-                  : "text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)]"
-              }`}
-            >
-              wet
-            </button>
+            <span className="text-[color:var(--text-tertiary)]">mode</span>
+            {MODE_ORDER.map((m) => {
+              const enabled = !!stemUrl(demo, m);
+              const isActive = mode === m;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  disabled={!enabled}
+                  onClick={() => setMode(m)}
+                  className={`pb-1 transition-colors duration-[400ms] ease-editorial disabled:opacity-30 disabled:cursor-not-allowed ${
+                    isActive
+                      ? "text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)]"
+                      : "text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)]"
+                  }`}
+                >
+                  {MODE_LABELS[m]}
+                </button>
+              );
+            })}
           </div>
         )}
 
-        {fileMissing && (
+        {!anyStem && (
           <p className="mt-5 text-[11px] font-mono text-[color:var(--text-tertiary)] uppercase tracking-[0.18em]">
             // audio coming soon
           </p>
         )}
-
-        <audio ref={audioRef} src={activeSrc || undefined} preload="none" />
       </div>
     </article>
   );

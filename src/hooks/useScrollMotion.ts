@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Editorial scroll-motion primitives — IntersectionObserver + rAF based.
+ * Editorial scroll-motion primitives, IntersectionObserver + rAF based.
  * No external libs. Honors prefers-reduced-motion.
+ *
+ * Scroll-driven hooks are deliberately ref-based and write to DOM directly
+ * (no setState during scroll) so React reconciliation stays out of the
+ * 60fps scroll critical path. Calling setState on every scroll frame is
+ * the most common source of jank on otherwise simple pages.
  */
 
 const prefersReducedMotion = () =>
@@ -50,28 +55,42 @@ export function useReveal<T extends HTMLElement = HTMLElement>(opts?: {
   return ref;
 }
 
-/** Returns 0..1 page scroll progress. Throttled via rAF. */
-export function useScrollProgress() {
-  const [p, setP] = useState(0);
+/**
+ * Returns a ref to attach to a bar element. The hook directly mutates the
+ * element's `style.transform = scaleX(p)` on each scroll frame, so no
+ * React re-renders happen during scroll.
+ */
+export function useScrollProgressRef<T extends HTMLElement = HTMLElement>() {
+  const ref = useRef<T | null>(null);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    const el = ref.current;
+    if (!el || prefersReducedMotion()) return;
+
     let raf = 0;
     let queued = false;
+    let lastP = -1;
+
+    const compute = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const next = max > 0 ? window.scrollY / max : 0;
+      const clamped = next < 0 ? 0 : next > 1 ? 1 : next;
+      // Only write to the DOM if progress moved enough to matter.
+      if (Math.abs(clamped - lastP) > 0.0005) {
+        lastP = clamped;
+        el.style.transform = `scaleX(${clamped})`;
+        el.style.opacity = clamped > 0.001 ? "1" : "0";
+      }
+      queued = false;
+    };
 
     const onScroll = () => {
       if (queued) return;
       queued = true;
-      raf = requestAnimationFrame(() => {
-        const max =
-          document.documentElement.scrollHeight - window.innerHeight;
-        const next = max > 0 ? window.scrollY / max : 0;
-        setP(next < 0 ? 0 : next > 1 ? 1 : next);
-        queued = false;
-      });
+      raf = requestAnimationFrame(compute);
     };
 
-    onScroll();
+    compute();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
@@ -81,7 +100,7 @@ export function useScrollProgress() {
     };
   }, []);
 
-  return p;
+  return ref;
 }
 
 /**
@@ -149,18 +168,25 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength = 14) 
 }
 
 /**
- * Scrubbing reveal: returns 0..1 progress of the element through the viewport.
- * 0 = element entering bottom, 1 = element leaving top.
+ * Scrubbing reveal driver. Accepts a callback that receives 0..1 progress on
+ * each rAF tick during scroll. The consumer is responsible for any DOM
+ * mutations, e.g. setting per-word opacity. Zero React state changes.
+ * Returns a ref to attach to the scrubbed element (used to measure position).
  */
-export function useScrubProgress<T extends HTMLElement = HTMLElement>() {
+export function useScrollScrub<T extends HTMLElement = HTMLElement>(
+  onUpdate: (progress: number) => void,
+) {
   const ref = useRef<T | null>(null);
-  const [progress, setProgress] = useState(0);
+  // Keep the latest callback in a ref so we don't have to re-bind scroll
+  // listeners every render.
+  const cbRef = useRef(onUpdate);
+  cbRef.current = onUpdate;
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     if (prefersReducedMotion()) {
-      setProgress(1);
+      cbRef.current(1);
       return;
     }
 
@@ -170,13 +196,12 @@ export function useScrubProgress<T extends HTMLElement = HTMLElement>() {
     const compute = () => {
       const r = el.getBoundingClientRect();
       const vh = window.innerHeight;
-      // start scrubbing when the element top reaches 85% of viewport, finish when bottom reaches 25%
       const start = vh * 0.85;
       const end = vh * 0.25;
       const span = start - end;
       const traveled = start - r.top;
       const p = Math.max(0, Math.min(1, traveled / span));
-      setProgress(p);
+      cbRef.current(p);
       queued = false;
     };
 
@@ -196,28 +221,36 @@ export function useScrubProgress<T extends HTMLElement = HTMLElement>() {
     };
   }, []);
 
-  return { ref, progress };
+  return ref;
 }
 
-/** Subtle parallax: returns a transform offset in px based on scroll-into-view. */
+/**
+ * Parallax: directly mutates `transform: translate3d(0, Ypx, 0)` on the
+ * referenced element as it moves through the viewport. No React state, no
+ * re-renders during scroll. Returns a ref to attach to the moving element.
+ */
 export function useParallax<T extends HTMLElement = HTMLElement>(amount = 60) {
   const ref = useRef<T | null>(null);
-  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
-    if (prefersReducedMotion()) return;
+    if (!el || prefersReducedMotion()) return;
 
     let raf = 0;
     let queued = false;
+    let last = 0;
 
     const compute = () => {
       const r = el.getBoundingClientRect();
       const vh = window.innerHeight;
       const center = r.top + r.height / 2;
       const ratio = (vh / 2 - center) / vh;
-      setOffset(ratio * amount);
+      const next = ratio * amount;
+      // Subpixel debounce: avoid noisy DOM writes when nothing changed.
+      if (Math.abs(next - last) > 0.25) {
+        last = next;
+        el.style.transform = `translate3d(0, ${next.toFixed(2)}px, 0)`;
+      }
       queued = false;
     };
 
@@ -234,10 +267,11 @@ export function useParallax<T extends HTMLElement = HTMLElement>(amount = 60) {
       cancelAnimationFrame(raf);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      el.style.transform = "";
     };
   }, [amount]);
 
-  return { ref, offset };
+  return ref;
 }
 
 /** Tracks pointer position relative to a target element. Normalized -1..1. */

@@ -2,7 +2,7 @@ import { SVGProps, useId } from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Entropia Audio mark — fractured ring.
+ * Entropia Audio mark, fractured ring.
  *
  * The original asset is a black filled circle with several white shapes layered
  * on top to "punch out" the centre disc and the radial fractures. That trick
@@ -35,13 +35,13 @@ export const Logo = ({ size = 24, className, ...rest }: LogoProps) => {
           {/* anything white = kept; anything black = punched out */}
           <rect x="25" y="67" width="160" height="160" fill="white" />
 
-          {/* inner white disc — opens the centre of the ring */}
+          {/* inner white disc, opens the centre of the ring */}
           <circle cx="105" cy="147.2025" r="56.192581" fill="black" />
 
-          {/* small rect at upper-right — part of the break */}
+          {/* small rect at upper-right, part of the break */}
           <rect x="177.07288" y="100.86997" width="15.444228" height="20.592251" fill="black" />
 
-          {/* big rect across upper-right — the large fracture */}
+          {/* big rect across upper-right, the large fracture */}
           <rect x="105" y="60.69001" width="87.517105" height="40.179966" fill="black" />
 
           {/* radial cracks between segments */}

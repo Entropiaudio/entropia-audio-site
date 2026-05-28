@@ -10,6 +10,37 @@ import { MOTION } from "@/components/motion/timing";
 import { toast } from "@/hooks/use-toast";
 import { useAuth, License, Order } from "@/context/AuthContext";
 import { isMoonbaseEnabled, Moonbase } from "@/lib/moonbase";
+import { plugins } from "@/data/plugins";
+
+/** Pick the right installer URL for a license: prefer the license-carried URL
+ *  (set by the backend once Moonbase issues a real download), then fall back
+ *  to the static per-plugin URL from data/plugins.ts. OS-aware so Mac users
+ *  get the Mac installer when both exist. */
+const detectOS = (): "mac" | "win" | "other" => {
+  if (typeof navigator === "undefined") return "other";
+  const ua = navigator.userAgent;
+  if (/Mac|iPhone|iPad|iPod/i.test(ua)) return "mac";
+  if (/Win/i.test(ua)) return "win";
+  return "other";
+};
+
+const resolveDownload = (license: License): { url: string; label: string } | null => {
+  if (license.downloadUrl) return { url: license.downloadUrl, label: "download" };
+  const plugin = plugins.find(
+    (p) => p.name.toLowerCase() === license.plugin.toLowerCase(),
+  );
+  if (!plugin) return null;
+  const os = detectOS();
+  const mac = plugin.downloadMacUrl;
+  const win = plugin.downloadWinUrl;
+  if (os === "mac" && mac) return { url: mac, label: "download (macOS)" };
+  if (os === "win" && win) return { url: win, label: "download (Windows)" };
+  // Either OS unknown, or the matched platform is unavailable, fall through
+  // to whichever installer we do have.
+  if (mac) return { url: mac, label: "download (macOS)" };
+  if (win) return { url: win, label: "download (Windows)" };
+  return null;
+};
 
 const fieldClass =
   "bg-transparent border-b border-[color:var(--border-soft)] focus:border-[color:var(--accent-raw)] outline-none py-3 text-[15px] font-sans tracking-[0.005em] w-full transition-colors duration-[400ms] ease-editorial";
@@ -26,17 +57,15 @@ const safeNext = (raw: string | null): string => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Logged-out view — branches on backend.                              */
+/* Logged-out view, branches on backend.                              */
 /* ------------------------------------------------------------------ */
 
 const LoggedOutMoonbase = () => {
   const [mode, setMode] = useState<"login" | "signup">("login");
-  const [email, setEmail] = useState("");
 
-  const open = (e: FormEvent) => {
-    e.preventDefault();
-    if (mode === "login") Moonbase.sign_in(email ? { email } : undefined);
-    else Moonbase.sign_up(email ? { email } : undefined);
+  const open = () => {
+    if (mode === "login") Moonbase.sign_in();
+    else Moonbase.sign_up();
   };
 
   return (
@@ -65,32 +94,21 @@ const LoggedOutMoonbase = () => {
             </p>
           </Reveal>
 
-          <form onSubmit={open} className="flex flex-col gap-7">
-            <label className="flex flex-col gap-3">
-              <span className={labelClass}>email (optional, prefills the form)</span>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={fieldClass}
-              />
-            </label>
-
-            <button
-              type="submit"
-              className="group inline-flex items-baseline gap-2 self-start mt-4 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
-            >
-              <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
-                {mode === "login" ? "sign in" : "create account"}
-              </span>
-              <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
-            </button>
-          </form>
+          <button
+            type="button"
+            onClick={open}
+            className="group inline-flex items-baseline gap-2 self-start text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+          >
+            <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+              {mode === "login" ? "sign in" : "create account"}
+            </span>
+            <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+          </button>
 
           <button
             type="button"
             onClick={() => setMode(mode === "login" ? "signup" : "login")}
-            className="mt-10 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+            className="block mt-10 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
           >
             {mode === "login"
               ? "no account? create one →"
@@ -223,12 +241,13 @@ const LoggedOutLocal = () => {
 const LoggedOut = () => (isMoonbaseEnabled ? <LoggedOutMoonbase /> : <LoggedOutLocal />);
 
 /* ------------------------------------------------------------------ */
-/* Logged-in view — table layout shared, settings section branches.    */
+/* Logged-in view, table layout shared, settings section branches.    */
 /* ------------------------------------------------------------------ */
 
 const LicenseRow = ({ license }: { license: License }) => {
   const [revealed, setRevealed] = useState(false);
   const masked = "••••-••••-••••-••••-" + license.key.slice(-4);
+  const download = resolveDownload(license);
   return (
     <tr className="border-t border-hairline">
       <td className="py-5 pr-4 font-sans text-[15px] text-[color:var(--text-primary)]">{license.plugin}</td>
@@ -244,12 +263,13 @@ const LicenseRow = ({ license }: { license: License }) => {
         </button>
       </td>
       <td className="py-5 pr-4">
-        {license.downloadUrl ? (
+        {download ? (
           <a
-            href={license.downloadUrl}
+            href={download.url}
+            download
             className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] border-b border-[color:var(--text-primary)] hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[400ms] ease-editorial"
           >
-            download
+            {download.label}
           </a>
         ) : (
           <span

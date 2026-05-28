@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* entropia audio — editorial, restrained, warm dark.
+/* entropia audio, editorial, restrained, warm dark.
    tokens live here. tailwind reads the HSL-channel vars; components can also
    read the raw hex/rgba vars directly when an exact spec value is required.   */
 
@@ -52,7 +52,7 @@
     --plugin-surface: 26 11% 13%;
     --plugin-surface-foreground: 40 28% 87%;
 
-    /* corners stay architectural — never above 4px */
+    /* corners stay architectural, never above 4px */
     --radius: 0.125rem;               /* 2px */
 
     --sidebar-background: 24 14% 7%;
@@ -87,6 +87,37 @@
     @apply bg-background text-foreground;
     font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
     font-weight: 400;
+    /* Editorial display feel, no I-beam, no accidental text selection on
+       headlines and body copy. Form fields opt back in below. */
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  /* Form fields, code blocks, and anything explicitly marked .selectable keep
+     normal text behaviour so users can type, paste, and copy meaningful
+     content (license keys, prices, error messages, etc.). */
+  input,
+  textarea,
+  select,
+  [contenteditable="true"],
+  [contenteditable=""],
+  code,
+  pre,
+  kbd,
+  samp,
+  .selectable,
+  .selectable * {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+    cursor: text;
+  }
+
+  select,
+  option {
+    cursor: default;
   }
 
   .font-mono,
@@ -143,7 +174,7 @@
     border-color: hsl(var(--foreground) / 0.08);
   }
 
-  /* font-family helpers — typography utility classes come in Step 2 */
+  /* font-family helpers, typography utility classes come in Step 2 */
   .font-display {
     font-family: 'Montserrat', system-ui, sans-serif;
     font-weight: 300;
@@ -159,7 +190,7 @@
     letter-spacing: 0;
   }
 
-  /* magazine measure — tuned for ~62ch at 18px Fraunces */
+  /* magazine measure, tuned for ~62ch at 18px Fraunces */
   .measure {
     max-width: 62ch;
   }
@@ -184,7 +215,7 @@
 
 /* ---------- editorial scroll-reveal ---------- */
 
-/* base — set everything reveal-tagged to an idle (pre-enter) state */
+/* base, set everything reveal-tagged to an idle (pre-enter) state */
 [data-reveal="up"] {
   opacity: 0;
   transform: translateY(36px);
@@ -246,7 +277,7 @@
 /* ---------- subtle hover scale wrappers ----------
    .hover-zoom keeps `overflow: hidden` for the parallax + image wrappers that
    rely on clipping (PluginPage hero, alternating sections, ProductRow, About).
-   The hover scale itself is disabled per design call — images stay static. */
+   The hover scale itself is disabled per design call, images stay static. */
 .hover-zoom { overflow: hidden; }
 
 /* ---------- the link underline draw ---------- */

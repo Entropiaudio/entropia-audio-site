@@ -3,15 +3,15 @@ import { cn } from "@/lib/utils";
 
 interface HeroVisualProps {
   className?: string;
-  /** Particles per 100k pixels. Default 0.18 — quiet density. */
+  /** Particles per 100k pixels. Default 0.18, quiet density. */
   density?: number;
   /** 0..1 opacity ceiling for the particle alpha. */
   intensity?: number;
 }
 
 /**
- * Slow-breathing flow-field particle drift on canvas. Cursor-reactive: a soft
- * gravitational pull warps the field around the pointer. Honors prefers-reduced-motion
+ * Slow-breathing flow-field particle drift on canvas. Non-interactive, the
+ * field drifts under its own flow noise only. Honors prefers-reduced-motion
  * by rendering a single static frame with no rAF loop.
  */
 export const HeroVisual = ({
@@ -37,13 +37,6 @@ export const HeroVisual = ({
     let particles: Array<{ x: number; y: number; vx: number; vy: number; life: number; phase: number }> = [];
     let rafId: number | null = null;
     let t = 0;
-
-    // pointer state — normalized canvas coords, smoothed
-    let pxTarget = -9999;
-    let pyTarget = -9999;
-    let pxSmooth = -9999;
-    let pySmooth = -9999;
-    let pointerActive = false;
 
     const seedParticles = () => {
       const count = Math.max(80, Math.floor((width * height) / 10000 * density));
@@ -77,41 +70,13 @@ export const HeroVisual = ({
 
       t += 0.00022;
 
-      // smooth pointer toward target
-      if (pointerActive) {
-        pxSmooth = pxSmooth === -9999 ? pxTarget : pxSmooth + (pxTarget - pxSmooth) * 0.08;
-        pySmooth = pySmooth === -9999 ? pyTarget : pySmooth + (pyTarget - pySmooth) * 0.08;
-      } else {
-        // drift back to off-screen
-        pxSmooth += (-9999 - pxSmooth) * 0.02;
-        pySmooth += (-9999 - pySmooth) * 0.02;
-      }
-
-      const pullRadius = Math.min(width, height) * 0.35;
-      const pullRadiusSq = pullRadius * pullRadius;
-
       for (const p of particles) {
         const ax = Math.sin(p.x * 0.0035 + t * 1.0) + Math.cos(p.y * 0.0028 - t * 0.7);
         const ay = Math.cos(p.x * 0.0030 - t * 0.9) + Math.sin(p.y * 0.0036 + t * 0.6);
         const angle = (ax + ay) * 0.9;
 
-        let fx = Math.cos(angle) * 0.006;
-        let fy = Math.sin(angle) * 0.006;
-
-        // pointer attraction with a perpendicular swirl
-        if (pointerActive && pxSmooth > -1000) {
-          const dx = pxSmooth - p.x;
-          const dy = pySmooth - p.y;
-          const dsq = dx * dx + dy * dy;
-          if (dsq < pullRadiusSq && dsq > 1) {
-            const d = Math.sqrt(dsq);
-            const falloff = 1 - d / pullRadius;
-            const radial = falloff * 0.04;
-            const swirl = falloff * 0.06;
-            fx += (dx / d) * radial + (-dy / d) * swirl;
-            fy += (dy / d) * radial + (dx / d) * swirl;
-          }
-        }
+        const fx = Math.cos(angle) * 0.006;
+        const fy = Math.sin(angle) * 0.006;
 
         p.vx = (p.vx + fx) * 0.95;
         p.vy = (p.vy + fy) * 0.95;
@@ -162,26 +127,13 @@ export const HeroVisual = ({
         resize();
       });
     };
-    const onPointerMove = (e: PointerEvent) => {
-      const r = canvas.getBoundingClientRect();
-      pxTarget = e.clientX - r.left;
-      pyTarget = e.clientY - r.top;
-      pointerActive = true;
-    };
-    const onPointerLeave = () => {
-      pointerActive = false;
-    };
 
     window.addEventListener("resize", onResize);
-    wrap.addEventListener("pointermove", onPointerMove);
-    wrap.addEventListener("pointerleave", onPointerLeave);
 
     return () => {
       if (rafId !== null) cancelAnimationFrame(rafId);
       if (resizeRaf) cancelAnimationFrame(resizeRaf);
       window.removeEventListener("resize", onResize);
-      wrap.removeEventListener("pointermove", onPointerMove);
-      wrap.removeEventListener("pointerleave", onPointerLeave);
     };
   }, [density, intensity]);
 

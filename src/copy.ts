@@ -1,5 +1,5 @@
 /* ============================================================================
- * site copy — every word on the website lives here.
+ * site copy, every word on the website lives here.
  * ============================================================================
  *
  * how to edit:
@@ -111,22 +111,22 @@ export const copy = {
 
     demos: [
       {
-        slug: "mix-bus",
-        title: "on a mix bus.",
+        slug: "drums",
+        title: "drums.",
         caption:
-          "drums and vocal through Chaosverb at low chaos. wide, three-dimensional, gets out of the way.",
+          "a clean example of a beautiful roomy reverb, to give life and space to the drum bus.",
       },
       {
-        slug: "chaos-sweep",
-        title: "the chaos engine, sweeping.",
+        slug: "vox",
+        title: "vocals.",
         caption:
-          "a sustained synth note with mutation set to one bar. the reverb keeps moving without ever clicking.",
+          "lush, long, dense reverb to make your vocals truly shine, while feeling a tad experimental.",
       },
       {
-        slug: "drum-to-pad",
-        title: "drum hit becomes a pad.",
+        slug: "sound-design",
+        title: "sound design.",
         caption:
-          "single snare hit, long decay, mutation at four bars, mix at 100%. the source disappears into texture.",
+          "listen how the chaos engine can produce really weird results when changing rapidly and pushed to an OTT.",
       },
     ],
 
@@ -251,7 +251,7 @@ export const copy = {
         {
           heading: "7. contact",
           body:
-            "Questions, edge cases, polite requests — email us and we'll figure it out together.",
+            "Questions, edge cases, polite requests, email us and we'll figure it out together.",
         },
       ],
     },
@@ -304,7 +304,7 @@ export const copy = {
   },
 
   /* -------------------------------------------------------------------------
-   * contact email — used in footer + about page
+   * contact email, used in footer + about page
    * ------------------------------------------------------------------------- */
   contactEmail: "contact@entropiaudio.com",
 } as const;

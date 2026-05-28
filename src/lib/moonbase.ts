@@ -3,7 +3,7 @@
  *
  * Single point of contact with `@moonbase.sh/storefront`. When VITE_MOONBASE_URL
  * is unset the SDK never boots, and the rest of the site falls back to the
- * localStorage prototype AuthContext / CartContext — useful for local dev
+ * localStorage prototype AuthContext / CartContext, useful for local dev
  * without a Moonbase account.
  *
  * Manual steps still required before this does anything:
@@ -14,7 +14,7 @@
  *   3. Set VITE_MOONBASE_URL in .env.local (and in Netlify env for prod).
  */
 
-// @ts-expect-error — @moonbase.sh/storefront has no bundled type re-exports for the default.
+// @ts-expect-error, @moonbase.sh/storefront has no bundled type re-exports for the default.
 import Moonbase, { MoonbaseEvent } from "@moonbase.sh/storefront";
 
 export { Moonbase, MoonbaseEvent };
@@ -26,7 +26,7 @@ let started = false;
 
 /**
  * Boot Moonbase once on app start. Theming pins to the closest match for the
- * site's editorial dark theme — the Moonbase modal/checkout UI still renders
+ * site's editorial dark theme, the Moonbase modal/checkout UI still renders
  * inside its own DOM tree with its own fonts, so this is the best we can do
  * without dropping to a Custom Integration build.
  */
@@ -34,7 +34,7 @@ export const initMoonbase = () => {
   if (started || !moonbaseUrl) return;
   started = true;
   // setup() is async; we don't await because the rest of the app boots fine
-  // before Moonbase's first storefront fetch completes — the event mirror
+  // before Moonbase's first storefront fetch completes, the event mirror
   // will fill in user/cart/orders when StorefrontUpdated fires.
   void Moonbase.setup(moonbaseUrl, {
     toolbar: {

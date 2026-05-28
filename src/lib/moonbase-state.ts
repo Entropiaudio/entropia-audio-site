@@ -2,7 +2,7 @@
  * Moonbase event mirror.
  *
  * Subscribes to MoonbaseEvent.* lifecycle events and projects them into the
- * shape the site's existing AuthContext / CartContext already use — so
+ * shape the site's existing AuthContext / CartContext already use, so
  * consumer components don't change when Path B (delegate backend, keep site
  * UI) is wired up.
  *
@@ -12,7 +12,7 @@
  *   - readySnapshot   → boolean     (has Moonbase delivered at least one
  *                                    StorefrontUpdated yet)
  *
- * Mapping is intentionally defensive — the Moonbase API surface is wide,
+ * Mapping is intentionally defensive, the Moonbase API surface is wide,
  * zod-inferred, and we only need a handful of fields for our UI. Unknown
  * shapes fall through to sensible defaults rather than throwing.
  */
@@ -112,7 +112,7 @@ const mapMoonbaseLicense = (l: unknown, fallbackPlugin: string, orderId: string)
   const obj = (l && typeof l === "object" ? l : {}) as Record<string, unknown>;
   return {
     plugin: productName(obj.product, asString(obj.product_name, fallbackPlugin)),
-    version: asString(obj.version, "—"),
+    version: asString(obj.version, "-"),
     key: asString(obj.key ?? obj.code ?? obj.license_key, ""),
     date: asString(obj.issued_at ?? obj.created_at, new Date().toISOString()),
     orderId,
@@ -190,7 +190,7 @@ const mapMoonbaseCart = (storefront: unknown): CartItem[] => {
 let bound = false;
 
 /**
- * Idempotent — wire event listeners exactly once. Safe to call from anywhere,
+ * Idempotent, wire event listeners exactly once. Safe to call from anywhere,
  * but currently invoked from initMoonbase() in main.tsx via lib/moonbase.ts.
  */
 export const bindMoonbaseEvents = () => {

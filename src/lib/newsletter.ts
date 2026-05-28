@@ -1,4 +1,4 @@
-// MOONBASE INTEGRATION SEAM — once VITE_MOONBASE_URL is set and Moonbase
+// MOONBASE INTEGRATION SEAM, once VITE_MOONBASE_URL is set and Moonbase
 // exposes a list-subscription endpoint, route through it from inside
 // subscribeToNewsletter(). Until then the function queues subscribers in
 // localStorage so dev environments don't silently drop signups; the queue is
@@ -35,5 +35,5 @@ export const subscribeToNewsletter = async (rawEmail: string): Promise<Newslette
   return { ok: true, queued: !exists, pending: true };
 };
 
-/** Dev-only — inspect the local queue (e.g., from the console). */
+/** Dev-only, inspect the local queue (e.g., from the console). */
 export const getNewsletterQueue = () => safeGet<QueueEntry[]>(QUEUE_KEY, []);

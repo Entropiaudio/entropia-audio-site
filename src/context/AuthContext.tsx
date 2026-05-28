@@ -6,7 +6,7 @@
 // unset, the original localStorage prototype runs unchanged so dev without
 // an account keeps working.
 //
-// Consumers call `useAuth()` either way — the shape is the same.
+// Consumers call `useAuth()` either way, the shape is the same.
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { safeGet, safeSet } from "@/lib/storage";
 import { isMoonbaseEnabled, Moonbase } from "@/lib/moonbase";
@@ -43,7 +43,7 @@ export type AuthResult = { ok: true } | { ok: false; error: string };
 type AuthState = {
   user: User | null;
   isAuthed: boolean;
-  /** With Moonbase enabled, `password` is ignored — the Moonbase modal owns
+  /** With Moonbase enabled, `password` is ignored, the Moonbase modal owns
    *  credentials. `email` is forwarded as a prefill so the user doesn't
    *  retype it. */
   signIn: (email: string, password?: string) => Promise<User | void>;
@@ -64,7 +64,7 @@ const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const MIN_PASSWORD_LEN = 6;
 const normalizeEmail = (e: string) => e.trim().toLowerCase();
 
-// djb2-xor — collision-prone, NOT cryptographically secure. Acceptable only
+// djb2-xor, collision-prone, NOT cryptographically secure. Acceptable only
 // because this whole module is a localStorage prototype that gets replaced by
 // Moonbase before real customer data lives here. See guard below.
 const hash = (s: string) => {
@@ -77,18 +77,18 @@ const loadDb = () => safeGet<Db>(DB_KEY, {});
 const saveDb = (db: Db) => safeSet(DB_KEY, db);
 
 if (typeof window !== "undefined" && import.meta.env.PROD && !isMoonbaseEnabled) {
-  // Loud, console-only — the prototype DB is fine for staging but should never
+  // Loud, console-only, the prototype DB is fine for staging but should never
   // hold real customer data. Set VITE_MOONBASE_URL before going live.
   console.warn(
     "[entropia auth] Moonbase is not configured (VITE_MOONBASE_URL unset). " +
-      "Falling back to the localStorage prototype — do not collect real customer credentials.",
+      "Falling back to the localStorage prototype, do not collect real customer credentials.",
   );
 }
 
 const AuthContext = createContext<AuthState | null>(null);
 
 /* ------------------------------------------------------------------ */
-/* Moonbase-backed provider — fires intents, mirrors user via events.  */
+/* Moonbase-backed provider, fires intents, mirrors user via events.  */
 /* ------------------------------------------------------------------ */
 
 const MoonbaseAuthProvider = ({ children }: { children: ReactNode }) => {
@@ -112,7 +112,7 @@ const MoonbaseAuthProvider = ({ children }: { children: ReactNode }) => {
     Moonbase.view_account();
   }, []);
 
-  // Email / password edits live inside the Moonbase account modal — opening
+  // Email / password edits live inside the Moonbase account modal, opening
   // it is the closest analogue to the site's old inline form.
   const updateEmail = useCallback(async (): Promise<AuthResult> => {
     Moonbase.view_account();
@@ -124,7 +124,7 @@ const MoonbaseAuthProvider = ({ children }: { children: ReactNode }) => {
     return { ok: true };
   }, []);
 
-  // No-op — Moonbase issues licenses + orders, the StorefrontUpdated event
+  // No-op, Moonbase issues licenses + orders, the StorefrontUpdated event
   // delivers them. The local prototype's attachOrder was only there to fake
   // post-checkout persistence.
   const attachOrder = useCallback(() => {
@@ -149,7 +149,7 @@ const MoonbaseAuthProvider = ({ children }: { children: ReactNode }) => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Local prototype — kept for dev without a Moonbase account.          */
+/* Local prototype, kept for dev without a Moonbase account.          */
 /* ------------------------------------------------------------------ */
 
 const LocalAuthProvider = ({ children }: { children: ReactNode }) => {
@@ -165,7 +165,7 @@ const LocalAuthProvider = ({ children }: { children: ReactNode }) => {
     safeSet(USER_KEY, user);
   }, [user]);
 
-  // Cross-tab session sync — sign-out / sign-in in another tab propagates here.
+  // Cross-tab session sync, sign-out / sign-in in another tab propagates here.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const onStorage = (e: StorageEvent) => {
@@ -283,7 +283,7 @@ const LocalAuthProvider = ({ children }: { children: ReactNode }) => {
         db[prev.email] = { ...rec, user: next };
         saveDb(db);
       } else if (typeof window !== "undefined") {
-        // Orphaned session — the DB was wiped while this tab was signed in.
+        // Orphaned session, the DB was wiped while this tab was signed in.
         // Keep the order in the live user state so the checkout receipt still
         // renders, but warn loudly: it won't survive sign-out.
         console.warn(

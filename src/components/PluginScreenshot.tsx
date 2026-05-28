@@ -2,7 +2,7 @@ type Props = {
   name: string;
   className?: string;
   ratio?: "wide" | "square" | "hero";
-  /** When true, render minimal — no labels — useful for grid contexts. */
+  /** When true, render minimal, no labels, useful for grid contexts. */
   bare?: boolean;
   /** Optional image source. When provided, renders the real screenshot. */
   src?: string;

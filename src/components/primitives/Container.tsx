@@ -6,7 +6,7 @@ type Width = "editorial" | "wide" | "narrow";
 interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   width?: Width;
-  /** Indent from the gutter — supports the asymmetric grid */
+  /** Indent from the gutter, supports the asymmetric grid */
   indent?: "none" | "sm" | "md" | "lg";
 }
 

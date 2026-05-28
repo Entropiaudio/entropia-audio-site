@@ -2,6 +2,7 @@ import { useParams, Navigate, useNavigate } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
 import PluginScreenshot from "@/components/PluginScreenshot";
 import AudioDemo from "@/components/AudioDemo";
+import HeroVisual from "@/components/HeroVisual";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
@@ -31,7 +32,7 @@ const AlternatingSection = ({
   screenshot?: string;
 }) => {
   const reversed = index % 2 === 1;
-  const { ref: parallaxRef, offset } = useParallax<HTMLDivElement>(28);
+  const parallaxRef = useParallax<HTMLDivElement>(28);
   return (
     <article
       className={`grid md:grid-cols-12 gap-10 md:gap-16 items-center py-24 md:py-32 border-t border-hairline ${
@@ -43,10 +44,7 @@ const AlternatingSection = ({
         {...MOTION.section.image}
         className={`md:col-span-6 hover-zoom ${reversed ? "md:col-start-7" : ""}`}
       >
-        <div
-          ref={parallaxRef}
-          style={{ transform: `translate3d(0, ${offset.toFixed(2)}px, 0)` }}
-        >
+        <div ref={parallaxRef}>
           <PluginScreenshot
             name={pluginName}
             ratio="wide"
@@ -137,8 +135,21 @@ const PluginPage = () => {
       </div>
 
       {/* ---------- product hero ---------- */}
-      <Section pad="lg">
-        <Container width="wide">
+      <Section pad="lg" className="relative isolate overflow-hidden">
+        {/* Ambient flow-field behind the screenshot + eyebrow, matching the
+            homepage hero. Pointer-events disabled so it never interferes
+            with hover-zoom / scroll. */}
+        <HeroVisual className="absolute inset-0 z-0 pointer-events-none" />
+        {/* Vignette to anchor the content over the field. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-[1]"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(20,17,15,0) 35%, rgba(20,17,15,0.45) 100%)",
+          }}
+        />
+        <Container width="wide" className="relative z-10">
           <div className="md:pl-8 lg:pl-16">
             <Reveal variant="up" {...MOTION.page.eyebrow}>
               <Eyebrow className="mb-12">

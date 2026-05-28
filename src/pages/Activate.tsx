@@ -4,10 +4,10 @@
 // endpoint and receives a `browser` URL to open. With the "Embedded Widget"
 // storefront mode, that URL points at this site. The SDK's internal
 // `handleLocationIntent` already handles `?mb_intent=activate_product&mb_token=...`
-// on boot — but this explicit route handles two additional cases:
+// on boot, but this explicit route handles two additional cases:
 //   1. Path-style URLs like `/activate?token=...` (some Moonbase deploys, or
 //      links forwarded by users)
-//   2. When VITE_MOONBASE_URL is not configured — we redirect to the hosted
+//   2. When VITE_MOONBASE_URL is not configured, we redirect to the hosted
 //      portal so the activation still completes instead of dead-ending.
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";

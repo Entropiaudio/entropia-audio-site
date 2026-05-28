@@ -53,32 +53,30 @@ const SiteHeader = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Expose current header height as a CSS variable so other sticky bars
-  // (PluginPage's buy/try-free strip) can sit flush against the header
-  // whether it's in shrunken or full height. Matches h-20 / h-16 above.
+  // Expose header height as a CSS variable so other sticky bars
+  // (PluginPage's buy/try-free strip) can sit flush against the header.
+  // Header is now a constant 5rem (h-20), no shrink on scroll.
   useEffect(() => {
-    document.documentElement.style.setProperty("--header-h", scrolled ? "4rem" : "5rem");
-  }, [scrolled]);
+    document.documentElement.style.setProperty("--header-h", "5rem");
+  }, []);
 
   return (
     <header
-      className={`sticky top-0 z-40 transition-[background-color,backdrop-filter,height,border-color] duration-[500ms] ease-editorial ${
+      className={`sticky top-0 z-40 backdrop-blur-lg transition-[background-color,border-color] duration-[500ms] ease-editorial ${
         scrolled
-          ? "bg-[color:var(--bg)]/90 backdrop-blur-xl border-b border-hairline"
-          : "bg-[color:var(--bg)]/55 backdrop-blur-md border-b border-transparent"
+          ? "bg-[color:var(--bg)]/90 border-b border-hairline"
+          : "bg-[color:var(--bg)]/55 border-b border-transparent"
       }`}
     >
       <div
-        className={`max-w-wide mx-auto px-6 md:px-10 flex items-center justify-between transition-[height] duration-[500ms] ease-editorial ${
-          scrolled ? "h-16" : "h-20"
-        }`}
+        className="max-w-wide mx-auto px-6 md:px-10 flex items-center justify-between h-20"
       >
         <Link
           to="/"
           aria-label={c.wordmark}
           className="group inline-flex items-center gap-3 text-[12px] font-mono uppercase tracking-[0.22em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
         >
-          <Logo size={scrolled ? 22 : 26} className="transition-[width,height] duration-[500ms] ease-editorial" />
+          <Logo size={26} />
           <span>{c.wordmark}</span>
         </Link>
 
@@ -126,12 +124,12 @@ const SiteHeader = () => {
         </button>
       </div>
 
-      {/* mobile nav panel — intentionally NOT role=dialog/aria-modal because
+      {/* mobile nav panel, intentionally NOT role=dialog/aria-modal because
           we don't trap focus. Escape closes via the keydown handler above. */}
       {open && (
         <div
           id="mobile-nav"
-          className="md:hidden fixed left-0 right-0 top-16 z-30 bg-[color:var(--bg)] overflow-y-auto h-[calc(100dvh-4rem)]"
+          className="md:hidden fixed left-0 right-0 top-20 z-30 bg-[color:var(--bg)] overflow-y-auto h-[calc(100dvh-5rem)]"
         >
           <nav className="px-6 pt-6 pb-10 flex flex-col">
             {plugins.map((p) => (

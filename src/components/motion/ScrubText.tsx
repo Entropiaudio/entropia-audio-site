@@ -1,5 +1,5 @@
-import { CSSProperties } from "react";
-import { useScrubProgress } from "@/hooks/useScrollMotion";
+import { CSSProperties, useCallback, useMemo, useRef } from "react";
+import { useScrollScrub } from "@/hooks/useScrollMotion";
 import { cn } from "@/lib/utils";
 
 interface ScrubTextProps {
@@ -12,8 +12,10 @@ interface ScrubTextProps {
 }
 
 /**
- * Word-by-word opacity scrub keyed to the element's progress through the viewport.
- * Words tween from 0.18 to 1.0 sequentially as the user scrolls past.
+ * Word-by-word opacity scrub keyed to the element's progress through the
+ * viewport. Words tween from 0.18 to 1.0 sequentially as the user scrolls
+ * past. Per-frame work is direct DOM mutation, no React re-renders during
+ * scroll.
  */
 const ScrubText = ({
   children,
@@ -21,30 +23,55 @@ const ScrubText = ({
   wordClassName,
   style,
 }: ScrubTextProps) => {
-  const { ref, progress } = useScrubProgress<HTMLParagraphElement>();
-  const words = children.split(/(\s+)/);
+  // Split into words once. `tokens` includes whitespace tokens (rendered as
+  // plain spans) and `wordIndices` tracks just the real-word positions so we
+  // know the stage centre for each word.
+  const { tokens, wordCount } = useMemo(() => {
+    const t = children.split(/(\s+)/);
+    const count = t.filter((w) => w.trim().length > 0).length;
+    return { tokens: t, wordCount: count };
+  }, [children]);
 
-  // count real words for staging
-  const wordCount = words.filter((w) => w.trim().length > 0).length;
+  // Each non-whitespace token gets a ref; opacity is written directly here.
+  const wordRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
-  let wordIdx = -1;
+  const handleUpdate = useCallback(
+    (progress: number) => {
+      let wordIdx = -1;
+      for (let i = 0; i < tokens.length; i++) {
+        if (tokens[i].trim().length === 0) continue;
+        wordIdx++;
+        const center = wordCount > 1 ? wordIdx / (wordCount - 1) : 0.5;
+        const local = (progress - center * 0.85) / 0.18 + 0.5;
+        const reveal = local < 0 ? 0 : local > 1 ? 1 : local;
+        const op = 0.18 + reveal * 0.82;
+        const el = wordRefs.current[i];
+        if (el) el.style.opacity = op.toFixed(3);
+      }
+    },
+    [tokens, wordCount],
+  );
+
+  const ref = useScrollScrub<HTMLParagraphElement>(handleUpdate);
+
+  // Reset the refs array length on every render so removed tokens don't
+  // hold stale entries.
+  wordRefs.current.length = tokens.length;
+
   return (
     <p ref={ref} className={cn(className)} style={style}>
-      {words.map((w, i) => {
+      {tokens.map((w, i) => {
         if (w.trim().length === 0) {
           return <span key={i}>{w}</span>;
         }
-        wordIdx++;
-        // each word's "center" at i / (count - 1); ramp over a small window
-        const center = wordCount > 1 ? wordIdx / (wordCount - 1) : 0.5;
-        const local = (progress - center * 0.85) / 0.18 + 0.5;
-        const reveal = Math.max(0, Math.min(1, local));
-        const op = 0.18 + reveal * 0.82;
         return (
           <span
             key={i}
+            ref={(el) => {
+              wordRefs.current[i] = el;
+            }}
             className={cn("transition-opacity duration-100", wordClassName)}
-            style={{ opacity: op }}
+            style={{ opacity: 0.18 }}
           >
             {w}
           </span>

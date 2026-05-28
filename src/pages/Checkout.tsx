@@ -1,4 +1,4 @@
-// Checkout — branches by storefront backend.
+// Checkout, branches by storefront backend.
 //
 // With Moonbase: this page becomes a thin mount point. We fire
 // Moonbase.checkout() on mount, listen for CheckoutCompleted (→ /order/:id)
@@ -34,7 +34,7 @@ const labelClass =
   "text-[11px] font-sans font-medium uppercase tracking-[0.12em] text-[color:var(--text-tertiary)]";
 
 /* ------------------------------------------------------------------ */
-/* Moonbase mount — opens the storefront checkout, waits for outcome.   */
+/* Moonbase mount, opens the storefront checkout, waits for outcome.   */
 /* ------------------------------------------------------------------ */
 
 const MoonbaseCheckoutMount = () => {
@@ -99,7 +99,7 @@ const MoonbaseCheckoutMount = () => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Local prototype checkout — kept for dev without a Moonbase account.  */
+/* Local prototype checkout, kept for dev without a Moonbase account.  */
 /* ------------------------------------------------------------------ */
 
 const LocalCheckout = () => {

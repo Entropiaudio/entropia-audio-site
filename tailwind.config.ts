@@ -20,7 +20,7 @@ export default {
         mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       fontSize: {
-        // editorial type scale — paired with weight + tracking utilities
+        // editorial type scale, paired with weight + tracking utilities
         'eyebrow':         ['12px',  { lineHeight: '1', letterSpacing: '0.12em', fontWeight: '500' }],
         'eyebrow-lg':      ['13px',  { lineHeight: '1', letterSpacing: '0.12em', fontWeight: '500' }],
         'ui':              ['14px',  { lineHeight: '1.4',  letterSpacing: '0',     fontWeight: '500' }],
@@ -56,7 +56,7 @@ export default {
         '192': '48rem',
       },
       colors: {
-        // raw spec colors — usable as bg-bg, text-text-primary, etc.
+        // raw spec colors, usable as bg-bg, text-text-primary, etc.
         bg:            'var(--bg)',
         surface:       'var(--surface)',
         'surface-elevated': 'var(--surface-elevated)',
@@ -67,7 +67,7 @@ export default {
         'copper-muted':'var(--accent-muted)',
         'border-soft': 'var(--border-soft)',
 
-        // shadcn / tailwind tokens (HSL-channel) — kept for compatibility
+        // shadcn / tailwind tokens (HSL-channel), kept for compatibility
         hairline: "hsl(var(--hairline))",
         "plugin-surface": {
           DEFAULT: "hsl(var(--plugin-surface))",
@@ -118,7 +118,7 @@ export default {
         },
       },
       borderRadius: {
-        // cap at 4px — keep edges architectural
+        // cap at 4px, keep edges architectural
         none: '0',
         DEFAULT: '2px',
         sm: '1px',

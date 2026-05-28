@@ -12,7 +12,7 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
   const c = copy.productRow;
   const cv = copy.chaosverb;
   const onSale = plugin.regularPrice > plugin.price;
-  const { ref: parallaxRef, offset } = useParallax<HTMLDivElement>(36);
+  const parallaxRef = useParallax<HTMLDivElement>(36);
 
   return (
     <article className="relative grid md:grid-cols-12 gap-10 md:gap-16 items-center py-24 md:py-32 border-t border-hairline first:border-t-0">
@@ -26,10 +26,7 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
           aria-label={`open ${plugin.name}`}
           className="block hover-zoom group"
         >
-          <div
-            ref={parallaxRef}
-            style={{ transform: `translate3d(0, ${offset.toFixed(2)}px, 0)` }}
-          >
+          <div ref={parallaxRef}>
             <PluginScreenshot
               name={plugin.name}
               ratio="wide"
