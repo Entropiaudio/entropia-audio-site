@@ -423,12 +423,43 @@ const SettingsLocal = () => {
   );
 };
 
-const SettingsMoonbase = () => (
-  <section>
-    <Eyebrow className="mb-8">account settings</Eyebrow>
-    <p className="font-sans text-[15px] leading-[1.7] text-[color:var(--text-secondary)] max-w-[52ch] mb-8">
-      change your email, password, or marketing preferences in the moonbase
-      account panel.
+/** Account header — signed-in email + sign-out, shared by both backends. */
+const AccountHeader = ({ email, onSignOut }: { email: string; onSignOut: () => void }) => (
+  <Reveal variant="up" {...MOTION.page.eyebrow} className="flex items-start justify-between gap-6 flex-wrap mb-20">
+    <div>
+      <Eyebrow accent className="mb-3">// signed in as</Eyebrow>
+      <p className="font-display font-light text-[28px] md:text-[36px] tracking-[-0.015em] text-[color:var(--text-primary)]">
+        {email}
+      </p>
+    </div>
+    <button
+      type="button"
+      onClick={onSignOut}
+      className="group inline-flex items-baseline gap-2 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial md:pt-7"
+    >
+      <span className="link-draw">sign out</span>
+      <span className="transition-transform duration-[400ms] ease-editorial group-hover:translate-x-0.5">→</span>
+    </button>
+  </Reveal>
+);
+
+/** One labelled CTA that opens the Moonbase account modal. All three intents
+ *  land in the same modal (Moonbase exposes only `view_account`); the labels
+ *  exist so the user's mental model — "licenses live there, orders live
+ *  there" — stays explicit. */
+const MoonbaseAccountLink = ({
+  eyebrow,
+  description,
+  cta,
+}: {
+  eyebrow: string;
+  description: string;
+  cta: string;
+}) => (
+  <section className="mb-16">
+    <Eyebrow className="mb-6">{eyebrow}</Eyebrow>
+    <p className="font-sans text-[15px] leading-[1.7] text-[color:var(--text-secondary)] max-w-[52ch] mb-6">
+      {description}
     </p>
     <button
       type="button"
@@ -436,38 +467,61 @@ const SettingsMoonbase = () => (
       className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
     >
       <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
-        manage account
+        {cta}
       </span>
       <span className="transition-transform duration-[400ms] ease-editorial group-hover:translate-x-1">→</span>
     </button>
   </section>
 );
 
-const LoggedIn = () => {
+/* Moonbase-backed signed-in view. Licenses, orders, downloads, and account
+ * settings all live behind the moonbase account modal — the embedded SDK
+ * doesn't surface them as data, so the site delegates rather than half-
+ * rendering them. */
+const LoggedInMoonbase = () => {
   const { user, signOut } = useAuth();
-
   if (!user) return null;
 
   return (
     <Section pad="xl">
       <Container width="wide">
         <div className="md:pl-8 lg:pl-16 max-w-[1080px]">
-          <Reveal variant="up" {...MOTION.page.eyebrow} className="flex items-start justify-between gap-6 flex-wrap mb-20">
-            <div>
-              <Eyebrow accent className="mb-3">// signed in as</Eyebrow>
-              <p className="font-display font-light text-[28px] md:text-[36px] tracking-[-0.015em] text-[color:var(--text-primary)]">
-                {user.email}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={signOut}
-              className="group inline-flex items-baseline gap-2 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial md:pt-7"
-            >
-              <span className="link-draw">sign out</span>
-              <span className="transition-transform duration-[400ms] ease-editorial group-hover:translate-x-0.5">→</span>
-            </button>
-          </Reveal>
+          <AccountHeader email={user.email} onSignOut={signOut} />
+
+          <MoonbaseAccountLink
+            eyebrow="licenses & downloads"
+            description="view your active licenses, reveal license keys, and download installers in your moonbase account."
+            cta="open licenses"
+          />
+
+          <MoonbaseAccountLink
+            eyebrow="orders"
+            description="view your order history, receipts, and payment methods in your moonbase account."
+            cta="open orders"
+          />
+
+          <MoonbaseAccountLink
+            eyebrow="account settings"
+            description="change your email, password, or marketing preferences in your moonbase account."
+            cta="manage account"
+          />
+        </div>
+      </Container>
+    </Section>
+  );
+};
+
+/* Local-prototype signed-in view. Renders the original in-site licenses /
+ * orders / settings tables, kept for dev runs without a Moonbase account. */
+const LoggedInLocal = () => {
+  const { user, signOut } = useAuth();
+  if (!user) return null;
+
+  return (
+    <Section pad="xl">
+      <Container width="wide">
+        <div className="md:pl-8 lg:pl-16 max-w-[1080px]">
+          <AccountHeader email={user.email} onSignOut={signOut} />
 
           <section className="mb-24">
             <Eyebrow className="mb-8">licenses</Eyebrow>
@@ -529,12 +583,14 @@ const LoggedIn = () => {
             )}
           </section>
 
-          {isMoonbaseEnabled ? <SettingsMoonbase /> : <SettingsLocal />}
+          <SettingsLocal />
         </div>
       </Container>
     </Section>
   );
 };
+
+const LoggedIn = () => (isMoonbaseEnabled ? <LoggedInMoonbase /> : <LoggedInLocal />);
 
 const Account = () => {
   const { isAuthed } = useAuth();

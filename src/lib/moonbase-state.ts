@@ -7,7 +7,10 @@
  * UI) is wired up.
  *
  * Three projected stores:
- *   - userSnapshot    → User | null (id, email, licenses[], orders[])
+ *   - userSnapshot    → User | null (id, email; licenses + orders stay empty
+ *                                    because the embedded SDK doesn't expose
+ *                                    them — the Account page delegates to
+ *                                    `Moonbase.view_account()` instead)
  *   - cartSnapshot    → CartItem[]  (slug, name, price, license, quantity)
  *   - readySnapshot   → boolean     (has Moonbase delivered at least one
  *                                    StorefrontUpdated yet)
@@ -17,7 +20,7 @@
  * shapes fall through to sensible defaults rather than throwing.
  */
 import type { CartItem } from "@/context/CartContext";
-import type { License, Order, User } from "@/context/AuthContext";
+import type { User } from "@/context/AuthContext";
 import { isMoonbaseEnabled, Moonbase, MoonbaseEvent } from "./moonbase";
 
 type Listener = () => void;
@@ -108,70 +111,22 @@ const mapMoonbaseCartItem = (item: unknown): CartItem | null => {
   };
 };
 
-const mapMoonbaseLicense = (l: unknown, fallbackPlugin: string, orderId: string): License => {
-  const obj = (l && typeof l === "object" ? l : {}) as Record<string, unknown>;
-  return {
-    plugin: productName(obj.product, asString(obj.product_name, fallbackPlugin)),
-    version: asString(obj.version, "-"),
-    key: asString(obj.key ?? obj.code ?? obj.license_key, ""),
-    date: asString(obj.issued_at ?? obj.created_at, new Date().toISOString()),
-    orderId,
-    downloadUrl: typeof obj.download_url === "string" ? obj.download_url : undefined,
-  };
-};
-
-const mapMoonbaseOrder = (o: unknown): Order => {
-  const obj = (o && typeof o === "object" ? o : {}) as Record<string, unknown>;
-  const id = asString(obj.id ?? obj.number ?? obj.reference, "");
-  const items = asArray(obj.line_items ?? obj.items).map((line) => {
-    const li = (line && typeof line === "object" ? line : {}) as Record<string, unknown>;
-    const product = li.product ?? li.bundle ?? li;
-    const slug = productSlug(product, "");
-    return {
-      slug,
-      name: productName(product, slug),
-      price: moneyAmount(li.unit_price ?? li.price ?? li.total),
-      quantity: asNumber(li.quantity, 1),
-      license: "perpetual" as const,
-    };
-  });
-  return {
-    id,
-    date: asString(obj.completed_at ?? obj.created_at, new Date().toISOString()),
-    total: moneyAmount(obj.total ?? obj.amount),
-    items,
-    paymentLast4: asString(
-      (obj.payment as Record<string, unknown> | undefined)?.last4 ?? obj.last4,
-      "····",
-    ),
-  };
-};
-
-const mapMoonbaseUser = (u: unknown, storefront: unknown): User | null => {
+// Moonbase user identity only. The embedded storefront SDK doesn't surface
+// the rich license records or order history — those live behind separate
+// REST endpoints. The site delegates all of that to `Moonbase.view_account()`
+// (see Account.tsx), so `licenses` and `orders` here intentionally stay empty
+// for the Moonbase path; they're populated only by the local prototype.
+const mapMoonbaseUser = (u: unknown): User | null => {
   if (!u || typeof u !== "object") return null;
   const obj = u as Record<string, unknown>;
   const id = asString(obj.id, "");
   if (!id) return null;
-  const orders = asArray((obj.orders as unknown) ?? (storefront as Record<string, unknown>)?.orders).map(
-    mapMoonbaseOrder,
-  );
-  const licenses: License[] = [];
-  for (const owned of asArray(
-    obj.owned_products ?? (storefront as Record<string, unknown>)?.owned_products,
-  )) {
-    const op = (owned && typeof owned === "object" ? owned : {}) as Record<string, unknown>;
-    const productLabel = productName(op.product, productSlug(op.product, "plugin"));
-    const orderId = asString(op.order_id, "");
-    for (const lic of asArray(op.licenses)) {
-      licenses.push(mapMoonbaseLicense(lic, productLabel, orderId));
-    }
-  }
   return {
     id,
     email: asString(obj.email, ""),
-    createdAt: asString(obj.created_at, new Date().toISOString()),
-    licenses,
-    orders,
+    createdAt: asString(obj.createdAt ?? obj.created_at, new Date().toISOString()),
+    licenses: [],
+    orders: [],
   };
 };
 
@@ -198,18 +153,18 @@ export const bindMoonbaseEvents = () => {
   bound = true;
 
   Moonbase.on(MoonbaseEvent.StorefrontUpdated, (event: { storefront: unknown; user?: unknown }) => {
-    userStore.set(mapMoonbaseUser(event.user, event.storefront));
+    userStore.set(mapMoonbaseUser(event.user));
     cartStore.set(mapMoonbaseCart(event.storefront));
     readyStore.set(true);
   });
 
   Moonbase.on(MoonbaseEvent.SignedIn, (event: { user: unknown }) => {
-    const next = mapMoonbaseUser(event.user, null);
+    const next = mapMoonbaseUser(event.user);
     if (next) userStore.set(next);
   });
 
   Moonbase.on(MoonbaseEvent.SignedUp, (event: { user: unknown }) => {
-    const next = mapMoonbaseUser(event.user, null);
+    const next = mapMoonbaseUser(event.user);
     if (next) userStore.set(next);
   });
 
@@ -219,15 +174,13 @@ export const bindMoonbaseEvents = () => {
   });
 
   Moonbase.on(MoonbaseEvent.CheckoutCompleted, (event: { order: unknown; user?: unknown }) => {
-    // The next StorefrontUpdated tick will deliver the authoritative state,
-    // but optimistically clear the cart and append the order so the redirect
-    // / order-success render isn't empty.
+    // Optimistically clear the cart so the order-success redirect renders
+    // cleanly; the next StorefrontUpdated tick will deliver the authoritative
+    // user state. We don't keep the order locally — the Moonbase account
+    // modal owns order history.
     cartStore.set([]);
-    const order = mapMoonbaseOrder(event.order);
-    const next = mapMoonbaseUser(event.user, null);
-    if (next) {
-      userStore.set({ ...next, orders: [order, ...next.orders.filter((o) => o.id !== order.id)] });
-    }
+    const next = mapMoonbaseUser(event.user);
+    if (next) userStore.set(next);
   });
 
   Moonbase.on(MoonbaseEvent.AddedToCart, (event: { item: unknown }) => {
