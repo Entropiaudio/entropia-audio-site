@@ -21,7 +21,7 @@
  */
 import type { CartItem } from "@/context/CartContext";
 import type { User } from "@/context/AuthContext";
-import { isMoonbaseEnabled, Moonbase, MoonbaseEvent } from "./moonbase";
+import { DISPLAY_CURRENCY, isMoonbaseEnabled, Moonbase, MoonbaseEvent } from "./moonbase";
 
 type Listener = () => void;
 
@@ -44,8 +44,13 @@ const makeStore = <T,>(initial: T) => {
   };
 };
 
+/** USD-resolved pricing for a product slug, projected from the storefront so
+ * the product page / cards advertise the same number the cart will charge. */
+export type PluginPricing = { price: number; regularPrice: number };
+
 const userStore = makeStore<User | null>(null);
 const cartStore = makeStore<CartItem[]>([]);
+const pricingStore = makeStore<Record<string, PluginPricing>>({});
 const readyStore = makeStore<boolean>(false);
 
 export const subscribeUser = userStore.subscribe;
@@ -53,6 +58,9 @@ export const getUserSnapshot = userStore.get;
 
 export const subscribeCart = cartStore.subscribe;
 export const getCartSnapshot = cartStore.get;
+
+export const subscribePricing = pricingStore.subscribe;
+export const getPricingSnapshot = pricingStore.get;
 
 export const subscribeReady = readyStore.subscribe;
 export const getReadySnapshot = readyStore.get;
@@ -71,14 +79,27 @@ const asNumber = (v: unknown, fallback = 0): number => {
 
 const asArray = <T = unknown>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
 
-/** Money in Moonbase comes back as { amount, currency } where amount is in
- * minor units (cents). Convert defensively. */
-const moneyAmount = (m: unknown): number => {
+/** Pluck a per-currency amount out of either:
+ *   - a `Record<currency, number>` (variation/line-item `price`, already in
+ *     major units — `{ USD: 36, ILS: 105 }`, see kt() formatter in the SDK)
+ *   - a `Money` `{ currency, amount }` (line-item `total.subtotal` etc., also
+ *     major units)
+ * Tries each currency in `prefer` order (USD first, see DISPLAY_CURRENCY),
+ * then any Money amount, then the first numeric value. 0 when nothing matches. */
+const moneyAmount = (m: unknown, prefer: readonly (string | null)[]): number => {
   if (typeof m === "number") return m;
-  if (m && typeof m === "object") {
-    const obj = m as Record<string, unknown>;
-    const minor = asNumber(obj.amount, NaN);
-    if (Number.isFinite(minor)) return minor / 100;
+  if (!m || typeof m !== "object") return 0;
+  const obj = m as Record<string, unknown>;
+  // Currency record: honour the preference order so USD wins even when the
+  // order's own currency (and Moonbase's geo-suggested one) is something else.
+  for (const c of prefer) {
+    if (c && typeof obj[c] === "number") return obj[c] as number;
+  }
+  // Money shape: { currency, amount } — single fixed currency, can't reselect.
+  if (typeof obj.amount === "number") return obj.amount;
+  // Last resort: whatever currency Moonbase happened to ship first.
+  for (const v of Object.values(obj)) {
+    if (typeof v === "number") return v;
   }
   return 0;
 };
@@ -87,7 +108,7 @@ const moneyAmount = (m: unknown): number => {
 const productSlug = (p: unknown, fallback = ""): string => {
   if (!p || typeof p !== "object") return fallback;
   const obj = p as Record<string, unknown>;
-  return asString(obj.slug ?? obj.id ?? obj.product_id ?? obj.code, fallback);
+  return asString(obj.slug ?? obj.id ?? obj.productId ?? obj.product_id ?? obj.code, fallback);
 };
 
 const productName = (p: unknown, fallback = ""): string => {
@@ -96,18 +117,40 @@ const productName = (p: unknown, fallback = ""): string => {
   return asString(obj.name ?? obj.title ?? obj.label, fallback);
 };
 
-const mapMoonbaseCartItem = (item: unknown): CartItem | null => {
+const mapMoonbaseCartItem = (item: unknown, sessionCurrency: string | null): CartItem | null => {
   if (!item || typeof item !== "object") return null;
   const obj = item as Record<string, unknown>;
-  const product = obj.product ?? obj.bundle ?? obj.variation ?? obj;
-  const slug = productSlug(product, asString(obj.product_id ?? obj.bundle_id, ""));
+  // Enriched line items (see Storefront.enrichLineItems in the SDK) carry the
+  // full `product` / `bundle` and `variation` objects alongside the raw line.
+  // Bare server-side line items only carry `productId` / `variationId`.
+  const product = obj.product ?? obj.bundle;
+  const variation = obj.variation;
+  const slug = productSlug(
+    product ?? variation,
+    asString(obj.productId ?? obj.bundleId ?? obj.product_id ?? obj.bundle_id, ""),
+  );
   if (!slug) return null;
+  // Present USD; fall back to the order's own currency, then anything, so a
+  // missing USD entry never zeroes the line.
+  const prefer = [DISPLAY_CURRENCY, sessionCurrency];
+  // Prefer the enriched `price` record (already discount-applied by
+  // applyToVariation), then variation.price, then derive from total.subtotal.
+  const quantity = Math.max(1, asNumber(obj.quantity, 1));
+  const total = obj.total as Record<string, unknown> | undefined;
+  const subtotal = total?.subtotal;
+  let price = moneyAmount(obj.price, prefer);
+  if (price === 0 && variation && typeof variation === "object") {
+    price = moneyAmount((variation as Record<string, unknown>).price, prefer);
+  }
+  if (price === 0 && subtotal) {
+    price = moneyAmount(subtotal, prefer) / quantity;
+  }
   return {
     slug,
-    name: productName(product, slug),
-    price: moneyAmount(obj.unit_price ?? obj.price ?? obj.total),
+    name: productName(product ?? variation, slug),
+    price,
     license: "perpetual",
-    quantity: asNumber(obj.quantity, 1),
+    quantity,
   };
 };
 
@@ -130,16 +173,88 @@ const mapMoonbaseUser = (u: unknown): User | null => {
   };
 };
 
-/** Pull current cart from the storefront payload (Moonbase carries the
- * authoritative cart in storefront.cart.items). */
-const mapMoonbaseCart = (storefront: unknown): CartItem[] => {
-  if (!storefront || typeof storefront !== "object") return [];
-  const obj = storefront as Record<string, unknown>;
-  const cart = (obj.cart as Record<string, unknown> | undefined) ?? {};
-  const items = asArray(cart.items ?? cart.line_items);
-  return items
-    .map(mapMoonbaseCartItem)
-    .filter((x): x is CartItem => x !== null);
+/** The Moonbase SDK persists the authoritative cart (its `currentOrder`) to
+ * `localStorage["moonbase_session"]` on every change. There's no public
+ * read-API for it, and the StorefrontUpdated event payload doesn't include
+ * cart contents — so we re-hydrate from storage on every relevant tick. */
+const MOONBASE_SESSION_KEY = "moonbase_session";
+let suggestedCurrency: string | null = null;
+
+const readCartFromStorage = (): CartItem[] => {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(MOONBASE_SESSION_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as Record<string, unknown> | null;
+    if (!parsed) return [];
+    const currency = asString(parsed.currency, "") || suggestedCurrency;
+    return asArray(parsed.items)
+      .map((it) => mapMoonbaseCartItem(it, currency))
+      .filter((x): x is CartItem => x !== null);
+  } catch {
+    return [];
+  }
+};
+
+const refreshCartFromStorage = () => {
+  const next = readCartFromStorage();
+  // Avoid clobbering identity when nothing actually changed — shallow-compare
+  // by length + per-line slug/qty/price so React renders stay cheap.
+  const prev = cartStore.get();
+  if (
+    prev.length === next.length &&
+    prev.every((p, i) =>
+      p.slug === next[i].slug &&
+      p.quantity === next[i].quantity &&
+      p.price === next[i].price &&
+      p.license === next[i].license,
+    )
+  ) {
+    return;
+  }
+  cartStore.set(next);
+};
+
+/** Project per-product USD pricing from the storefront's product variations.
+ * `price` is the sale figure (Moonbase folds discounts into `price`); the
+ * crossed-out `regularPrice` comes from `originalPrice`. Keyed by product id —
+ * the same slug the routes (`/plugins/:slug`) and cart lines use. */
+const mapStorefrontPricing = (storefront: unknown): Record<string, PluginPricing> => {
+  if (!storefront || typeof storefront !== "object") return {};
+  const products = asArray((storefront as Record<string, unknown>).products);
+  const prefer = [DISPLAY_CURRENCY, suggestedCurrency];
+  const out: Record<string, PluginPricing> = {};
+  for (const p of products) {
+    if (!p || typeof p !== "object") continue;
+    const obj = p as Record<string, unknown>;
+    const slug = asString(obj.id, "");
+    if (!slug) continue;
+    const variation = (obj.defaultVariation ?? asArray(obj.variations)[0]) as
+      | Record<string, unknown>
+      | undefined;
+    if (!variation) continue;
+    const price = moneyAmount(variation.price, prefer);
+    if (price <= 0) continue;
+    const regular = moneyAmount(variation.originalPrice, prefer);
+    out[slug] = { price, regularPrice: regular > price ? regular : price };
+  }
+  return out;
+};
+
+const samePricing = (
+  a: Record<string, PluginPricing>,
+  b: Record<string, PluginPricing>,
+): boolean => {
+  const ak = Object.keys(a);
+  if (ak.length !== Object.keys(b).length) return false;
+  return ak.every(
+    (k) => b[k] && a[k].price === b[k].price && a[k].regularPrice === b[k].regularPrice,
+  );
+};
+
+const refreshPricing = (storefront: unknown) => {
+  const next = mapStorefrontPricing(storefront);
+  if (!samePricing(pricingStore.get(), next)) pricingStore.set(next);
 };
 
 let bound = false;
@@ -154,18 +269,28 @@ export const bindMoonbaseEvents = () => {
 
   Moonbase.on(MoonbaseEvent.StorefrontUpdated, (event: { storefront: unknown; user?: unknown }) => {
     userStore.set(mapMoonbaseUser(event.user));
-    cartStore.set(mapMoonbaseCart(event.storefront));
+    // Track the active currency for cart line-item price extraction. The SDK
+    // sets currentOrder.currency = storefront.suggestedCurrency on each
+    // storefront refresh, so this matches what the cart drawer renders.
+    const storefront = (event.storefront as Record<string, unknown> | null) ?? null;
+    if (storefront) {
+      suggestedCurrency = asString(storefront.suggestedCurrency, "") || suggestedCurrency;
+    }
+    refreshPricing(event.storefront);
+    refreshCartFromStorage();
     readyStore.set(true);
   });
 
   Moonbase.on(MoonbaseEvent.SignedIn, (event: { user: unknown }) => {
     const next = mapMoonbaseUser(event.user);
     if (next) userStore.set(next);
+    refreshCartFromStorage();
   });
 
   Moonbase.on(MoonbaseEvent.SignedUp, (event: { user: unknown }) => {
     const next = mapMoonbaseUser(event.user);
     if (next) userStore.set(next);
+    refreshCartFromStorage();
   });
 
   Moonbase.on(MoonbaseEvent.SignedOut, () => {
@@ -183,21 +308,26 @@ export const bindMoonbaseEvents = () => {
     if (next) userStore.set(next);
   });
 
-  Moonbase.on(MoonbaseEvent.AddedToCart, (event: { item: unknown }) => {
-    // Moonbase will fire StorefrontUpdated shortly after; the optimistic local
-    // append below keeps the header count snappy on slow networks.
-    const mapped = mapMoonbaseCartItem(event.item);
-    if (!mapped) return;
-    const current = cartStore.get();
-    const idx = current.findIndex((c) => c.slug === mapped.slug && c.license === mapped.license);
-    if (idx === -1) {
-      cartStore.set([...current, mapped]);
-    } else {
-      const merged = [...current];
-      merged[idx] = { ...merged[idx], quantity: merged[idx].quantity + mapped.quantity };
-      cartStore.set(merged);
-    }
+  Moonbase.on(MoonbaseEvent.AddedToCart, (event: { item: unknown; currency?: unknown }) => {
+    // The SDK writes the new order to localStorage before dispatching this
+    // event, so a fresh read always picks up the authoritative line, with
+    // server-priced amounts and the right currency.
+    const currency = asString(event.currency, "") || suggestedCurrency;
+    if (currency) suggestedCurrency = currency;
+    refreshCartFromStorage();
   });
+
+  // Prime from storage so a hard refresh shows the cart instantly, before the
+  // first StorefrontUpdated tick lands.
+  refreshCartFromStorage();
+
+  // Cross-tab sync: when another tab mutates the Moonbase session (add to
+  // cart, drawer quantity change, sign out), mirror it here.
+  if (typeof window !== "undefined") {
+    window.addEventListener("storage", (e) => {
+      if (e.key === MOONBASE_SESSION_KEY) refreshCartFromStorage();
+    });
+  }
 };
 
 /** Helper for use in `useSyncExternalStore` SSR path. We're CSR-only, so

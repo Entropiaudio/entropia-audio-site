@@ -22,6 +22,20 @@ export { Moonbase, MoonbaseEvent };
 export const moonbaseUrl = import.meta.env.VITE_MOONBASE_URL as string | undefined;
 export const isMoonbaseEnabled = Boolean(moonbaseUrl);
 
+/**
+ * The storefront presents all prices in USD, regardless of the shopper's
+ * geo-suggested currency. Moonbase ships a price for every enabled currency
+ * on each product (e.g. `{ USD: 36, ILS: 105 }`), so the site just selects
+ * the USD entry — see lib/moonbase-state.ts.
+ *
+ * Caveat: Moonbase settles *checkout* in the order's own currency, which it
+ * derives from the storefront's `suggestedCurrency` (a geo/dashboard setting
+ * the embedded SDK exposes no override for). To make the embedded checkout
+ * drawer match this USD presentation for every visitor, set USD as the
+ * storefront's default currency in the Moonbase dashboard.
+ */
+export const DISPLAY_CURRENCY = "USD";
+
 let started = false;
 
 /**

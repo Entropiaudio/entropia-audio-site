@@ -11,6 +11,7 @@ import RevealWords from "@/components/motion/RevealWords";
 import MagneticLink from "@/components/motion/MagneticLink";
 import { MOTION } from "@/components/motion/timing";
 import { useParallax } from "@/hooks/useScrollMotion";
+import { usePluginPricing } from "@/hooks/usePluginPricing";
 import { getPlugin } from "@/data/plugins";
 import { useCart } from "@/context/CartContext";
 import { toast } from "@/hooks/use-toast";
@@ -80,14 +81,20 @@ const PluginPage = () => {
   const plugin = slug ? getPlugin(slug) : undefined;
   const { add } = useCart();
   const navigate = useNavigate();
+  // Hooks must run before the early return below; fall back to safe zeros when
+  // the route doesn't resolve to a plugin (the result is discarded anyway).
+  const pricing = usePluginPricing(plugin?.slug ?? "", {
+    price: plugin?.price ?? 0,
+    regularPrice: plugin?.regularPrice ?? 0,
+  });
 
   if (!plugin) return <Navigate to="/" replace />;
 
   const c = copy.chaosverb;
-  const onSale = plugin.regularPrice > plugin.price;
+  const onSale = pricing.regularPrice > pricing.price;
 
   const addToCart = (goToCart = false) => {
-    add({ slug: plugin.slug, name: plugin.name, price: plugin.price, license: "perpetual" });
+    add({ slug: plugin.slug, name: plugin.name, price: pricing.price, license: "perpetual" });
     if (goToCart) {
       navigate("/cart");
     } else {
@@ -123,11 +130,11 @@ const PluginPage = () => {
               className="group inline-flex items-baseline gap-2 text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial tabular-nums"
             >
               <span className="link-draw pb-1">
-                {c.ctaBuy} · ${plugin.price}
+                {c.ctaBuy} · ${pricing.price}
               </span>
               {onSale && (
                 <span className="line-through text-[11px] text-[color:var(--text-tertiary)]">
-                  ${plugin.regularPrice}
+                  ${pricing.regularPrice}
                 </span>
               )}
             </MagneticLink>
@@ -201,11 +208,11 @@ const PluginPage = () => {
 
               <Reveal variant="up" {...MOTION.section.cta}>
                 <div className="mt-10 flex items-baseline gap-6 font-mono text-[13px] tabular-nums">
-                  <span className="text-[color:var(--text-primary)]">${plugin.price}</span>
+                  <span className="text-[color:var(--text-primary)]">${pricing.price}</span>
                   {onSale && (
                     <>
                       <span className="line-through text-[color:var(--text-tertiary)]">
-                        ${plugin.regularPrice}
+                        ${pricing.regularPrice}
                       </span>
                       <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--accent-raw)]">
                         {c.saleBadge}

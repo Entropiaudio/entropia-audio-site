@@ -5,13 +5,18 @@ import Reveal from "./motion/Reveal";
 import MagneticLink from "./motion/MagneticLink";
 import { MOTION } from "./motion/timing";
 import { useParallax } from "@/hooks/useScrollMotion";
+import { usePluginPricing } from "@/hooks/usePluginPricing";
 import type { Plugin } from "@/data/plugins";
 import { copy } from "@/copy";
 
 const ProductRow = ({ plugin }: { plugin: Plugin }) => {
   const c = copy.productRow;
   const cv = copy.chaosverb;
-  const onSale = plugin.regularPrice > plugin.price;
+  const pricing = usePluginPricing(plugin.slug, {
+    price: plugin.price,
+    regularPrice: plugin.regularPrice,
+  });
+  const onSale = pricing.regularPrice > pricing.price;
   const parallaxRef = useParallax<HTMLDivElement>(36);
 
   return (
@@ -59,10 +64,10 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
 
         <Reveal variant="up" {...MOTION.section.body}>
           <div className="flex items-baseline gap-4 font-mono text-[13px] tabular-nums">
-            <span className="text-[color:var(--text-primary)]">${plugin.price}</span>
+            <span className="text-[color:var(--text-primary)]">${pricing.price}</span>
             {onSale && (
               <>
-                <span className="line-through text-[color:var(--text-tertiary)]">${plugin.regularPrice}</span>
+                <span className="line-through text-[color:var(--text-tertiary)]">${pricing.regularPrice}</span>
                 <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--accent-raw)]">
                   {cv.saleBadge}
                 </span>
