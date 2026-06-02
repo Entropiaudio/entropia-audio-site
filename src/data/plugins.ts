@@ -66,11 +66,10 @@ export const plugins: Plugin[] = [
     })),
     specs: [
       ...copy.chaosverb.specs,
-      { label: "Version", value: "0.10.0" },
+      { label: "Version", value: "1.0.0" },
     ],
-    version: "0.10.0",
+    version: "1.0.0",
     screenshot: "/screenshots/chaosverb.png",
-    downloadWinUrl: "/downloads/Chaosverb-0.10.0-Windows-x64.exe",
   },
 ];
 

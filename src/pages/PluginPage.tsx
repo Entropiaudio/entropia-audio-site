@@ -15,6 +15,7 @@ import { getPlugin } from "@/data/plugins";
 import { useCart } from "@/context/CartContext";
 import { toast } from "@/hooks/use-toast";
 import { copy } from "@/copy";
+import { Moonbase, isMoonbaseEnabled } from "@/lib/moonbase";
 
 const AlternatingSection = ({
   heading,
@@ -339,14 +340,15 @@ const PluginPage = () => {
               </Reveal>
               <Reveal variant="up" {...MOTION.section.cta}>
                 <div className="flex flex-col sm:flex-row gap-6 sm:gap-10">
-                  {plugin.downloadMacUrl ? (
+                  {isMoonbaseEnabled ? (
                     <MagneticLink
-                      as="a"
-                      href={plugin.downloadMacUrl}
+                      as="button"
+                      type="button"
                       strength={6}
+                      onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
                       className="accent-glow group inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
                     >
-                      <span>{c.downloadMac}</span>
+                      <span>{c.download}</span>
                       <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-y-0.5">↓</span>
                     </MagneticLink>
                   ) : (
@@ -355,27 +357,7 @@ const PluginPage = () => {
                       title="installer coming soon"
                       className="inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] border border-[color:var(--border-soft)] opacity-60 cursor-not-allowed select-none"
                     >
-                      <span>{c.downloadMac}</span>
-                      <span aria-hidden="true" className="text-[10px]">soon</span>
-                    </span>
-                  )}
-                  {plugin.downloadWinUrl ? (
-                    <MagneticLink
-                      as="a"
-                      href={plugin.downloadWinUrl}
-                      strength={6}
-                      className="accent-glow group inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
-                    >
-                      <span>{c.downloadWin}</span>
-                      <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-y-0.5">↓</span>
-                    </MagneticLink>
-                  ) : (
-                    <span
-                      aria-disabled="true"
-                      title="installer coming soon"
-                      className="inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] border border-[color:var(--border-soft)] opacity-60 cursor-not-allowed select-none"
-                    >
-                      <span>{c.downloadWin}</span>
+                      <span>{c.download}</span>
                       <span aria-hidden="true" className="text-[10px]">soon</span>
                     </span>
                   )}

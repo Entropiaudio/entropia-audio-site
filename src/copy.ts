@@ -142,8 +142,7 @@ export const copy = {
     tryHeadline: "free for seven days",
     trySubline:
       "a fully featured trial for you to try. why not give it a go?",
-    downloadMac: "download for macOS",
-    downloadWin: "download for Windows",
+    download: "download",
 
     /* sticky CTA bar buttons */
     ctaTry: "try free",
