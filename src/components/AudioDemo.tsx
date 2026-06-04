@@ -5,6 +5,7 @@ import {
   getAudioContext,
   loadAudioBuffer,
   releasePlayback,
+  unlockAudio,
 } from "@/lib/audioPlayback";
 
 type Props = {
@@ -231,9 +232,15 @@ const AudioDemo = ({ demo, index }: Props) => {
 
   const start = useCallback(async () => {
     if (!anyStem) return;
+    // iOS Safari: prime the audio session synchronously inside the user
+    // gesture (silent buffer + resume()), then await the resume promise.
+    // Without this the long fetch/decode lets iOS suspend the context and
+    // playback never becomes audible.
+    const unlockPromise = unlockAudio();
     setLoading(true);
     try {
       const ctx = getAudioContext();
+      await unlockPromise;
       if (ctx.state === "suspended") await ctx.resume();
 
       // Fetch + decode every available stem in parallel (cached, so only the

@@ -10,6 +10,7 @@
  */
 
 let _ctx: AudioContext | null = null;
+let _unlocked = false;
 
 export const getAudioContext = (): AudioContext => {
   if (_ctx) return _ctx;
@@ -18,6 +19,30 @@ export const getAudioContext = (): AudioContext => {
   const Ctor = window.AudioContext || w.webkitAudioContext;
   _ctx = new Ctor();
   return _ctx;
+};
+
+/** iOS Safari needs a silent buffer played from inside the first user gesture
+ *  to engage its audio session, and `resume()` must be CALLED (not just
+ *  awaited) synchronously in that gesture. Otherwise the long fetch/decode
+ *  that follows will let the session auto-suspend and `source.start()` ends
+ *  up scheduled into a dead context. Returns the resume promise so the caller
+ *  can await it before scheduling real playback. */
+export const unlockAudio = (): Promise<void> => {
+  const ctx = getAudioContext();
+  if (!_unlocked) {
+    try {
+      const buffer = ctx.createBuffer(1, 1, 22050);
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(ctx.destination);
+      source.start(0);
+      _unlocked = true;
+    } catch {
+      /* best-effort; ignore */
+    }
+  }
+  if (ctx.state === "suspended") return ctx.resume();
+  return Promise.resolve();
 };
 
 const bufferCache = new Map<string, Promise<AudioBuffer>>();
