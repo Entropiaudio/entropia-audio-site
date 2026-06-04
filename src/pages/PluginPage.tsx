@@ -14,6 +14,7 @@ import { useParallax } from "@/hooks/useScrollMotion";
 import { usePluginPricing } from "@/hooks/usePluginPricing";
 import { getPlugin } from "@/data/plugins";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { copy } from "@/copy";
 import { Moonbase, isMoonbaseEnabled } from "@/lib/moonbase";
@@ -80,6 +81,7 @@ const PluginPage = () => {
   const { slug } = useParams();
   const plugin = slug ? getPlugin(slug) : undefined;
   const { add } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
   // Hooks must run before the early return below; fall back to safe zeros when
   // the route doesn't resolve to a plugin (the result is discarded anyway).
@@ -352,7 +354,21 @@ const PluginPage = () => {
                       as="button"
                       type="button"
                       strength={6}
-                      onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
+                      onClick={() => {
+                        // Trial CTA. `download_product` only works for users
+                        // who already hold a license; for signed-out users
+                        // (or signed-in users with no license) the SDK shows
+                        // a "requires ownership" modal whose Sign in button
+                        // re-fires sign-in indefinitely. Route signed-out
+                        // users through sign_up — Moonbase's signup flow is
+                        // where the trial license is granted (configured on
+                        // the product in the Moonbase dashboard).
+                        if (user) {
+                          Moonbase.download_product({ product_id: plugin.slug });
+                        } else {
+                          Moonbase.sign_up();
+                        }
+                      }}
                       className="accent-glow group inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
                     >
                       <span>{c.download}</span>
