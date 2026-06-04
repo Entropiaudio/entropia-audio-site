@@ -116,12 +116,22 @@ const PluginPage = () => {
             {plugin.name}
           </span>
           <div className="flex-1 md:flex-none flex items-baseline justify-between md:justify-end gap-5 md:gap-8 whitespace-nowrap">
-            <a
-              href="#try"
-              className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
-            >
-              {c.ctaTry}
-            </a>
+            {isMoonbaseEnabled ? (
+              <button
+                type="button"
+                onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
+                className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+              >
+                {c.ctaTry}
+              </button>
+            ) : (
+              <a
+                href="#try"
+                className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+              >
+                {c.ctaTry}
+              </a>
+            )}
             <MagneticLink
               as="button"
               type="button"
