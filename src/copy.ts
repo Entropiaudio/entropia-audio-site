@@ -60,7 +60,6 @@ export const copy = {
     eyebrow: "// about",
     headlineLine1: "an introduction",
     headlineLine2: "and a little message from us",
-    portraitPlaceholder: "portrait goes here",
     paragraph1:
       "entropia audio is a studio of two. each of us had our own individual journey in the audio world, until we discovered that we had a shared dream: making the tools we wished existed.",
     paragraph2:

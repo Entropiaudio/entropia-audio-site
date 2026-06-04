@@ -47,22 +47,7 @@ const About = () => {
       <Section pad="md" tone="rule-top">
         <Container width="wide">
           <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
-            <Reveal
-              variant="up"
-              {...MOTION.section.image}
-              as="figure"
-              className="md:col-span-4 md:col-start-2 aspect-[4/5] w-full relative hover-zoom"
-              aria-label="portrait of the entropia audio team"
-            >
-              <div className="absolute inset-0 border border-[color:var(--border-soft)]" />
-              <div className="absolute inset-[1px] bg-[color:var(--surface)] flex items-center justify-center">
-                <span className="text-[11px] font-sans font-medium uppercase tracking-[0.18em] text-[color:var(--text-tertiary)]">
-                  {c.portraitPlaceholder}
-                </span>
-              </div>
-            </Reveal>
-
-            <div className="md:col-span-6 space-y-6 font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[52ch]">
+            <div className="md:col-span-7 md:col-start-2 space-y-6 font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[52ch]">
               <Reveal variant="up" duration={MOTION.duration.base}>
                 <p>{c.paragraph1}</p>
               </Reveal>
