@@ -28,9 +28,9 @@ interface RevealWordsProps {
 const RevealWords = ({
   children,
   className,
-  stagger = 70,
+  stagger = 45,
   delay = 0,
-  duration = 900,
+  duration = 420,
   as = "span",
   wordClassName,
 }: RevealWordsProps) => {

@@ -387,7 +387,7 @@ const AudioDemo = ({ demo, index }: Props) => {
             onClick={onToggle}
             disabled={!anyStem || loading}
             aria-label={playing ? "stop" : "play"}
-            className="w-11 h-11 rounded-full border border-[color:var(--text-tertiary)] hover:border-[color:var(--accent-raw)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-11 h-11 rounded-full border border-[color:var(--text-tertiary)] hover:border-[color:var(--accent-raw)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {playing ? (
               <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden>
@@ -449,7 +449,7 @@ const AudioDemo = ({ demo, index }: Props) => {
                   type="button"
                   disabled={!enabled}
                   onClick={() => setMode(m)}
-                  className={`pb-1 transition-colors duration-[400ms] ease-editorial disabled:opacity-30 disabled:cursor-not-allowed ${
+                  className={`pb-1 transition-colors duration-[200ms] ease-editorial disabled:opacity-30 disabled:cursor-not-allowed ${
                     isActive
                       ? "text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)]"
                       : "text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)]"

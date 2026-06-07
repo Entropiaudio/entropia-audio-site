@@ -68,7 +68,7 @@ const NewsletterSignup = () => {
                   placeholder={c.placeholder}
                   aria-label="email address"
                   aria-invalid={error ? true : undefined}
-                  className="w-full bg-transparent border-b border-[color:var(--text-tertiary)] focus:border-[color:var(--accent-raw)] outline-none px-0 py-3 text-[16px] font-editorial placeholder:text-[color:var(--text-tertiary)] transition-colors duration-[400ms] ease-editorial"
+                  className="w-full bg-transparent border-b border-[color:var(--text-tertiary)] focus:border-[color:var(--accent-raw)] outline-none px-0 py-3 text-[16px] font-editorial placeholder:text-[color:var(--text-tertiary)] transition-colors duration-[200ms] ease-editorial"
                 />
               </label>
               <MagneticLink
@@ -76,12 +76,12 @@ const NewsletterSignup = () => {
                 type="submit"
                 strength={5}
                 disabled={busy}
-                className="group inline-flex items-baseline gap-2 self-start sm:self-auto text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial pb-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group inline-flex items-baseline gap-2 self-start sm:self-auto text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial pb-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="link-draw pb-1">
                   {busy ? "…" : c.button}
                 </span>
-                <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                <span className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
               </MagneticLink>
             </form>
             {error && (

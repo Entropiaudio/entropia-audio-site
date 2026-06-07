@@ -4,7 +4,6 @@ import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
-import RevealWords from "@/components/motion/RevealWords";
 import MagneticLink from "@/components/motion/MagneticLink";
 import { MOTION } from "@/components/motion/timing";
 import { useCart } from "@/context/CartContext";
@@ -23,34 +22,35 @@ const Cart = () => {
               <Eyebrow accent className="mb-8">// cart</Eyebrow>
             </Reveal>
             <h1 className="font-display font-light text-[56px] md:text-[72px] leading-[1.0] tracking-[-0.02em] mb-16 md:mb-20">
-              <RevealWords
+              <Reveal
                 as="span"
-                className="font-editorial italic font-normal tracking-[-0.015em]"
-                {...MOTION.page.headline1}
-                stagger={MOTION.stagger.word}
+                variant="up"
+                className="inline-block font-editorial italic font-normal tracking-[-0.015em]"
+                delay={MOTION.page.headline1.delay}
+                duration={MOTION.duration.instant}
               >
                 cart
-              </RevealWords>
+              </Reveal>
             </h1>
 
             {items.length === 0 ? (
-              <Reveal variant="up" {...MOTION.page.body0} className="py-12 border-t border-hairline">
+              <Reveal key="cart-empty" variant="up" {...MOTION.page.body0} className="py-12 border-t border-hairline">
                 <p className="font-sans text-[17px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] mb-8">
                   your cart is empty.
                 </p>
                 <MagneticLink
                   to="/"
                   strength={6}
-                  className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+                  className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
                 >
                   <span className="link-draw pb-1">
                     browse plugins
                   </span>
-                  <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                  <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
                 </MagneticLink>
               </Reveal>
             ) : (
-              <Reveal variant="up" {...MOTION.page.body0}>
+              <Reveal key="cart-filled" variant="up" {...MOTION.page.body0}>
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[640px]">
                     <thead>
@@ -68,7 +68,7 @@ const Cart = () => {
                           <td className="py-6 pr-4">
                             <Link
                               to={`/plugins/${it.slug}`}
-                              className="font-sans text-[16px] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                              className="font-sans text-[16px] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
                             >
                               {it.name}
                             </Link>
@@ -88,7 +88,7 @@ const Cart = () => {
                                 <button
                                   type="button"
                                   onClick={() => setQuantity(it.slug, it.license, it.quantity - 1)}
-                                  className="px-3 py-1.5 text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                                  className="px-3 py-1.5 text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
                                   aria-label="decrease"
                                 >
                                   −
@@ -99,7 +99,7 @@ const Cart = () => {
                                 <button
                                   type="button"
                                   onClick={() => setQuantity(it.slug, it.license, it.quantity + 1)}
-                                  className="px-3 py-1.5 text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                                  className="px-3 py-1.5 text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
                                   aria-label="increase"
                                 >
                                   +
@@ -118,7 +118,7 @@ const Cart = () => {
                               <button
                                 type="button"
                                 onClick={() => remove(it.slug, it.license)}
-                                className="mt-2 text-[11px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                                className="mt-2 text-[11px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
                               >
                                 remove
                               </button>
@@ -135,7 +135,7 @@ const Cart = () => {
                     <button
                       type="button"
                       onClick={() => Moonbase.view_cart()}
-                      className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial self-start"
+                      className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial self-start"
                     >
                       edit cart →
                     </button>
@@ -143,7 +143,7 @@ const Cart = () => {
                     <button
                       type="button"
                       onClick={clear}
-                      className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial self-start"
+                      className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial self-start"
                     >
                       clear cart
                     </button>
@@ -167,7 +167,7 @@ const Cart = () => {
                       className="accent-glow group inline-flex items-baseline gap-2 mt-8 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
                     >
                       <span>checkout</span>
-                      <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                      <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
                     </MagneticLink>
                   </div>
                 </div>

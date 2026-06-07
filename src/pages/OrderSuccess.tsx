@@ -4,7 +4,6 @@ import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
-import RevealWords from "@/components/motion/RevealWords";
 import MagneticLink from "@/components/motion/MagneticLink";
 import { MOTION } from "@/components/motion/timing";
 import { useAuth } from "@/context/AuthContext";
@@ -30,14 +29,15 @@ const OrderSuccess = () => {
               </Eyebrow>
             </Reveal>
             <h1 className="font-display font-light text-[44px] md:text-[56px] leading-[1.05] tracking-[-0.02em]">
-              <RevealWords
+              <Reveal
                 as="span"
-                className="font-editorial italic font-normal tracking-[-0.015em]"
-                {...MOTION.page.headline1}
-                stagger={MOTION.stagger.word}
+                variant="up"
+                className="inline-block font-editorial italic font-normal tracking-[-0.015em]"
+                delay={MOTION.page.headline1.delay}
+                duration={MOTION.duration.instant}
               >
                 {copy.orderSuccess.headline}
-              </RevealWords>
+              </Reveal>
             </h1>
             <Reveal variant="up" {...MOTION.page.body0}>
               <p className="mt-8 font-sans text-[15px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] mb-16 md:mb-20">
@@ -97,16 +97,16 @@ const OrderSuccess = () => {
                 <MagneticLink
                   to="/account"
                   strength={6}
-                  className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+                  className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
                 >
                   <span className="link-draw pb-1">
                     go to account
                   </span>
-                  <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                  <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
                 </MagneticLink>
                 <Link
                   to="/"
-                  className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[600ms] ease-editorial"
+                  className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[200ms] ease-editorial"
                 >
                   keep browsing
                 </Link>

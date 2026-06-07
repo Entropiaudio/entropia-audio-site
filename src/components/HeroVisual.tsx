@@ -36,6 +36,7 @@ export const HeroVisual = ({
     let height = 0;
     let particles: Array<{ x: number; y: number; vx: number; vy: number; life: number; phase: number }> = [];
     let rafId: number | null = null;
+    let visible = true;
     let t = 0;
 
     const seedParticles = () => {
@@ -96,8 +97,13 @@ export const HeroVisual = ({
         ctx.fillStyle = `rgba(212, 165, 116, ${alpha.toFixed(3)})`;
         ctx.fillRect(p.x - 1, p.y - 1, 2.5, 2.5);
       }
+    };
 
-      rafId = requestAnimationFrame(step);
+    // Drives the flow-field. Self-schedules only while the hero is on screen
+    // and motion is allowed, so the rAF loop pauses when scrolled out of view.
+    const drive = () => {
+      step();
+      rafId = visible && !reducedMotion ? requestAnimationFrame(drive) : null;
     };
 
     const renderStaticFrame = () => {
@@ -115,7 +121,7 @@ export const HeroVisual = ({
     } else {
       for (let i = 0; i < 40; i++) step();
       if (rafId !== null) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(step);
+      rafId = visible ? requestAnimationFrame(drive) : null;
     }
 
     // Coalesce resize bursts (window drag, devtools toggle) into one rAF.
@@ -130,10 +136,30 @@ export const HeroVisual = ({
 
     window.addEventListener("resize", onResize);
 
+    // Pause the rAF loop whenever the hero canvas is fully off-screen — on the
+    // long plugin pages it would otherwise keep drifting while the user reads
+    // far below the hero.
+    const visibility = new IntersectionObserver(
+      (entries) => {
+        const nowVisible = entries[0]?.isIntersecting ?? true;
+        if (nowVisible === visible) return;
+        visible = nowVisible;
+        if (visible && !reducedMotion && rafId === null) {
+          rafId = requestAnimationFrame(drive);
+        } else if (!visible && rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+      },
+      { threshold: 0 },
+    );
+    visibility.observe(canvas);
+
     return () => {
       if (rafId !== null) cancelAnimationFrame(rafId);
       if (resizeRaf) cancelAnimationFrame(resizeRaf);
       window.removeEventListener("resize", onResize);
+      visibility.disconnect();
     };
   }, [density, intensity]);
 

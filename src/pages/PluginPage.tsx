@@ -108,7 +108,7 @@ const PluginPage = () => {
            top tracks SiteHeader's --header-h variable so the strip sits flush
            against the header both at full height (5rem) and shrunken (4rem). */}
       <div
-        className="sticky z-30 bg-[color:var(--bg)]/85 backdrop-blur-md border-b border-hairline transition-[top] duration-[500ms] ease-editorial"
+        className="sticky z-30 bg-[color:var(--bg)]/85 backdrop-blur-md border-b border-hairline transition-[top] duration-[200ms] ease-editorial"
         style={{ top: "var(--header-h, 5rem)" }}
       >
         <div className="max-w-wide mx-auto px-6 md:px-10 h-14 flex items-center justify-between gap-4">
@@ -120,14 +120,14 @@ const PluginPage = () => {
               <button
                 type="button"
                 onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
-                className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
               >
                 {c.ctaTry}
               </button>
             ) : (
               <a
                 href="#try"
-                className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
               >
                 {c.ctaTry}
               </a>
@@ -137,7 +137,7 @@ const PluginPage = () => {
               type="button"
               strength={5}
               onClick={() => addToCart(true)}
-              className="group inline-flex items-baseline gap-2 text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial tabular-nums"
+              className="group inline-flex items-baseline gap-2 text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial tabular-nums"
             >
               <span className="link-draw pb-1">
                 {c.ctaBuy} · ${pricing.price}
@@ -217,7 +217,7 @@ const PluginPage = () => {
               </Reveal>
 
               <Reveal variant="up" {...MOTION.section.cta}>
-                <div className="mt-10 flex items-baseline gap-6 font-mono text-[13px] tabular-nums">
+                <div key={pricing.price} className="state-fade mt-10 flex items-baseline gap-6 font-mono text-[13px] tabular-nums">
                   <span className="text-[color:var(--text-primary)]">${pricing.price}</span>
                   {onSale && (
                     <>
@@ -366,7 +366,7 @@ const PluginPage = () => {
                       className="accent-glow group inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
                     >
                       <span>{c.download}</span>
-                      <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-y-0.5">↓</span>
+                      <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-y-0.5">↓</span>
                     </MagneticLink>
                   ) : (
                     <span

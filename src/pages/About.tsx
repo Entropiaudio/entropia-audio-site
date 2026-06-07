@@ -74,7 +74,7 @@ const About = () => {
                 as="a"
                 href={`mailto:${copy.contactEmail}`}
                 strength={6}
-                className="group inline-flex items-baseline gap-3 font-editorial italic text-[28px] md:text-[36px] leading-[1.2] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+                className="group inline-flex items-baseline gap-3 font-editorial italic text-[28px] md:text-[36px] leading-[1.2] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
               >
                 <span className="link-draw pb-1">
                   {copy.contactEmail}

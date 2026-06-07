@@ -64,7 +64,7 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
         </Reveal>
 
         <Reveal variant="up" {...MOTION.section.body}>
-          <div className="flex items-baseline gap-4 font-mono text-[13px] tabular-nums">
+          <div key={pricing.price} className="state-fade flex items-baseline gap-4 font-mono text-[13px] tabular-nums">
             <span className="text-[color:var(--text-primary)]">${pricing.price}</span>
             {onSale && (
               <>
@@ -82,25 +82,25 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
             <MagneticLink
               to={`/plugins/${plugin.slug}`}
               strength={6}
-              className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+              className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
             >
               <span className="link-draw pb-1">
                 {c.primaryButton}
               </span>
-              <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+              <span className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
             </MagneticLink>
             {isMoonbaseEnabled ? (
               <button
                 type="button"
                 onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
-                className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[600ms] ease-editorial"
+                className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[200ms] ease-editorial"
               >
                 {c.secondaryButton}
               </button>
             ) : (
               <Link
                 to={`/plugins/${plugin.slug}#try`}
-                className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[600ms] ease-editorial"
+                className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[200ms] ease-editorial"
               >
                 {c.secondaryButton}
               </Link>

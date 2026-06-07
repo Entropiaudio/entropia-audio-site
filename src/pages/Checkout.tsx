@@ -11,7 +11,6 @@ import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
-import RevealWords from "@/components/motion/RevealWords";
 import { MOTION } from "@/components/motion/timing";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -28,7 +27,7 @@ import { isMoonbaseEnabled, Moonbase, MoonbaseEvent } from "@/lib/moonbase";
 const TAX_RATE = 0.0;
 
 const fieldClass =
-  "bg-transparent border-b border-[color:var(--border-soft)] focus:border-[color:var(--accent-raw)] outline-none py-3 text-[15px] font-sans tracking-[0.005em] w-full transition-colors duration-[400ms] ease-editorial";
+  "bg-transparent border-b border-[color:var(--border-soft)] focus:border-[color:var(--accent-raw)] outline-none py-3 text-[15px] font-sans tracking-[0.005em] w-full transition-colors duration-[200ms] ease-editorial";
 
 const labelClass =
   "text-[11px] font-sans font-medium uppercase tracking-[0.12em] text-[color:var(--text-tertiary)]";
@@ -68,14 +67,15 @@ const MoonbaseCheckoutMount = () => {
               <Eyebrow accent className="mb-8">// checkout</Eyebrow>
             </Reveal>
             <h1 className="font-display font-light text-[56px] md:text-[72px] leading-[1.0] tracking-[-0.02em] mb-10">
-              <RevealWords
+              <Reveal
                 as="span"
-                className="font-editorial italic font-normal tracking-[-0.015em]"
-                {...MOTION.page.headline1}
-                stagger={MOTION.stagger.word}
+                variant="up"
+                className="inline-block font-editorial italic font-normal tracking-[-0.015em]"
+                delay={MOTION.page.headline1.delay}
+                duration={MOTION.duration.instant}
               >
                 opening checkout
-              </RevealWords>
+              </Reveal>
             </h1>
             <Reveal variant="up" {...MOTION.page.body0}>
               <p className="font-sans text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[52ch]">
@@ -84,7 +84,7 @@ const MoonbaseCheckoutMount = () => {
                 <button
                   type="button"
                   onClick={() => Moonbase.checkout()}
-                  className="text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[400ms] ease-editorial"
+                  className="text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[200ms] ease-editorial"
                 >
                   open it manually
                 </button>
@@ -176,14 +176,15 @@ const LocalCheckout = () => {
               <Eyebrow accent className="mb-8">// checkout</Eyebrow>
             </Reveal>
             <h1 className="font-display font-light text-[56px] md:text-[72px] leading-[1.0] tracking-[-0.02em] mb-14 md:mb-16">
-              <RevealWords
+              <Reveal
                 as="span"
-                className="font-editorial italic font-normal tracking-[-0.015em]"
-                {...MOTION.page.headline1}
-                stagger={MOTION.stagger.word}
+                variant="up"
+                className="inline-block font-editorial italic font-normal tracking-[-0.015em]"
+                delay={MOTION.page.headline1.delay}
+                duration={MOTION.duration.instant}
               >
                 checkout
-              </RevealWords>
+              </Reveal>
             </h1>
 
             {!isAuthed && (
@@ -193,12 +194,12 @@ const LocalCheckout = () => {
                 </span>
                 <Link
                   to="/account?next=/checkout"
-                  className="group inline-flex items-baseline gap-1.5 text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                  className="group inline-flex items-baseline gap-1.5 text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
                 >
-                  <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[400ms] ease-editorial">
+                  <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[200ms] ease-editorial">
                     sign in or create one
                   </span>
-                  <span className="transition-transform duration-[400ms] ease-editorial group-hover:translate-x-0.5">→</span>
+                  <span className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-0.5">→</span>
                 </Link>
               </div>
             )}
@@ -311,13 +312,13 @@ const LocalCheckout = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="group inline-flex items-baseline gap-2 self-start text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed tabular-nums"
+                    className="group inline-flex items-baseline gap-2 self-start text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed tabular-nums"
                   >
-                    <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+                    <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[200ms] ease-editorial">
                       {submitting ? "processing…" : `pay $${total.toFixed(2)}`}
                     </span>
                     {!submitting && (
-                      <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                      <span className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
                     )}
                   </button>
                   <p className="text-[11px] font-mono text-[color:var(--text-tertiary)]">

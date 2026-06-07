@@ -42,9 +42,12 @@ const ScrubText = ({
         if (tokens[i].trim().length === 0) continue;
         wordIdx++;
         const center = wordCount > 1 ? wordIdx / (wordCount - 1) : 0.5;
-        const local = (progress - center * 0.85) / 0.18 + 0.5;
+        // Resolve each word by mid-viewport (not the trailing edge) and keep a
+        // 0.45 floor so the copy stays readable even before the scrub reaches
+        // it — legibility is never gated on the scroll gesture.
+        const local = (progress - center * 0.55) / 0.22 + 0.5;
         const reveal = local < 0 ? 0 : local > 1 ? 1 : local;
-        const op = 0.18 + reveal * 0.82;
+        const op = 0.45 + reveal * 0.55;
         const el = wordRefs.current[i];
         if (el) el.style.opacity = op.toFixed(3);
       }
@@ -71,7 +74,7 @@ const ScrubText = ({
               wordRefs.current[i] = el;
             }}
             className={cn("transition-opacity duration-100", wordClassName)}
-            style={{ opacity: 0.18 }}
+            style={{ opacity: 0.45 }}
           >
             {w}
           </span>

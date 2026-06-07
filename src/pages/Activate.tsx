@@ -16,7 +16,6 @@ import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
-import RevealWords from "@/components/motion/RevealWords";
 import { MOTION } from "@/components/motion/timing";
 import { isMoonbaseEnabled, Moonbase } from "@/lib/moonbase";
 
@@ -67,14 +66,16 @@ const Activate = () => {
               <Eyebrow accent className="mb-8">// activate</Eyebrow>
             </Reveal>
             <h1 className="font-display font-light text-[56px] md:text-[72px] leading-[1.0] tracking-[-0.02em] mb-10">
-              <RevealWords
+              <Reveal
+                key={status}
                 as="span"
-                className="font-editorial italic font-normal tracking-[-0.015em]"
-                {...MOTION.page.headline1}
-                stagger={MOTION.stagger.word}
+                variant="up"
+                className="inline-block font-editorial italic font-normal tracking-[-0.015em]"
+                delay={MOTION.page.headline1.delay}
+                duration={MOTION.duration.instant}
               >
                 {status === "redirecting" ? "redirecting" : "opening activation"}
-              </RevealWords>
+              </Reveal>
             </h1>
             <Reveal variant="up" {...MOTION.page.body0}>
               <p className="font-sans text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[52ch]">

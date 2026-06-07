@@ -3,7 +3,6 @@ import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
-import RevealWords from "@/components/motion/RevealWords";
 import { MOTION } from "@/components/motion/timing";
 import { copy } from "@/copy";
 
@@ -23,14 +22,15 @@ const Legal = ({ kind }: { kind: Kind }) => {
               </Eyebrow>
             </Reveal>
             <h1 className="font-display font-light leading-[1.0] tracking-[-0.02em] text-[clamp(40px,7vw,80px)]">
-              <RevealWords
+              <Reveal
                 as="span"
-                className="font-editorial italic font-normal tracking-[-0.015em]"
-                {...MOTION.page.headline1}
-                stagger={MOTION.stagger.word}
+                variant="up"
+                className="inline-block font-editorial italic font-normal tracking-[-0.015em]"
+                delay={MOTION.page.headline1.delay}
+                duration={MOTION.duration.instant}
               >
                 {c.title}
-              </RevealWords>
+              </Reveal>
             </h1>
             <Reveal variant="up" delay={MOTION.page.headline2.delay} duration={MOTION.duration.base}>
               <p className="mt-6 text-[12px] font-mono lowercase tracking-[0.06em] text-[color:var(--text-tertiary)]">

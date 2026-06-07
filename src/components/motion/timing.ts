@@ -12,29 +12,35 @@
  */
 export const MOTION = {
   duration: {
-    base: 900,
-    image: 1100,
+    /** Default content reveal — eyebrows, body copy, list items, CTAs. */
+    base: 320,
+    /** Section headlines — a little more presence than body copy. */
+    headline: 420,
+    /** Hero imagery only — the one place a longer reveal is earned. */
+    image: 700,
+    /** Funnel / utility headlines — a single fast fade, no word cascade. */
+    instant: 160,
   },
   stagger: {
-    word: 60,
-    body: 100,
-    list: 80,
+    word: 45,
+    body: 70,
+    list: 60,
   },
   page: {
-    eyebrow:    { delay: 0,   duration: 900 },
-    headline1:  { delay: 120, duration: 900 },
-    headline2:  { delay: 280, duration: 900 },
-    body0:      { delay: 440, duration: 900 },
-    body1:      { delay: 540, duration: 900 },
-    body2:      { delay: 640, duration: 900 },
-    cta:        { delay: 740, duration: 900 },
+    eyebrow:    { delay: 0,   duration: 300 },
+    headline1:  { delay: 80,  duration: 420 },
+    headline2:  { delay: 180, duration: 420 },
+    body0:      { delay: 200, duration: 300 },
+    body1:      { delay: 280, duration: 300 },
+    body2:      { delay: 360, duration: 300 },
+    cta:        { delay: 360, duration: 300 },
   },
   /** Entrance for sections revealed mid-scroll (IO fires when in view). */
   section: {
-    eyebrow:    { delay: 0,   duration: 900 },
-    headline:   { delay: 80,  duration: 900 },
-    body:       { delay: 180, duration: 900 },
-    image:      { delay: 0,   duration: 1100 },
-    cta:        { delay: 260, duration: 900 },
+    eyebrow:    { delay: 0,   duration: 300 },
+    headline:   { delay: 60,  duration: 420 },
+    body:       { delay: 140, duration: 300 },
+    image:      { delay: 0,   duration: 700 },
+    cta:        { delay: 200, duration: 300 },
   },
 } as const;

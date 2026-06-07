@@ -80,7 +80,7 @@ const Index = () => {
                 </MagneticLink>
                 <Link
                   to="/about"
-                  className="link-draw text-[12px] font-mono uppercase tracking-[0.22em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[600ms] ease-editorial"
+                  className="link-draw text-[12px] font-mono uppercase tracking-[0.22em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[200ms] ease-editorial"
                 >
                   our story
                 </Link>
@@ -116,12 +116,12 @@ const Index = () => {
               <Reveal variant="up" {...MOTION.section.cta}>
                 <Link
                   to="/about"
-                  className="group inline-flex items-baseline gap-2 mt-12 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+                  className="group inline-flex items-baseline gap-2 mt-12 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
                 >
-                  <span className="border-b border-[color:var(--text-tertiary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+                  <span className="border-b border-[color:var(--text-tertiary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[200ms] ease-editorial">
                     {c.aboutLink}
                   </span>
-                  <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                  <span className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
                 </Link>
               </Reveal>
             </div>

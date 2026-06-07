@@ -22,7 +22,7 @@ const Reveal = ({
   as,
   variant = "up",
   delay = 0,
-  duration = 900,
+  duration = 320,
   className,
   style,
   ...rest
@@ -34,7 +34,7 @@ const Reveal = ({
     <Tag
       ref={ref as never}
       data-reveal={variant}
-      className={cn("will-change-transform", className)}
+      className={cn(className)}
       style={{
         ["--reveal-delay" as never]: `${delay}ms`,
         ["--reveal-duration" as never]: `${duration}ms`,

@@ -7,14 +7,14 @@ import { copy } from "@/copy";
 import Logo from "./Logo";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `relative text-[13px] font-mono uppercase tracking-[0.18em] transition-colors duration-[400ms] ease-editorial hover:text-[color:var(--accent-raw)] ${
+  `relative text-[13px] font-mono uppercase tracking-[0.18em] transition-colors duration-[200ms] ease-editorial hover:text-[color:var(--accent-raw)] ${
     isActive
       ? "text-[color:var(--text-primary)] after:absolute after:left-0 after:right-0 after:-bottom-2 after:h-px after:bg-[color:var(--accent-raw)]"
       : "text-[color:var(--text-tertiary)]"
   }`;
 
 const mobileNavLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `block py-4 text-[18px] font-mono uppercase tracking-[0.18em] transition-colors duration-[400ms] ease-editorial ${
+  `block py-4 text-[18px] font-mono uppercase tracking-[0.18em] transition-colors duration-[200ms] ease-editorial ${
     isActive ? "text-[color:var(--text-primary)]" : "text-[color:var(--text-tertiary)]"
   }`;
 
@@ -62,7 +62,7 @@ const SiteHeader = () => {
 
   return (
     <header
-      className={`sticky top-0 z-40 backdrop-blur-lg transition-[background-color,border-color] duration-[500ms] ease-editorial ${
+      className={`sticky top-0 z-40 backdrop-blur-lg transition-[background-color,border-color] duration-[300ms] ease-editorial ${
         scrolled
           ? "bg-[color:var(--bg)]/90 border-b border-hairline"
           : "bg-[color:var(--bg)]/55 border-b border-transparent"
@@ -74,7 +74,7 @@ const SiteHeader = () => {
         <Link
           to="/"
           aria-label={c.wordmark}
-          className="group inline-flex items-center gap-3 text-[12px] font-mono uppercase tracking-[0.22em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+          className="group inline-flex items-center gap-3 text-[12px] font-mono uppercase tracking-[0.22em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
         >
           <Logo size={26} />
           <span>{c.wordmark}</span>
@@ -97,7 +97,7 @@ const SiteHeader = () => {
             to="/cart"
             aria-label={`cart, ${count} items`}
             className={({ isActive }) =>
-              `relative text-[13px] font-mono uppercase tracking-[0.18em] transition-colors duration-[400ms] ease-editorial hover:text-[color:var(--accent-raw)] flex items-baseline gap-1.5 ${
+              `relative text-[13px] font-mono uppercase tracking-[0.18em] transition-colors duration-[200ms] ease-editorial hover:text-[color:var(--accent-raw)] flex items-baseline gap-1.5 ${
                 isActive
                   ? "text-[color:var(--text-primary)] after:absolute after:left-0 after:right-0 after:-bottom-2 after:h-px after:bg-[color:var(--accent-raw)]"
                   : "text-[color:var(--text-tertiary)]"
@@ -118,7 +118,7 @@ const SiteHeader = () => {
           aria-label={open ? "close menu" : "open menu"}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          className="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-3 text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+          className="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-3 text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
         >
           {open ? <X size={22} strokeWidth={1.5} /> : <Menu size={22} strokeWidth={1.5} />}
         </button>
@@ -147,7 +147,7 @@ const SiteHeader = () => {
               to="/cart"
               aria-label={`cart, ${count} items`}
               className={({ isActive }) =>
-                `flex items-baseline gap-2 py-4 text-[18px] font-mono uppercase tracking-[0.18em] transition-colors duration-[400ms] ease-editorial ${
+                `flex items-baseline gap-2 py-4 text-[18px] font-mono uppercase tracking-[0.18em] transition-colors duration-[200ms] ease-editorial ${
                   isActive ? "text-[color:var(--text-primary)]" : "text-[color:var(--text-tertiary)]"
                 }`
               }

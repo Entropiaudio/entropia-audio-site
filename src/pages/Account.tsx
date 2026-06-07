@@ -5,7 +5,6 @@ import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
-import RevealWords from "@/components/motion/RevealWords";
 import { MOTION } from "@/components/motion/timing";
 import { toast } from "@/hooks/use-toast";
 import { useAuth, License, Order } from "@/context/AuthContext";
@@ -43,7 +42,7 @@ const resolveDownload = (license: License): { url: string; label: string } | nul
 };
 
 const fieldClass =
-  "bg-transparent border-b border-[color:var(--border-soft)] focus:border-[color:var(--accent-raw)] outline-none py-3 text-[15px] font-sans tracking-[0.005em] w-full transition-colors duration-[400ms] ease-editorial";
+  "bg-transparent border-b border-[color:var(--border-soft)] focus:border-[color:var(--accent-raw)] outline-none py-3 text-[15px] font-sans tracking-[0.005em] w-full transition-colors duration-[200ms] ease-editorial";
 
 const labelClass =
   "text-[11px] font-sans font-medium uppercase tracking-[0.12em] text-[color:var(--text-tertiary)]";
@@ -76,15 +75,16 @@ const LoggedOutMoonbase = () => {
             <Eyebrow accent className="mb-8">// account</Eyebrow>
           </Reveal>
           <h1 className="font-display font-light text-[48px] md:text-[56px] leading-[1.05] tracking-[-0.02em] mb-4">
-            <RevealWords
+            <Reveal
               key={mode}
               as="span"
-              className="font-editorial italic font-normal tracking-[-0.015em]"
-              {...MOTION.page.headline1}
-              stagger={MOTION.stagger.word}
+              variant="up"
+              className="inline-block font-editorial italic font-normal tracking-[-0.015em]"
+              delay={MOTION.page.headline1.delay}
+              duration={MOTION.duration.instant}
             >
               {mode === "login" ? "sign in" : "create account"}
-            </RevealWords>
+            </Reveal>
           </h1>
           <Reveal variant="up" {...MOTION.page.body0}>
             <p className="font-sans text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] mb-12">
@@ -97,18 +97,18 @@ const LoggedOutMoonbase = () => {
           <button
             type="button"
             onClick={open}
-            className="group inline-flex items-baseline gap-2 self-start text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+            className="group inline-flex items-baseline gap-2 self-start text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
           >
-            <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+            <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[200ms] ease-editorial">
               {mode === "login" ? "sign in" : "create account"}
             </span>
-            <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+            <span className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
           </button>
 
           <button
             type="button"
             onClick={() => setMode(mode === "login" ? "signup" : "login")}
-            className="block mt-10 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+            className="block mt-10 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
           >
             {mode === "login"
               ? "no account? create one →"
@@ -161,15 +161,16 @@ const LoggedOutLocal = () => {
             <Eyebrow accent className="mb-8">// account</Eyebrow>
           </Reveal>
           <h1 className="font-display font-light text-[48px] md:text-[56px] leading-[1.05] tracking-[-0.02em] mb-4">
-            <RevealWords
+            <Reveal
               key={mode}
               as="span"
-              className="font-editorial italic font-normal tracking-[-0.015em]"
-              {...MOTION.page.headline1}
-              stagger={MOTION.stagger.word}
+              variant="up"
+              className="inline-block font-editorial italic font-normal tracking-[-0.015em]"
+              delay={MOTION.page.headline1.delay}
+              duration={MOTION.duration.instant}
             >
               {mode === "login" ? "sign in" : "create account"}
-            </RevealWords>
+            </Reveal>
           </h1>
           <Reveal variant="up" {...MOTION.page.body0}>
             <p className="font-sans text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] mb-12">
@@ -209,13 +210,13 @@ const LoggedOutLocal = () => {
             <button
               type="submit"
               disabled={busy}
-              className="group inline-flex items-baseline gap-2 self-start mt-4 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group inline-flex items-baseline gap-2 self-start mt-4 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+              <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[200ms] ease-editorial">
                 {busy ? "…" : mode === "login" ? "sign in" : "create account"}
               </span>
               {!busy && (
-                <span className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                <span className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
               )}
             </button>
           </form>
@@ -226,7 +227,7 @@ const LoggedOutLocal = () => {
               setMode(mode === "login" ? "signup" : "login");
               setError(null);
             }}
-            className="mt-10 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+            className="mt-10 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
           >
             {mode === "login"
               ? "no account? create one →"
@@ -256,7 +257,7 @@ const LicenseRow = ({ license }: { license: License }) => {
         <button
           type="button"
           onClick={() => setRevealed((v) => !v)}
-          className="text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial text-left tabular-nums"
+          className="text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial text-left tabular-nums"
           title={revealed ? "click to hide" : "click to reveal"}
         >
           {revealed ? license.key : masked}
@@ -267,7 +268,7 @@ const LicenseRow = ({ license }: { license: License }) => {
           <a
             href={download.url}
             download
-            className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] border-b border-[color:var(--text-primary)] hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[400ms] ease-editorial"
+            className="text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] border-b border-[color:var(--text-primary)] hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[200ms] ease-editorial"
           >
             {download.label}
           </a>
@@ -383,9 +384,9 @@ const SettingsLocal = () => {
           <button
             type="submit"
             disabled={emailBusy}
-            className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
+            <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[200ms] ease-editorial">
               {emailBusy ? "…" : "save"}
             </span>
           </button>
@@ -411,9 +412,9 @@ const SettingsLocal = () => {
           <button
             type="submit"
             disabled={passwordBusy}
-            className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group inline-flex items-baseline gap-2 self-start mt-3 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
+            <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[200ms] ease-editorial">
               {passwordBusy ? "…" : "save"}
             </span>
           </button>
@@ -435,10 +436,10 @@ const AccountHeader = ({ email, onSignOut }: { email: string; onSignOut: () => v
     <button
       type="button"
       onClick={onSignOut}
-      className="group inline-flex items-baseline gap-2 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial md:pt-7"
+      className="group inline-flex items-baseline gap-2 text-[12px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial md:pt-7"
     >
       <span className="link-draw">sign out</span>
-      <span className="transition-transform duration-[400ms] ease-editorial group-hover:translate-x-0.5">→</span>
+      <span className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-0.5">→</span>
     </button>
   </Reveal>
 );
@@ -464,12 +465,12 @@ const MoonbaseAccountLink = ({
     <button
       type="button"
       onClick={() => Moonbase.view_account()}
-      className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+      className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
     >
-      <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[400ms] ease-editorial">
+      <span className="border-b border-[color:var(--text-primary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[200ms] ease-editorial">
         {cta}
       </span>
-      <span className="transition-transform duration-[400ms] ease-editorial group-hover:translate-x-1">→</span>
+      <span className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
     </button>
   </section>
 );
@@ -530,7 +531,7 @@ const LoggedInLocal = () => {
                 no licenses yet.{" "}
                 <Link
                   to="/"
-                  className="text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[400ms] ease-editorial"
+                  className="text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] hover:border-[color:var(--accent-raw)] pb-0.5 transition-colors duration-[200ms] ease-editorial"
                 >
                   browse plugins →
                 </Link>

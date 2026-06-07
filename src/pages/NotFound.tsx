@@ -4,7 +4,6 @@ import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
-import RevealWords from "@/components/motion/RevealWords";
 import MagneticLink from "@/components/motion/MagneticLink";
 import { MOTION } from "@/components/motion/timing";
 
@@ -20,17 +19,18 @@ const NotFound = () => {
               <Eyebrow accent className="mb-8">// 404</Eyebrow>
             </Reveal>
             <h1 className="font-display font-light text-[88px] md:text-[128px] leading-[0.95] tracking-[-0.02em]">
-              <RevealWords as="span" className="block" {...MOTION.page.headline1} stagger={MOTION.stagger.word}>
+              <Reveal as="span" variant="up" className="block" delay={MOTION.page.headline1.delay} duration={MOTION.duration.instant}>
                 not found.
-              </RevealWords>
-              <RevealWords
+              </Reveal>
+              <Reveal
                 as="span"
+                variant="up"
                 className="block font-editorial italic font-normal tracking-[-0.015em] text-[color:var(--text-secondary)]"
-                {...MOTION.page.headline2}
-                stagger={MOTION.stagger.word}
+                delay={MOTION.page.headline2.delay}
+                duration={MOTION.duration.instant}
               >
                 or not here yet.
-              </RevealWords>
+              </Reveal>
             </h1>
             <Reveal variant="up" {...MOTION.page.body0}>
               <p className="mt-12 font-sans text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[48ch]">
@@ -44,7 +44,7 @@ const NotFound = () => {
                 className="accent-glow group inline-flex items-baseline gap-2 mt-10 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
               >
                 <span>back home</span>
-                <span aria-hidden="true" className="transition-transform duration-[600ms] ease-editorial group-hover:translate-x-1">→</span>
+                <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
               </MagneticLink>
             </Reveal>
           </div>

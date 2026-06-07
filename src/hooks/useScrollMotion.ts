@@ -35,7 +35,21 @@ export function useReveal<T extends HTMLElement = HTMLElement>(opts?: {
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
+            // Promote to its own compositor layer only for the duration of the
+            // entrance, then release on transitionend. Avoids pinning a GPU
+            // layer on every revealed element for the life of the page.
+            el.style.willChange = "opacity, transform";
             el.setAttribute("data-revealed", "true");
+            // `once` guarantees a single cleanup even though the entrance
+            // transitions two properties (opacity + transform) and so fires
+            // transitionend twice.
+            el.addEventListener(
+              "transitionend",
+              () => {
+                el.style.willChange = "";
+              },
+              { once: true },
+            );
             if (opts?.once !== false) io.unobserve(el);
           } else if (opts?.once === false) {
             el.setAttribute("data-revealed", "false");

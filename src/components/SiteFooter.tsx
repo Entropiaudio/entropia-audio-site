@@ -22,9 +22,9 @@ const SiteFooter = () => {
               </p>
               <a
                 href={`mailto:${copy.contactEmail}`}
-                className="group inline-flex items-baseline gap-2 mt-6 text-[13px] font-mono lowercase tracking-[0.06em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[600ms] ease-editorial"
+                className="group inline-flex items-baseline gap-2 mt-6 text-[13px] font-mono lowercase tracking-[0.06em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
               >
-                <span className="border-b border-[color:var(--text-tertiary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[600ms] ease-editorial">
+                <span className="border-b border-[color:var(--text-tertiary)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[200ms] ease-editorial">
                   {copy.contactEmail}
                 </span>
               </a>
@@ -34,19 +34,19 @@ const SiteFooter = () => {
               <Eyebrow className="mb-2">{c.siteHeading}</Eyebrow>
               <Link
                 to="/plugins/chaosverb"
-                className="text-[14px] font-mono normal-case tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                className="text-[14px] font-mono normal-case tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
               >
                 {c.nav.chaosverb}
               </Link>
               <Link
                 to="/about"
-                className="text-[14px] font-mono lowercase tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                className="text-[14px] font-mono lowercase tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
               >
                 {c.nav.about}
               </Link>
               <Link
                 to="/account"
-                className="text-[14px] font-mono lowercase tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                className="text-[14px] font-mono lowercase tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
               >
                 {c.nav.account}
               </Link>
@@ -56,13 +56,13 @@ const SiteFooter = () => {
               <Eyebrow className="mb-2">{c.legalHeading}</Eyebrow>
               <Link
                 to="/legal/eula"
-                className="text-[14px] font-mono lowercase tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                className="text-[14px] font-mono lowercase tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
               >
                 {c.nav.eula}
               </Link>
               <Link
                 to="/legal/privacy"
-                className="text-[14px] font-mono lowercase tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[400ms] ease-editorial"
+                className="text-[14px] font-mono lowercase tracking-[0.04em] text-[color:var(--text-secondary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
               >
                 {c.nav.privacy}
               </Link>
