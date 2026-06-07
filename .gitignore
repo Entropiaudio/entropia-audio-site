@@ -25,3 +25,6 @@ dist-ssr
 
 # Claude Code local dev-server config (not portable across users)
 .claude/
+
+# Stale bun lockfile — package-lock.json is the single source of truth
+bun.lockb

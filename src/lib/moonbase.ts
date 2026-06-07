@@ -1,12 +1,12 @@
 /**
  * Moonbase embedded-storefront bootstrap.
  *
- * Single point of contact with `@moonbase.sh/storefront`. When VITE_MOONBASE_URL
- * is unset the SDK never boots, and the rest of the site falls back to the
- * localStorage prototype AuthContext / CartContext, useful for local dev
- * without a Moonbase account.
+ * Single point of contact with `@moonbase.sh/storefront`. Moonbase is the only
+ * backend for accounts, cart, and checkout — VITE_MOONBASE_URL is REQUIRED. If
+ * it's unset the SDK never boots and the storefront is non-functional (the
+ * production build also hard-fails without it, see vite.config.ts).
  *
- * Manual steps still required before this does anything:
+ * Manual steps required before this does anything:
  *   1. Provision a Moonbase account; copy the storefront URL
  *      (e.g. https://entropiaudio.moonbase.sh).
  *   2. Whitelist this site's origins (prod, deploy preview, localhost:8080)
@@ -20,7 +20,6 @@ import Moonbase, { MoonbaseEvent } from "@moonbase.sh/storefront";
 export { Moonbase, MoonbaseEvent };
 
 export const moonbaseUrl = import.meta.env.VITE_MOONBASE_URL as string | undefined;
-export const isMoonbaseEnabled = Boolean(moonbaseUrl);
 
 /**
  * The storefront presents all prices in USD, regardless of the shopper's
@@ -45,7 +44,19 @@ let started = false;
  * without dropping to a Custom Integration build.
  */
 export const initMoonbase = () => {
-  if (started || !moonbaseUrl) return;
+  if (started) return;
+  if (!moonbaseUrl) {
+    // Required in every environment. Production builds hard-fail without it
+    // (vite.config.ts); in dev this warns loudly instead of silently rendering
+    // a non-functional storefront.
+    if (typeof console !== "undefined") {
+      console.error(
+        "[entropia] VITE_MOONBASE_URL is not set — the storefront (accounts, cart, " +
+          "checkout) will not function. Set it in .env.local.",
+      );
+    }
+    return;
+  }
   started = true;
   // setup() is async; we don't await because the rest of the app boots fine
   // before Moonbase's first storefront fetch completes, the event mirror

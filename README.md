@@ -47,8 +47,10 @@ To enable in any environment:
 3. For Netlify, add the same env var under
    *site settings → environment variables* and trigger a fresh deploy.
 
-Leaving `VITE_MOONBASE_URL` unset keeps the localStorage prototype in play,
-useful for offline dev. The prototype is **not** safe for real customer data.
+`VITE_MOONBASE_URL` is **required** — Moonbase is the only backend for accounts,
+cart, and checkout. With it unset, those flows are non-functional (dev logs a
+console error) and a production build hard-fails (see `vite.config.ts`). The
+former localStorage prototype has been removed.
 
 ## deploy
 

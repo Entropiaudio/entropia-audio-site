@@ -1,12 +1,10 @@
 // Live plugin pricing, sourced from Moonbase so the product page and cards
 // can't drift from what the cart actually charges.
 //
-// With Moonbase enabled, prices come from the storefront event mirror
-// (lib/moonbase-state.ts) in USD. The static `fallback` (from data/plugins.ts)
-// is used when Moonbase is disabled for local dev, or until the first
+// Prices come from the storefront event mirror (lib/moonbase-state.ts) in USD.
+// The static `fallback` (from data/plugins.ts) is used until the first
 // StorefrontUpdated tick lands — so there's never a $0 flash on first paint.
 import { useSyncExternalStore } from "react";
-import { isMoonbaseEnabled } from "@/lib/moonbase";
 import {
   getPricingSnapshot,
   subscribePricing,
@@ -17,7 +15,6 @@ export type { PluginPricing };
 
 export const usePluginPricing = (slug: string, fallback: PluginPricing): PluginPricing => {
   const live = useSyncExternalStore(subscribePricing, getPricingSnapshot);
-  if (!isMoonbaseEnabled) return fallback;
   const p = live[slug];
   // Hold the static price until Moonbase has a real (> 0) number for this slug.
   if (!p || p.price <= 0) return fallback;

@@ -16,7 +16,7 @@ import { getPlugin } from "@/data/plugins";
 import { useCart } from "@/context/CartContext";
 import { toast } from "@/hooks/use-toast";
 import { copy } from "@/copy";
-import { Moonbase, isMoonbaseEnabled } from "@/lib/moonbase";
+import { Moonbase } from "@/lib/moonbase";
 
 const AlternatingSection = ({
   heading,
@@ -116,22 +116,13 @@ const PluginPage = () => {
             {plugin.name}
           </span>
           <div className="flex-1 md:flex-none flex items-baseline justify-between md:justify-end gap-5 md:gap-8 whitespace-nowrap">
-            {isMoonbaseEnabled ? (
-              <button
-                type="button"
-                onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
-                className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
-              >
-                {c.ctaTry}
-              </button>
-            ) : (
-              <a
-                href="#try"
-                className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
-              >
-                {c.ctaTry}
-              </a>
-            )}
+            <button
+              type="button"
+              onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
+              className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
+            >
+              {c.ctaTry}
+            </button>
             <MagneticLink
               as="button"
               type="button"
@@ -357,27 +348,16 @@ const PluginPage = () => {
               </Reveal>
               <Reveal variant="up" {...MOTION.section.cta}>
                 <div className="flex flex-col sm:flex-row gap-6 sm:gap-10">
-                  {isMoonbaseEnabled ? (
-                    <MagneticLink
-                      as="button"
-                      type="button"
-                      strength={6}
-                      onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
-                      className="accent-glow group inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
-                    >
-                      <span>{c.download}</span>
-                      <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-y-0.5">↓</span>
-                    </MagneticLink>
-                  ) : (
-                    <span
-                      aria-disabled="true"
-                      title="installer coming soon"
-                      className="inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] border border-[color:var(--border-soft)] opacity-60 cursor-not-allowed select-none"
-                    >
-                      <span>{c.download}</span>
-                      <span aria-hidden="true" className="text-[10px]">soon</span>
-                    </span>
-                  )}
+                  <MagneticLink
+                    as="button"
+                    type="button"
+                    strength={6}
+                    onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
+                    className="accent-glow group inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
+                  >
+                    <span>{c.download}</span>
+                    <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-y-0.5">↓</span>
+                  </MagneticLink>
                 </div>
               </Reveal>
             </div>

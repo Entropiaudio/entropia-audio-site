@@ -1,0 +1,11 @@
+# Netlify build configuration.
+#
+# Pin a deterministic, reproducible install. `npm ci` installs strictly from
+# package-lock.json and HARD-FAILS if package.json and the lockfile drift — so a
+# deploy can never silently resolve a different dependency tree than the one
+# that was reviewed/tested. The stale bun.lockb was removed so package-lock.json
+# is the single source of truth (avoids the package-manager ambiguity where a
+# build tool might install from an out-of-date lockfile).
+[build]
+  command = "npm ci && npm run build"
+  publish = "dist"

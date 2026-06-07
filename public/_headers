@@ -1,0 +1,72 @@
+# Netlify HTTP response headers. Netlify copies this file from public/ to the
+# publish root on build (same mechanism as public/_redirects). Rules are
+# applied top-to-bottom; the most specific matching path wins per header.
+#
+# Security posture: this is a static SPA whose commerce/auth/checkout are
+# delegated to the Moonbase embedded storefront. We own no backend, so HTTP
+# response headers + a Content-Security-Policy are the primary server-side
+# controls available to us. See SECURITY.md for the full rationale.
+
+/*
+  # --- Transport security -------------------------------------------------
+  # Force HTTPS for two years, including subdomains. (Not adding `preload`
+  # by default — that commits the apex + all subdomains to the browser
+  # preload list permanently; opt in via SECURITY.md once you're sure every
+  # subdomain is HTTPS-only.)
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
+
+  # --- Framing / clickjacking ---------------------------------------------
+  # The storefront must never be embeddable in another origin's frame.
+  # frame-ancestors in the CSP below is the modern control; X-Frame-Options
+  # is the legacy belt-and-suspenders for older agents.
+  X-Frame-Options: DENY
+
+  # --- MIME / sniffing -----------------------------------------------------
+  X-Content-Type-Options: nosniff
+
+  # --- Referrer / cross-origin isolation ----------------------------------
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin
+  # Legacy auditor header; modern browsers ignore it and the safe value is 0
+  # (1; mode=block has known XSS-filter bypass issues). CSP is the real defense.
+  X-XSS-Protection: 0
+
+  # --- Permissions-Policy --------------------------------------------------
+  # Disable hardware/sensor features the site never uses. `payment` is left
+  # enabled for self + Moonbase so embedded wallet flows (Apple/Google Pay)
+  # keep working at checkout. Disable FLoC/Topics.
+  Permissions-Policy: accelerometer=(), autoplay=(self), camera=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(self "https://entropiaudio.moonbase.sh"), usb=(), interest-cohort=()
+
+  # --- Content-Security-Policy --------------------------------------------
+  # Injection defenses are strict (no inline/eval scripts, locked base-uri,
+  # no plugins, no framing).
+  #
+  # Least-privilege on the SCRIPT-EXECUTION surface (the directives that matter
+  # for XSS): script-src and form-action are pinned to 'self' + the EXACT tenant
+  # host (https://entropiaudio.moonbase.sh), NOT a wildcard. moonbase.sh is
+  # multi-tenant, so `https://*.moonbase.sh` in script-src would let any other
+  # tenant (attacker.moonbase.sh) serve script — a gadget if an XSS ever appears.
+  # The bundled SDK reaches Moonbase via iframe + fetch, never an external
+  # <script>, and nothing loads Stripe/Paddle as a script in our document
+  # (payment runs inside Moonbase's own iframe), so those were dropped here.
+  #
+  # connect-src / frame-src KEEP the `*.moonbase.sh` wildcard and the Stripe /
+  # Paddle origins on purpose: the SDK may call sibling Moonbase subdomains
+  # (api/cdn/ws) and may mount a payment-provider iframe, and these directives do
+  # not execute script in our origin, so the residual risk is low. Pinning them
+  # blindly could break checkout, which can't be exercised from local dev.
+  #
+  # If the Moonbase modal or checkout breaks after deploy, open DevTools →
+  # Console, read the blocked origin from the CSP violation, and add it to the
+  # matching directive below (almost always frame-src / connect-src).
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self' https://entropiaudio.moonbase.sh; script-src 'self' https://entropiaudio.moonbase.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://*.moonbase.sh wss://*.moonbase.sh https://fonts.googleapis.com https://fonts.gstatic.com https://api.stripe.com https://*.paddle.com; frame-src 'self' https://*.moonbase.sh https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://*.paddle.com; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests
+
+# --- Caching ---------------------------------------------------------------
+# Fingerprinted build assets are immutable, cache them hard.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The SPA shell must always revalidate so new deploys take effect immediately
+# (it references the latest hashed asset names).
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate

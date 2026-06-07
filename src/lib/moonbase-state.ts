@@ -21,7 +21,7 @@
  */
 import type { CartItem } from "@/context/CartContext";
 import type { User } from "@/context/AuthContext";
-import { DISPLAY_CURRENCY, isMoonbaseEnabled, Moonbase, MoonbaseEvent } from "./moonbase";
+import { DISPLAY_CURRENCY, moonbaseUrl, Moonbase, MoonbaseEvent } from "./moonbase";
 
 type Listener = () => void;
 
@@ -157,8 +157,8 @@ const mapMoonbaseCartItem = (item: unknown, sessionCurrency: string | null): Car
 // Moonbase user identity only. The embedded storefront SDK doesn't surface
 // the rich license records or order history — those live behind separate
 // REST endpoints. The site delegates all of that to `Moonbase.view_account()`
-// (see Account.tsx), so `licenses` and `orders` here intentionally stay empty
-// for the Moonbase path; they're populated only by the local prototype.
+// (see Account.tsx), so `licenses` and `orders` here intentionally stay empty;
+// the User type keeps the fields for the Account page's shared shape.
 const mapMoonbaseUser = (u: unknown): User | null => {
   if (!u || typeof u !== "object") return null;
   const obj = u as Record<string, unknown>;
@@ -264,7 +264,7 @@ let bound = false;
  * but currently invoked from initMoonbase() in main.tsx via lib/moonbase.ts.
  */
 export const bindMoonbaseEvents = () => {
-  if (bound || !isMoonbaseEnabled) return;
+  if (bound || !moonbaseUrl) return;
   bound = true;
 
   Moonbase.on(MoonbaseEvent.StorefrontUpdated, (event: { storefront: unknown; user?: unknown }) => {

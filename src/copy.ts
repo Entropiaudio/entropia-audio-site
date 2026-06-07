@@ -273,7 +273,7 @@ export const copy = {
         {
           heading: "3. who sees it",
           body:
-            "Your data will only be accessible to us and the third-party services we use to operate our business, such as our payment processor and email service provider. We do not sell, rent, or share your data with any other third parties.",
+            "Your data is accessible to us and to the third-party services we rely on to operate, principally our storefront and payment provider, Moonbase (moonbase.sh), which processes accounts, orders, and card payments on our behalf. Card details are handled by Moonbase and its payment processor and never touch our servers. We do not sell, rent, or share your data with any other third parties.",
         },
         {
           heading: "4. cookies",
@@ -283,12 +283,12 @@ export const copy = {
         {
           heading: "5. your rights",
           body:
-            "You have the right to request access to your data, as well as the right to request that your data be deleted. If you would like to exercise these rights, please contact us at [EMAIL_ADDRESS].",
+            "You have the right to request access to your data, to request a copy of it, and to request that your data be deleted. If you would like to exercise these rights, please email contact@entropiaudio.com and we will respond within 30 days.",
         },
         {
           heading: "6. contact",
           body:
-            "If you have any questions about this Privacy Policy or our data practices, please contact us via email.",
+            "If you have any questions about this Privacy Policy or our data practices, please email us at contact@entropiaudio.com.",
         },
       ],
     },

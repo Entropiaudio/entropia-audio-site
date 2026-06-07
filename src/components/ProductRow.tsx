@@ -8,7 +8,7 @@ import { useParallax } from "@/hooks/useScrollMotion";
 import { usePluginPricing } from "@/hooks/usePluginPricing";
 import type { Plugin } from "@/data/plugins";
 import { copy } from "@/copy";
-import { Moonbase, isMoonbaseEnabled } from "@/lib/moonbase";
+import { Moonbase } from "@/lib/moonbase";
 
 const ProductRow = ({ plugin }: { plugin: Plugin }) => {
   const c = copy.productRow;
@@ -89,22 +89,13 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
               </span>
               <span className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
             </MagneticLink>
-            {isMoonbaseEnabled ? (
-              <button
-                type="button"
-                onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
-                className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[200ms] ease-editorial"
-              >
-                {c.secondaryButton}
-              </button>
-            ) : (
-              <Link
-                to={`/plugins/${plugin.slug}#try`}
-                className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[200ms] ease-editorial"
-              >
-                {c.secondaryButton}
-              </Link>
-            )}
+            <button
+              type="button"
+              onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
+              className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[200ms] ease-editorial"
+            >
+              {c.secondaryButton}
+            </button>
           </div>
         </Reveal>
       </div>

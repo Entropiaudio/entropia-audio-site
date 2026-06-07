@@ -4,11 +4,8 @@
 // endpoint and receives a `browser` URL to open. With the "Embedded Widget"
 // storefront mode, that URL points at this site. The SDK's internal
 // `handleLocationIntent` already handles `?mb_intent=activate_product&mb_token=...`
-// on boot, but this explicit route handles two additional cases:
-//   1. Path-style URLs like `/activate?token=...` (some Moonbase deploys, or
-//      links forwarded by users)
-//   2. When VITE_MOONBASE_URL is not configured, we redirect to the hosted
-//      portal so the activation still completes instead of dead-ending.
+// on boot; this explicit route additionally handles path-style URLs like
+// `/activate?token=...` (some Moonbase deploys, or links forwarded by users).
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
@@ -17,15 +14,11 @@ import Container from "@/components/primitives/Container";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
 import { MOTION } from "@/components/motion/timing";
-import { isMoonbaseEnabled, Moonbase } from "@/lib/moonbase";
-
-const HOSTED_FALLBACK = "https://entropiaudio.moonbase.sh/activate";
+import { Moonbase } from "@/lib/moonbase";
 
 const Activate = () => {
   const [params] = useSearchParams();
-  const [status, setStatus] = useState<"working" | "redirecting" | "missing">(
-    "working",
-  );
+  const [status, setStatus] = useState<"working" | "missing">("working");
 
   useEffect(() => {
     // Accept whichever query param Moonbase decided to send; fall back to
@@ -37,15 +30,6 @@ const Activate = () => {
       params.get("t") ??
       undefined;
 
-    if (!isMoonbaseEnabled) {
-      // Forward to the hosted portal so the user isn't stranded. Preserves
-      // the token so they don't have to copy it from the plugin again.
-      setStatus("redirecting");
-      const target = token ? `${HOSTED_FALLBACK}?token=${encodeURIComponent(token)}` : HOSTED_FALLBACK;
-      window.location.replace(target);
-      return;
-    }
-
     if (!token) {
       // Moonbase modal can still prompt for a token, but flag the missing
       // value so support can spot a broken plugin link in the wild.
@@ -55,6 +39,14 @@ const Activate = () => {
     }
 
     Moonbase.activate_product({ token });
+    // Scrub the one-time activation token from the address bar, browser history
+    // (incl. synced history), and any same-origin Referer now that it's been
+    // handed to the SDK. The SDK only auto-scrubs the canonical
+    // ?mb_intent=…&mb_token=… form — not this path-style /activate?token= route —
+    // so we do it here to avoid the token lingering where it can be replayed.
+    if (typeof window !== "undefined") {
+      window.history.replaceState({}, "", "/activate");
+    }
   }, [params]);
 
   return (
@@ -74,14 +66,12 @@ const Activate = () => {
                 delay={MOTION.page.headline1.delay}
                 duration={MOTION.duration.instant}
               >
-                {status === "redirecting" ? "redirecting" : "opening activation"}
+                opening activation
               </Reveal>
             </h1>
             <Reveal variant="up" {...MOTION.page.body0}>
               <p className="font-sans text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[52ch]">
-                {status === "redirecting"
-                  ? "taking you to the moonbase portal to finish activation."
-                  : status === "missing"
+                {status === "missing"
                   ? "no activation token in this link. sign in and we'll try to match your account."
                   : "if the activation window doesn't appear, your browser may be blocking pop-ups. the plugin can resend the link from the activation screen."}
               </p>
