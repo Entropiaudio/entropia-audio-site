@@ -101,8 +101,15 @@ export const HeroVisual = ({
 
     // Drives the flow-field. Self-schedules only while the hero is on screen
     // and motion is allowed, so the rAF loop pauses when scrolled out of view.
+    //
+    // The pre-refactor hero accidentally fanned out into ~40 concurrent rAF
+    // loops during warm-up; that rate set its drift speed AND its short trail
+    // length (one 0.16 fade-fill per step). Advance the same number of
+    // sim-steps per displayed frame so this single, pausable loop reproduces
+    // the look the site has always shipped.
+    const STEPS_PER_FRAME = 40;
     const drive = () => {
-      step();
+      for (let i = 0; i < STEPS_PER_FRAME; i++) step();
       rafId = visible && !reducedMotion ? requestAnimationFrame(drive) : null;
     };
 
