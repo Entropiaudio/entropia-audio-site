@@ -21,7 +21,7 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
   const parallaxRef = useParallax<HTMLDivElement>(36);
 
   return (
-    <article className="relative grid md:grid-cols-12 gap-10 md:gap-16 items-center py-24 md:py-32 border-t border-hairline first:border-t-0">
+    <article className="relative grid md:grid-cols-12 gap-10 md:gap-16 items-center py-24 md:py-32 rule-top-fade first:before:hidden">
       <Reveal
         variant="up"
         {...MOTION.section.image}
@@ -30,7 +30,7 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
         <Link
           to={`/plugins/${plugin.slug}`}
           aria-label={`open ${plugin.name}`}
-          className="block hover-zoom group"
+          className="block hover-zoom group transition-transform duration-[200ms] ease-editorial hover:-translate-y-0.5"
         >
           <div ref={parallaxRef}>
             <PluginScreenshot
@@ -48,28 +48,28 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
         <Reveal variant="up" {...MOTION.section.eyebrow}>
           <div>
             <Eyebrow className="mb-5">{c.eyebrow}</Eyebrow>
-            <h2 className="font-display font-light text-[44px] md:text-[56px] leading-[1.0] tracking-[-0.02em] normal-case">
+            <h2 className="font-display text-[48px] md:text-[60px] leading-[0.95] text-[color:var(--ink)]">
               {plugin.name}
             </h2>
-            <p className="mt-5 font-editorial italic text-[20px] md:text-[22px] leading-[1.35] text-[color:var(--text-secondary)]">
+            <p className="mt-4 font-editorial italic text-[20px] md:text-[22px] leading-[1.35] text-[color:var(--ink-2)]">
               {plugin.tagline}
             </p>
           </div>
         </Reveal>
 
         <Reveal variant="up" {...MOTION.section.headline}>
-          <p className="font-sans font-normal text-[16px] md:text-[17px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[42ch]">
+          <p className="font-sans font-normal text-[16px] md:text-[17px] leading-[1.7] tracking-[0.005em] text-[color:var(--ink-2)] max-w-[42ch]">
             {plugin.shortDescription}
           </p>
         </Reveal>
 
         <Reveal variant="up" {...MOTION.section.body}>
-          <div key={pricing.price} className="state-fade flex items-baseline gap-4 font-mono text-[13px] tabular-nums">
-            <span className="text-[color:var(--text-primary)]">${pricing.price}</span>
+          <div key={pricing.price} className="state-fade flex items-baseline gap-4 font-mono font-semibold text-[19px] tabular-nums">
+            <span className="text-[color:var(--ink)]">${pricing.price}</span>
             {onSale && (
               <>
-                <span className="line-through text-[color:var(--text-tertiary)]">${pricing.regularPrice}</span>
-                <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--accent-raw)]">
+                <span className="line-through font-normal text-[15px] text-[color:var(--ink-3)]">${pricing.regularPrice}</span>
+                <span className="text-[11px] uppercase tracking-label text-[color:var(--pop)]">
                   {cv.saleBadge}
                 </span>
               </>
@@ -78,21 +78,19 @@ const ProductRow = ({ plugin }: { plugin: Plugin }) => {
         </Reveal>
 
         <Reveal variant="up" {...MOTION.section.cta}>
-          <div className="flex items-baseline gap-8 pt-2">
+          <div className="flex flex-wrap items-center gap-4 pt-2">
             <MagneticLink
               to={`/plugins/${plugin.slug}`}
               strength={6}
-              className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
+              className="btn btn-solid"
             >
-              <span className="link-draw pb-1">
-                {c.primaryButton}
-              </span>
-              <span className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
+              <span>{c.primaryButton}</span>
+              <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
             </MagneticLink>
             <button
               type="button"
               onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
-              className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[200ms] ease-editorial"
+              className="btn btn-ghost"
             >
               {c.secondaryButton}
             </button>

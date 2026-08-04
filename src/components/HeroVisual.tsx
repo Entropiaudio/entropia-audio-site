@@ -1,204 +1,112 @@
-import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface HeroVisualProps {
   className?: string;
-  /** Particles per 100k pixels. Default 0.18, quiet density. */
-  density?: number;
-  /** 0..1 opacity ceiling for the particle alpha. */
-  intensity?: number;
+  /** Render the brush-stroke flourish artwork (the home hero's painting). */
+  art?: boolean;
+  /** Clip the bottom edge at the brand diagonal. */
+  cut?: boolean;
 }
 
+/* Paint flecks sampled from the hero painting — copper heat + plum. */
+const FLECKS: Array<{ l: string; t: string; s: number; c: string; o: number }> = [
+  { l: "67%", t: "70%", s: 5, c: "var(--accent-raw)", o: 0.8 },
+  { l: "71%", t: "40%", s: 3, c: "var(--accent-bright)", o: 0.7 },
+  { l: "88%", t: "33%", s: 4, c: "var(--accent-raw)", o: 0.75 },
+  { l: "93%", t: "45%", s: 6, c: "var(--plum)", o: 0.5 },
+  { l: "90%", t: "63%", s: 3, c: "var(--plum)", o: 0.55 },
+  { l: "84%", t: "77%", s: 4, c: "var(--accent-bright)", o: 0.7 },
+  { l: "78%", t: "83%", s: 2.5, c: "var(--accent-raw)", o: 0.6 },
+  { l: "96%", t: "55%", s: 2, c: "var(--accent-raw)", o: 0.6 },
+  { l: "73%", t: "60%", s: 2, c: "var(--plum)", o: 0.5 },
+  { l: "86%", t: "51%", s: 3, c: "var(--accent-bright)", o: 0.7 },
+  { l: "81%", t: "36%", s: 2, c: "var(--accent-raw)", o: 0.55 },
+];
+
+/* Topographic hairlines drifting at the low end of the field. */
+const Contours = () => (
+  <svg
+    viewBox="0 0 820 220"
+    preserveAspectRatio="xMidYMid meet"
+    className="absolute left-[-2%] top-1/2 w-[58%] h-auto opacity-60 pointer-events-none"
+    aria-hidden="true"
+  >
+    <g fill="none" strokeLinecap="round">
+      <path d="M0,120 C160,96 300,140 440,116 560,96 680,120 820,92" stroke="var(--clay)" strokeWidth="1.5" opacity="0.7" />
+      <path d="M0,150 C150,140 320,170 470,150 620,132 720,150 820,130" stroke="var(--accent-raw)" strokeWidth="1.3" opacity="0.5" />
+      <path d="M0,96 C180,70 300,104 460,84 600,68 700,88 820,70" stroke="var(--clay)" strokeWidth="1" opacity="0.42" />
+      <path d="M0,178 C170,180 340,198 500,176 640,160 740,172 820,156" stroke="var(--accent-raw)" strokeWidth="1" opacity="0.32" />
+    </g>
+  </svg>
+);
+
 /**
- * Slow-breathing flow-field particle drift on canvas. Non-interactive, the
- * field drifts under its own flow noise only. Honors prefers-reduced-motion
- * by rendering a single static frame with no rAF loop.
+ * The daylight hero field: warm parchment radial sampled from the hero
+ * painting, paint flecks, contour hairlines, and (on the home page) the
+ * brush-stroke flourish. Pure CSS/SVG — replaces the old canvas flow field.
  */
-export const HeroVisual = ({
-  className,
-  density = 0.22,
-  intensity = 0.26,
-}: HeroVisualProps) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const wrapRef = useRef<HTMLDivElement | null>(null);
+export const HeroVisual = ({ className, art = true, cut = false }: HeroVisualProps) => (
+  <div className={cn("relative w-full h-full", className)} aria-hidden="true">
+    <div
+      className="absolute inset-0 overflow-hidden"
+      style={{
+        clipPath: cut ? "polygon(0 0, 100% 0, 100% calc(100% - 70px), 0 100%)" : undefined,
+        background:
+          "radial-gradient(135% 100% at 66% 12%, var(--parchment) 0%, var(--paper) 38%, var(--tan) 74%, var(--clay) 100%)",
+      }}
+    >
+      {/* extra grain inside the field so the gradient reads as paper */}
+      <div
+        className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+        }}
+      />
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const wrap = wrapRef.current;
-    if (!canvas || !wrap) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+      {art && (
+        <img
+          src="/art/hero-flourish.svg"
+          alt=""
+          className="absolute right-[-4%] bottom-0 w-[88%] sm:w-[70%] md:w-[58%] max-w-[880px] h-auto pointer-events-none select-none"
+          style={{
+            filter:
+              "drop-shadow(0 9px 18px rgba(38,16,25,0.30)) drop-shadow(0 3px 5px rgba(38,16,25,0.42)) drop-shadow(0 0 36px rgba(221,110,38,0.30))",
+          }}
+          draggable={false}
+        />
+      )}
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      {/* paint flecks */}
+      <div className="absolute inset-0 pointer-events-none">
+        {FLECKS.map((f, i) => (
+          <span
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              left: f.l,
+              top: f.t,
+              width: f.s,
+              height: f.s,
+              background: f.c,
+              opacity: f.o,
+            }}
+          />
+        ))}
+      </div>
 
-    let width = 0;
-    let height = 0;
-    let particles: Array<{ x: number; y: number; vx: number; vy: number; life: number; phase: number }> = [];
-    let rafId: number | null = null;
-    let visible = true;
-    let t = 0;
+      <Contours />
 
-    const seedParticles = () => {
-      const count = Math.max(80, Math.floor((width * height) / 10000 * density));
-      particles = new Array(count).fill(0).map(() => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: 0,
-        vy: 0,
-        life: Math.random() * 600,
-        phase: Math.random() * Math.PI * 2,
-      }));
-    };
-
-    const resize = () => {
-      const rect = canvas.getBoundingClientRect();
-      width = Math.max(1, Math.floor(rect.width));
-      height = Math.max(1, Math.floor(rect.height));
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      canvas.style.width = width + "px";
-      canvas.style.height = height + "px";
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.fillStyle = "#14110F";
-      ctx.fillRect(0, 0, width, height);
-      seedParticles();
-    };
-
-    const step = () => {
-      ctx.fillStyle = "rgba(20, 17, 15, 0.16)";
-      ctx.fillRect(0, 0, width, height);
-
-      t += 0.00022;
-
-      for (const p of particles) {
-        const ax = Math.sin(p.x * 0.0035 + t * 1.0) + Math.cos(p.y * 0.0028 - t * 0.7);
-        const ay = Math.cos(p.x * 0.0030 - t * 0.9) + Math.sin(p.y * 0.0036 + t * 0.6);
-        const angle = (ax + ay) * 0.9;
-
-        const fx = Math.cos(angle) * 0.006;
-        const fy = Math.sin(angle) * 0.006;
-
-        p.vx = (p.vx + fx) * 0.95;
-        p.vy = (p.vy + fy) * 0.95;
-
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < -8) p.x = width + 8;
-        else if (p.x > width + 8) p.x = -8;
-        if (p.y < -8) p.y = height + 8;
-        else if (p.y > height + 8) p.y = -8;
-
-        p.life++;
-        const pulse = 0.5 + 0.5 * Math.sin(p.life * 0.001 + p.phase);
-        const alpha = intensity * (0.25 + 0.75 * pulse);
-
-        ctx.fillStyle = `rgba(212, 165, 116, ${alpha.toFixed(3)})`;
-        ctx.fillRect(p.x - 1, p.y - 1, 2.5, 2.5);
-      }
-    };
-
-    // Drives the flow-field. Self-schedules only while the hero is on screen
-    // and motion is allowed, so the rAF loop pauses when scrolled out of view.
-    //
-    // The pre-refactor hero accidentally fanned out into ~40 concurrent rAF
-    // loops during warm-up; that rate set its drift speed AND its short trail
-    // length (one 0.16 fade-fill per step). Advance the same number of
-    // sim-steps per displayed frame so this single, pausable loop reproduces
-    // the look the site has always shipped.
-    const STEPS_PER_FRAME = 40;
-    const drive = () => {
-      for (let i = 0; i < STEPS_PER_FRAME; i++) step();
-      rafId = visible && !reducedMotion ? requestAnimationFrame(drive) : null;
-    };
-
-    const renderStaticFrame = () => {
-      ctx.fillStyle = "#14110F";
-      ctx.fillRect(0, 0, width, height);
-      for (const p of particles) {
-        ctx.fillStyle = `rgba(212, 165, 116, ${intensity * 0.6})`;
-        ctx.fillRect(p.x, p.y, 1, 1);
-      }
-    };
-
-    resize();
-    if (reducedMotion) {
-      renderStaticFrame();
-    } else {
-      for (let i = 0; i < 40; i++) step();
-      if (rafId !== null) cancelAnimationFrame(rafId);
-      rafId = visible ? requestAnimationFrame(drive) : null;
-    }
-
-    // Coalesce resize bursts (window drag, devtools toggle) into one rAF.
-    let resizeRaf = 0;
-    const onResize = () => {
-      if (resizeRaf) return;
-      resizeRaf = requestAnimationFrame(() => {
-        resizeRaf = 0;
-        resize();
-      });
-    };
-
-    window.addEventListener("resize", onResize);
-
-    // Pause the rAF loop whenever the hero canvas is fully off-screen — on the
-    // long plugin pages it would otherwise keep drifting while the user reads
-    // far below the hero.
-    const visibility = new IntersectionObserver(
-      (entries) => {
-        const nowVisible = entries[0]?.isIntersecting ?? true;
-        if (nowVisible === visible) return;
-        visible = nowVisible;
-        if (visible && !reducedMotion && rafId === null) {
-          rafId = requestAnimationFrame(drive);
-        } else if (!visible && rafId !== null) {
-          cancelAnimationFrame(rafId);
-          rafId = null;
-        }
-      },
-      { threshold: 0 },
-    );
-    visibility.observe(canvas);
-
-    return () => {
-      if (rafId !== null) cancelAnimationFrame(rafId);
-      if (resizeRaf) cancelAnimationFrame(resizeRaf);
-      window.removeEventListener("resize", onResize);
-      visibility.disconnect();
-    };
-  }, [density, intensity]);
-
-  return (
-    <div ref={wrapRef} className={cn("relative w-full h-full", className)} aria-hidden="true">
+      {/* paper veil at the top so the header + eyebrow sit quiet */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 65% 45%, rgba(212, 165, 116, 0.08), transparent 70%)",
-        }}
-      />
-      <canvas
-        ref={canvasRef}
-        className="block w-full h-full"
-        style={{
-          maskImage:
-            "radial-gradient(ellipse 60% 65% at 55% 50%, #000 35%, rgba(0,0,0,0.55) 65%, transparent 92%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse 60% 65% at 55% 50%, #000 35%, rgba(0,0,0,0.55) 65%, transparent 92%)",
-        }}
-      />
-      {/* second very-soft radial that breathes with the page */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle 40% at 20% 100%, rgba(212, 165, 116, 0.05), transparent 70%)",
+            "linear-gradient(180deg, var(--paper) 0%, rgba(237,224,204,0.15) 34%, rgba(237,224,204,0) 62%)",
         }}
       />
     </div>
-  );
-};
+  </div>
+);
 
 export default HeroVisual;

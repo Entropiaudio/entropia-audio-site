@@ -21,7 +21,7 @@ const Cart = () => {
             <Reveal variant="up" {...MOTION.page.eyebrow}>
               <Eyebrow accent className="mb-8">// cart</Eyebrow>
             </Reveal>
-            <h1 className="font-display font-light text-[56px] md:text-[72px] leading-[1.0] tracking-[-0.02em] mb-16 md:mb-20">
+            <h1 className="text-[56px] md:text-[72px] leading-[1.0] text-[color:var(--ink)] mb-16 md:mb-20">
               <Reveal
                 as="span"
                 variant="up"
@@ -54,7 +54,7 @@ const Cart = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[640px]">
                     <thead>
-                      <tr className="text-left text-[11px] font-sans font-medium uppercase tracking-[0.12em] text-[color:var(--text-tertiary)]">
+                      <tr className="text-left text-[11px] font-mono font-semibold uppercase tracking-label text-[color:var(--ink-3)]">
                         <th className="pb-5 pr-4 font-medium">plugin</th>
                         <th className="pb-5 pr-4 font-medium">license</th>
                         <th className="pb-5 pr-4 font-medium">qty</th>
@@ -121,7 +121,7 @@ const Cart = () => {
                       type="button"
                       strength={6}
                       onClick={() => navigate("/checkout")}
-                      className="accent-glow group inline-flex items-baseline gap-2 mt-8 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
+                      className="btn btn-solid mt-8 text-[13px] px-7 py-3.5"
                     >
                       <span>checkout</span>
                       <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>

@@ -387,7 +387,7 @@ const AudioDemo = ({ demo, index }: Props) => {
             onClick={onToggle}
             disabled={!anyStem || loading}
             aria-label={playing ? "stop" : "play"}
-            className="w-11 h-11 rounded-full border border-[color:var(--text-tertiary)] hover:border-[color:var(--accent-raw)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-11 h-11 rounded-full bg-white/70 border border-[color:var(--ink-line-2)] text-[color:var(--ink)] hover:bg-white hover:border-[color:var(--accent-raw)] hover:text-[color:var(--accent-deep)] shadow-card transition-colors duration-[200ms] ease-editorial flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {playing ? (
               <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden>
@@ -417,7 +417,7 @@ const AudioDemo = ({ demo, index }: Props) => {
               anyStem ? "cursor-pointer" : ""
             }`}
           >
-            <div className="absolute inset-x-0 h-px bg-[color:var(--text-tertiary)]" />
+            <div className="absolute inset-x-0 h-px bg-[color:var(--ink-line-2)]" />
             <div
               ref={progressFillRef}
               className="absolute h-px top-1/2 -translate-y-1/2 left-0 bg-[color:var(--accent-raw)]"

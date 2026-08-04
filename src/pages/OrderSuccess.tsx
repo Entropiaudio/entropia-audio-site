@@ -28,7 +28,7 @@ const OrderSuccess = () => {
                 {copy.orderSuccess.eyebrow}
               </Eyebrow>
             </Reveal>
-            <h1 className="font-display font-light text-[44px] md:text-[56px] leading-[1.05] tracking-[-0.02em]">
+            <h1 className="text-[44px] md:text-[56px] leading-[1.05] text-[color:var(--ink)]">
               <Reveal
                 as="span"
                 variant="up"

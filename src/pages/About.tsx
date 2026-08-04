@@ -21,10 +21,10 @@ const About = () => {
                 {c.eyebrow}
               </Eyebrow>
             </Reveal>
-            <h1 className="font-display font-light leading-[0.98] tracking-[-0.02em] text-[clamp(52px,9.5vw,108px)]">
+            <h1 className="text-[color:var(--ink)]">
               <RevealWords
                 as="span"
-                className="block"
+                className="block font-display leading-[0.95] text-[clamp(52px,9.5vw,108px)]"
                 {...MOTION.page.headline1}
                 stagger={MOTION.stagger.word}
               >
@@ -32,7 +32,7 @@ const About = () => {
               </RevealWords>
               <RevealWords
                 as="span"
-                className="block font-editorial italic font-normal tracking-[-0.015em] text-[0.6em] mt-3 md:mt-4 text-[color:var(--text-secondary)]"
+                className="block font-editorial italic font-normal text-[clamp(24px,3.8vw,42px)] leading-[1.25] mt-3 md:mt-5 text-[color:var(--ink-2)]"
                 {...MOTION.page.headline2}
                 stagger={MOTION.stagger.word}
               >

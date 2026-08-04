@@ -57,7 +57,7 @@ const Activate = () => {
             <Reveal variant="up" {...MOTION.page.eyebrow}>
               <Eyebrow accent className="mb-8">// activate</Eyebrow>
             </Reveal>
-            <h1 className="font-display font-light text-[56px] md:text-[72px] leading-[1.0] tracking-[-0.02em] mb-10">
+            <h1 className="text-[56px] md:text-[72px] leading-[1.0] text-[color:var(--ink)] mb-10">
               <Reveal
                 key={status}
                 as="span"

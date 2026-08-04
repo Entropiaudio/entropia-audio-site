@@ -2,70 +2,139 @@
 @tailwind components;
 @tailwind utilities;
 
-/* entropia audio, editorial, restrained, warm dark.
-   tokens live here. tailwind reads the HSL-channel vars; components can also
-   read the raw hex/rgba vars directly when an exact spec value is required.   */
+/* entropia audio — daylight register. parchment paper, plum ink, one burnt
+   copper accent, hard 12° diagonals. tokens live here; tailwind reads the
+   HSL-channel vars, components can also read the raw hex/rgba vars directly
+   when an exact spec value is required. */
+
+/* ---------- brand webfonts, self-hosted (public/fonts) ------------------- */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/Fraunces-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Barlow Condensed';
+  /* single 300 master; heavier weights render as faux-bold on purpose */
+  src: url('/fonts/BarlowCondensed-300.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Variable.woff2') format('woff2-variations');
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 @layer base {
   :root {
     /* ---------- raw palette (spec values, used directly when needed) ------ */
-    --bg:                 #14110F;
-    --surface:            #1C1916;
-    --surface-elevated:   #24201D;
-    --border-soft:        rgba(255, 245, 230, 0.08);
-    --text-primary:       #E8E2D6;
-    --text-secondary:     rgba(232, 226, 214, 0.65);
-    --text-tertiary:      rgba(232, 226, 214, 0.40);
-    --accent-raw:         #D4A574;
-    --accent-muted:       rgba(212, 165, 116, 0.15);
+    /* grounds — parchment world sampled from the hero painting */
+    --paper:            #EDE0CC;
+    --parchment:        #F0E0D0;
+    --parchment-hi:     #F7ECDC;
+    --tan:              #E0D0B0;
+    --clay:             #D0B090;
+    --umber:            #A07040;
+    --field:            #E4D3BB;   /* inset fields: inputs, tracks, meters */
+
+    /* ink — plum-black type + line */
+    --ink:              #261019;
+    --ink-2:            rgba(38, 16, 25, 0.72);
+    --ink-3:            rgba(38, 16, 25, 0.50);
+    --ink-4:            rgba(38, 16, 25, 0.30);
+    --ink-line:         rgba(38, 16, 25, 0.16);
+    --ink-line-2:       rgba(38, 16, 25, 0.28);
+    --plum:             #302030;
+
+    /* heat — burnt copper + the painting's pink (the single loud moment) */
+    --accent-raw:       #DD6E26;
+    --accent-bright:    #F08030;
+    --accent-deep:      #A84A16;
+    --accent-tint:      rgba(221, 110, 38, 0.10);
+    --accent-muted:     rgba(221, 110, 38, 0.18);
+    --pop:              #FF5C80;
+
+    /* states, warmed for paper */
+    --state-success:    #3E9A5E;
+    --state-warning:    #C98A32;
+    --state-error:      #C24A3A;
+
+    /* legacy names, repointed to the daylight register */
+    --bg:               var(--paper);
+    --surface:          var(--parchment);
+    --surface-elevated: var(--parchment-hi);
+    --border-soft:      rgba(38, 16, 25, 0.10);
+    --text-primary:     #261019;
+    --text-secondary:   rgba(38, 16, 25, 0.72);
+    --text-tertiary:    rgba(38, 16, 25, 0.50);
 
     /* ---------- shadcn / tailwind HSL channels (derived from raw) --------- */
-    --background: 24 14% 7%;          /* #14110F */
-    --foreground: 40 28% 87%;         /* #E8E2D6 */
+    --background: 36 48% 86%;         /* #EDE0CC paper */
+    --foreground: 335 41% 11%;        /* #261019 ink */
 
-    --card: 24 14% 7%;
-    --card-foreground: 40 28% 87%;
+    --card: 30 52% 88%;               /* #F0E0D0 parchment */
+    --card-foreground: 335 41% 11%;
 
-    --popover: 30 12% 10%;            /* surface */
-    --popover-foreground: 40 28% 87%;
+    --popover: 36 63% 92%;            /* #F7ECDC parchment-hi */
+    --popover-foreground: 335 41% 11%;
 
-    --primary: 40 28% 87%;
-    --primary-foreground: 24 14% 7%;
+    --primary: 335 41% 11%;           /* ink fill, paper text — the solid CTA */
+    --primary-foreground: 36 48% 86%;
 
-    --secondary: 30 12% 10%;          /* surface */
-    --secondary-foreground: 40 28% 87%;
+    --secondary: 35 43% 81%;          /* #E4D3BB field */
+    --secondary-foreground: 335 41% 11%;
 
-    --muted: 26 11% 13%;              /* surface-elevated */
-    --muted-foreground: 40 14% 65%;
+    --muted: 35 43% 81%;              /* field */
+    --muted-foreground: 357 12% 33%;  /* ink-2 flattened onto paper */
 
-    --accent: 31 53% 64%;             /* #D4A574 warm copper */
-    --accent-foreground: 24 14% 7%;
+    --accent: 24 73% 51%;             /* #DD6E26 burnt copper */
+    --accent-foreground: 36 48% 86%;
 
-    --destructive: 0 50% 50%;
-    --destructive-foreground: 40 28% 87%;
+    --destructive: 7 54% 49%;         /* #C24A3A warmed error */
+    --destructive-foreground: 36 63% 92%;
 
-    --border: 40 28% 87%;             /* used with low opacity via .border-hairline */
-    --input: 40 28% 87%;
-    --ring: 31 53% 64%;
+    --border: 335 41% 11%;            /* ink channels; used at low alpha */
+    --input: 335 41% 11%;
+    --ring: 24 73% 51%;
 
-    --hairline: 40 28% 87%;
-    --plugin-surface: 26 11% 13%;
+    --hairline: 335 41% 11%;
+    --plugin-surface: 30 12% 10%;     /* night register: screenshots stay dark */
     --plugin-surface-foreground: 40 28% 87%;
 
-    /* corners stay architectural, never above 4px */
-    --radius: 0.125rem;               /* 2px */
+    /* daylight buttons 4–6px, surfaces 8–12px */
+    --radius: 0.375rem;               /* 6px */
 
-    --sidebar-background: 24 14% 7%;
-    --sidebar-foreground: 40 28% 87%;
-    --sidebar-primary: 40 28% 87%;
-    --sidebar-primary-foreground: 24 14% 7%;
-    --sidebar-accent: 30 12% 10%;
-    --sidebar-accent-foreground: 40 28% 87%;
-    --sidebar-border: 40 28% 87%;
-    --sidebar-ring: 31 53% 64%;
+    --sidebar-background: 36 48% 86%;
+    --sidebar-foreground: 335 41% 11%;
+    --sidebar-primary: 335 41% 11%;
+    --sidebar-primary-foreground: 36 48% 86%;
+    --sidebar-accent: 35 43% 81%;
+    --sidebar-accent-foreground: 335 41% 11%;
+    --sidebar-border: 335 41% 11%;
+    --sidebar-ring: 24 73% 51%;
 
-    /* ---------- motion -------------------------------------------------- */
+    /* ---------- motion ---------------------------------------------------- */
     --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+    --t-fast: 120ms;
+    --t-base: 200ms;
+    --t-slow: 350ms;
+
+    /* ---------- shadows — warm plum ink, the way paper casts. no glows. --- */
+    --shadow-card: 0 6px 20px rgba(38, 16, 25, 0.10);
+    --shadow-lift: 0 14px 34px rgba(38, 16, 25, 0.18);
+    --shadow-ink:  0 3px 7px rgba(38, 16, 25, 0.24);
+
+    /* ---------- the diagonal motif (from the logo's slice gaps) ----------- */
+    --pitch: 12deg;
+    --hatch-copper: repeating-linear-gradient(102deg, var(--accent-tint) 0 1px, transparent 1px 7px);
+    --hatch-umber:  repeating-linear-gradient(102deg, rgba(160, 112, 64, 0.22) 0 1px, transparent 1px 8px);
+    --divider-fade: linear-gradient(90deg, transparent 0%, var(--ink-line) 50%, transparent 100%);
   }
 }
 
@@ -78,12 +147,14 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+    font-family: 'Barlow Condensed', 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: 400;
+    letter-spacing: 0.015em;
     /* Editorial display feel, no I-beam, no accidental text selection on
        headlines and body copy. Form fields opt back in below. */
     cursor: default;
@@ -117,22 +188,23 @@
     cursor: default;
   }
 
+  /* the technical voice — Barlow Condensed carries labels, values, keys */
   .font-mono,
   code,
   kbd,
   samp {
-    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: 'Barlow Condensed', 'Inter', 'Segoe UI', system-ui, sans-serif;
   }
 
   :where(a, button, [role="button"], input, select, textarea, [tabindex]):focus-visible {
-    outline: 1px solid hsl(var(--accent));
+    outline: 1px solid var(--accent-raw);
     outline-offset: 3px;
-    border-radius: 1px;
+    border-radius: 2px;
   }
 
   ::selection {
-    background: hsl(var(--accent) / 0.4);
-    color: hsl(var(--foreground));
+    background: rgba(221, 110, 38, 0.35);
+    color: var(--ink);
   }
 
   .skip-link {
@@ -141,10 +213,11 @@
     top: 1rem;
     transform: translateY(-200%);
     z-index: 100;
-    background: hsl(var(--foreground));
-    color: hsl(var(--background));
+    background: var(--ink);
+    color: var(--paper);
     padding: 0.75rem 1rem;
     font-size: 0.875rem;
+    border-radius: 4px;
     transition: transform 200ms var(--ease-editorial);
   }
   .skip-link:focus-visible {
@@ -165,29 +238,42 @@
 
 @layer utilities {
   .border-hairline {
-    border-color: hsl(var(--foreground) / 0.08);
+    border-color: var(--ink-line);
   }
   .divide-hairline > * + * {
-    border-color: hsl(var(--foreground) / 0.08);
+    border-color: var(--ink-line);
   }
 
-  /* font-family helpers, typography utility classes come in Step 2 */
+  /* ---------- the type trio ---------- */
+  /* display caps — Barlow Condensed, the giant-caps voice of the brand */
   .font-display {
-    font-family: 'Montserrat', system-ui, sans-serif;
-    font-weight: 300;
-    letter-spacing: -0.02em;
+    font-family: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
+  /* editorial voice — Fraunces, usually italic, optical size high */
   .font-editorial {
     font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
     font-weight: 400;
+    font-optical-sizing: auto;
+    letter-spacing: -0.005em;
+  }
+  /* serif caps companion for display lockups (the "TOOLS FOR" line) */
+  .font-serif-caps {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-optical-sizing: auto;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
   .font-mono-spec {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-family: 'Barlow Condensed', ui-monospace, monospace;
     font-weight: 400;
-    letter-spacing: 0;
+    letter-spacing: 0.02em;
   }
 
-  /* magazine measure, tuned for ~62ch at 18px Fraunces */
+  /* magazine measure, tuned for ~62ch at 18px */
   .measure {
     max-width: 62ch;
   }
@@ -197,6 +283,132 @@
 
   .ease-editorial {
     transition-timing-function: var(--ease-editorial);
+  }
+
+  /* halo of paper behind ink type sitting on top of artwork */
+  .ink-halo {
+    text-shadow: 0 2px 14px var(--paper), 0 0 5px var(--paper);
+  }
+  .ink-halo-lg {
+    text-shadow: 0 3px 22px var(--paper), 0 1px 6px var(--paper);
+  }
+
+  /* ---------- diagonal motif helpers (12° pitch, from the logo) ---------- */
+  /* bottom edge cut, rises to the right (the hero's edge) */
+  .diag-cut-bottom {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut, 48px)), 0 100%);
+  }
+  /* top edge cut, falls to the right (the tan band's edge) */
+  .diag-cut-top {
+    clip-path: polygon(0 0, 100% var(--cut, 44px), 100% 100%, 0 100%);
+  }
+  /* sliced top-right corner (cards) */
+  .corner-cut {
+    clip-path: polygon(0 0, calc(100% - 34px) 0, 100% 26px, 100% 100%, 0 100%);
+  }
+  .hatch-copper {
+    background-image: var(--hatch-copper);
+  }
+
+  /* faded hairline rules — dividers are fades, never hard lines */
+  .rule-fade {
+    height: 1px;
+    border: none;
+    background: var(--divider-fade);
+  }
+  .rule-top-fade {
+    position: relative;
+  }
+  .rule-top-fade::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--divider-fade);
+  }
+  .rule-bottom-fade {
+    position: relative;
+  }
+  .rule-bottom-fade::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--divider-fade);
+  }
+}
+
+@layer components {
+  /* ---------- the two brand buttons (kit: InkButton) ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-family: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color var(--t-fast) ease, color var(--t-fast) ease,
+      border-color var(--t-fast) ease, transform var(--t-fast) var(--ease-editorial),
+      box-shadow var(--t-base) var(--ease-editorial);
+  }
+  .btn:active {
+    transform: translateY(1px) scale(0.99);
+  }
+  /* solid: ink fill that warms to copper — the primary CTA */
+  .btn-solid {
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid transparent;
+  }
+  .btn-solid:hover {
+    background: var(--accent-raw);
+    color: #FFF8EE;
+  }
+  /* ghost: white pill on parchment — nav & secondary actions */
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--ink);
+    border: 1px solid var(--ink-line-2);
+  }
+  .btn-ghost:hover {
+    background: #ffffff;
+    border-color: var(--ink);
+  }
+  .btn-ghost:active {
+    background: var(--accent-muted);
+  }
+
+  /* header nav pill (kit: Nav) */
+  .nav-pill {
+    font-family: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid transparent;
+    padding: 7px 13px;
+    border-radius: 4px;
+    transition: background-color var(--t-fast) ease, color var(--t-fast) ease,
+      border-color var(--t-fast) ease;
+  }
+  .nav-pill:hover {
+    background: #ffffff;
+    color: var(--accent-deep);
+  }
+  .nav-pill[data-active="true"] {
+    background: var(--ink);
+    color: var(--paper);
   }
 }
 
@@ -262,27 +474,6 @@
 .link-draw:focus-visible::after {
   transform-origin: left center;
   transform: scaleX(1);
-}
-
-/* ---------- soft accent glow utility for hero CTAs ---------- */
-.accent-glow {
-  box-shadow:
-    inset 0 0 0 1px rgba(212, 165, 116, 0.45),
-    0 0 0 0 rgba(212, 165, 116, 0);
-  transition: box-shadow 220ms var(--ease-editorial),
-              background-color 220ms var(--ease-editorial),
-              color 220ms var(--ease-editorial),
-              transform 120ms var(--ease-editorial);
-}
-.accent-glow:hover {
-  background-color: rgba(212, 165, 116, 0.08);
-  box-shadow:
-    inset 0 0 0 1px rgba(212, 165, 116, 0.85),
-    0 0 32px -8px rgba(212, 165, 116, 0.35);
-}
-/* tactile press feedback on the primary CTAs (Emil: scale on :active). */
-.accent-glow:active {
-  transform: scale(0.985);
 }
 
 /* reduced motion: kill long reveals */

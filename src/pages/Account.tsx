@@ -27,7 +27,7 @@ const LoggedOut = () => {
           <Reveal variant="up" {...MOTION.page.eyebrow}>
             <Eyebrow accent className="mb-8">// account</Eyebrow>
           </Reveal>
-          <h1 className="font-display font-light text-[48px] md:text-[56px] leading-[1.05] tracking-[-0.02em] mb-4">
+          <h1 className="text-[48px] md:text-[56px] leading-[1.05] text-[color:var(--ink)] mb-4">
             <Reveal
               key={mode}
               as="span"
@@ -83,7 +83,7 @@ const AccountHeader = ({ email, onSignOut }: { email: string; onSignOut: () => v
   <Reveal variant="up" {...MOTION.page.eyebrow} className="flex items-start justify-between gap-6 flex-wrap mb-20">
     <div>
       <Eyebrow accent className="mb-3">// signed in as</Eyebrow>
-      <p className="font-display font-light text-[28px] md:text-[36px] tracking-[-0.015em] text-[color:var(--text-primary)]">
+      <p className="font-mono font-medium text-[26px] md:text-[32px] tracking-[0.02em] text-[color:var(--ink)] selectable">
         {email}
       </p>
     </div>

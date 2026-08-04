@@ -39,9 +39,9 @@ let started = false;
 
 /**
  * Boot Moonbase once on app start. Theming pins to the closest match for the
- * site's editorial dark theme, the Moonbase modal/checkout UI still renders
- * inside its own DOM tree with its own fonts, so this is the best we can do
- * without dropping to a Custom Integration build.
+ * site's parchment daylight theme, the Moonbase modal/checkout UI still
+ * renders inside its own DOM tree with its own fonts, so this is the best we
+ * can do without dropping to a Custom Integration build.
  */
 export const initMoonbase = () => {
   if (started) return;
@@ -73,11 +73,12 @@ export const initMoonbase = () => {
       quantity: "selectable",
     },
     theme: {
-      dark: true,
+      // Daylight register: light surfaces + the burnt-copper accent. The
+      // modal renders in its own DOM tree, so this is the closest match the
+      // embedded SDK allows without a Custom Integration build.
+      dark: false,
       colors: {
-        // Site accent (warm sand). The closest Moonbase fonts to the site's
-        // editorial display + sans are PT Serif and Inter.
-        primary: "#D4A574",
+        primary: "#DD6E26",
         background: "gray",
       },
       fonts: {

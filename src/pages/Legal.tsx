@@ -21,7 +21,7 @@ const Legal = ({ kind }: { kind: Kind }) => {
                 {c.eyebrow}
               </Eyebrow>
             </Reveal>
-            <h1 className="font-display font-light leading-[1.0] tracking-[-0.02em] text-[clamp(40px,7vw,80px)]">
+            <h1 className="leading-[1.0] text-[clamp(40px,7vw,80px)] text-[color:var(--ink)]">
               <Reveal
                 as="span"
                 variant="up"
@@ -58,7 +58,7 @@ const Legal = ({ kind }: { kind: Kind }) => {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div>
-                    <h2 className="font-display font-light text-[22px] md:text-[26px] leading-[1.2] tracking-[-0.015em] text-[color:var(--text-primary)] mb-4">
+                    <h2 className="font-display text-[19px] md:text-[22px] leading-[1.2] tracking-[0.05em] text-[color:var(--ink)] mb-4">
                       {s.heading}
                     </h2>
                     <p className="font-sans text-[16px] md:text-[17px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[58ch]">

@@ -14,7 +14,8 @@ type Props = {
 
 /**
  * Real plugin screenshot when `src` is provided. Otherwise falls back to a
- * hairline-framed placeholder. Sits like a print object on the warm paper bg.
+ * framed placeholder. Sits like a print object on the parchment: warm ink
+ * shadow, hairline frame, one sliced corner (the brand diagonal).
  */
 const PluginScreenshot = ({
   name,
@@ -36,15 +37,17 @@ const PluginScreenshot = ({
 
   if (src) {
     // When showing the real screenshot, let the image set its own height so
-    // there is never a black/letterbox band around it. The hairline frame
-    // wraps tight to the actual image bounds.
+    // there is never a letterbox band around it. The frame wraps tight to the
+    // actual image bounds.
     return (
-      <figure className={`w-full relative ${className}`}>
+      <figure
+        className={`w-full relative rounded-lg corner-cut overflow-hidden border border-hairline shadow-card transition-shadow duration-[200ms] ease-editorial group-hover:shadow-lift ${className}`}
+      >
         <img
           src={src}
           alt={alt ?? `${name} plugin interface`}
           loading="lazy"
-          className="block w-full h-auto border border-foreground/15"
+          className="block w-full h-auto"
         />
       </figure>
     );
@@ -52,11 +55,11 @@ const PluginScreenshot = ({
 
   return (
     <figure
-      className={`${aspect} w-full relative ${className}`}
+      className={`${aspect} w-full relative rounded-lg corner-cut overflow-hidden border border-hairline shadow-card ${className}`}
       aria-label={`${name} plugin interface`}
     >
-      <div className="absolute inset-0 border border-foreground/15" />
-      <div className="absolute inset-[1px] bg-plugin-surface text-plugin-surface-foreground overflow-hidden">
+      {/* screenshots stay in the night register — the plugins live there */}
+      <div className="absolute inset-0 bg-plugin-surface text-plugin-surface-foreground overflow-hidden">
         <div
           className="absolute inset-0 opacity-[0.04]"
           style={{
@@ -75,7 +78,7 @@ const PluginScreenshot = ({
               <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-plugin-surface-foreground/30">
                 plugin ui drops here
               </span>
-              <span className="h-px w-10 bg-accent/70" />
+              <span className="h-px w-10 bg-[color:var(--accent-raw)]/70" />
             </div>
             <div className="absolute bottom-0 inset-x-0 flex items-center justify-between px-5 py-3 text-[10px] font-mono uppercase tracking-[0.25em] text-plugin-surface-foreground/30">
               <span>entropia audio</span>

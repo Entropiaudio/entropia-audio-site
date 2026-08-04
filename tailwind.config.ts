@@ -14,28 +14,14 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Montserrat', 'system-ui', 'sans-serif'],
-        display: ['Montserrat', 'system-ui', 'sans-serif'],
+        sans: ['"Barlow Condensed"', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['"Barlow Condensed"', 'Inter', 'system-ui', 'sans-serif'],
         editorial: ['Fraunces', 'Georgia', '"Times New Roman"', 'serif'],
-        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
-      },
-      fontSize: {
-        // editorial type scale, paired with weight + tracking utilities
-        'eyebrow':         ['12px',  { lineHeight: '1', letterSpacing: '0.12em', fontWeight: '500' }],
-        'eyebrow-lg':      ['13px',  { lineHeight: '1', letterSpacing: '0.12em', fontWeight: '500' }],
-        'ui':              ['14px',  { lineHeight: '1.4',  letterSpacing: '0',     fontWeight: '500' }],
-        'ui-lg':           ['15px',  { lineHeight: '1.4',  letterSpacing: '0',     fontWeight: '500' }],
-        'mono-spec':       ['12px',  { lineHeight: '1.5',  letterSpacing: '0',     fontWeight: '400' }],
-        'mono-spec-lg':    ['13px',  { lineHeight: '1.5',  letterSpacing: '0',     fontWeight: '400' }],
-        'body-editorial':  ['17px',  { lineHeight: '1.6',  letterSpacing: '0',     fontWeight: '400' }],
-        'body-editorial-lg': ['19px',{ lineHeight: '1.6',  letterSpacing: '0',     fontWeight: '400' }],
-        'section':         ['56px',  { lineHeight: '1.0',  letterSpacing: '-0.02em', fontWeight: '300' }],
-        'section-lg':      ['72px',  { lineHeight: '1.0',  letterSpacing: '-0.02em', fontWeight: '300' }],
-        'hero':            ['96px',  { lineHeight: '0.95', letterSpacing: '-0.02em', fontWeight: '300' }],
-        'hero-lg':         ['128px', { lineHeight: '0.95', letterSpacing: '-0.02em', fontWeight: '300' }],
+        mono: ['"Barlow Condensed"', 'Inter', 'ui-monospace', 'sans-serif'],
       },
       letterSpacing: {
-        'eyebrow':       '0.12em',
+        'eyebrow':       '0.18em',
+        'label':         '0.14em',
         'tightest':      '-0.03em',
         'tight-display': '-0.02em',
       },
@@ -67,14 +53,29 @@ export default {
         'copper-muted':'var(--accent-muted)',
         'border-soft': 'var(--border-soft)',
 
+        // daylight grounds + ink, usable as bg-paper, bg-parchment, text-ink…
+        paper:          'var(--paper)',
+        parchment:      'var(--parchment)',
+        'parchment-hi': 'var(--parchment-hi)',
+        tan:            'var(--tan)',
+        clay:           'var(--clay)',
+        umber:          'var(--umber)',
+        field:          'var(--field)',
+        ink:            'var(--ink)',
+        'ink-2':        'var(--ink-2)',
+        'ink-3':        'var(--ink-3)',
+        'ink-4':        'var(--ink-4)',
+        pop:            'var(--pop)',
+
         // shadcn / tailwind tokens (HSL-channel), kept for compatibility
         hairline: "hsl(var(--hairline))",
         "plugin-surface": {
           DEFAULT: "hsl(var(--plugin-surface))",
           foreground: "hsl(var(--plugin-surface-foreground))",
         },
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
+        // default element border = warm ink hairline; stronger via border-input
+        border: "hsl(var(--border) / 0.16)",
+        input: "hsl(var(--input) / 0.35)",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -118,13 +119,19 @@ export default {
         },
       },
       borderRadius: {
-        // cap at 4px, keep edges architectural
+        // daylight: buttons 4–6px, surfaces 8–12px
         none: '0',
-        DEFAULT: '2px',
-        sm: '1px',
-        md: '3px',
-        lg: '4px',
+        DEFAULT: '6px',
+        sm: '4px',
+        md: '8px',
+        lg: '12px',
         full: '9999px',
+      },
+      boxShadow: {
+        // warm plum-ink shadows, the way paper casts. never flat black.
+        card: '0 6px 20px rgba(38, 16, 25, 0.10)',
+        lift: '0 14px 34px rgba(38, 16, 25, 0.18)',
+        ink:  '0 3px 7px rgba(38, 16, 25, 0.24)',
       },
       transitionTimingFunction: {
         editorial: 'cubic-bezier(0.22, 1, 0.36, 1)',

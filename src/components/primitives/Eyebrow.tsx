@@ -3,17 +3,18 @@ import { cn } from "@/lib/utils";
 
 interface EyebrowProps extends HTMLAttributes<HTMLSpanElement> {
   children: ReactNode;
-  /** Render the copper accent color. Default is text-tertiary. */
+  /** Render the copper accent color. Default is dim ink. */
   accent?: boolean;
-  /** Size variant. Default 12px. */
+  /** Size variant. Default 11px. */
   size?: "sm" | "md";
 }
 
 const sizeClass = {
-  sm: "text-[11px]",
-  md: "text-[12px]",
+  sm: "text-[10px]",
+  md: "text-[11px]",
 };
 
+/* The Barlow caps label voice — eyebrows run 0.18em tracking. */
 export const Eyebrow = ({
   children,
   accent = false,
@@ -23,9 +24,9 @@ export const Eyebrow = ({
 }: EyebrowProps) => (
   <span
     className={cn(
-      "inline-block font-sans font-medium uppercase tracking-[0.12em]",
+      "inline-block font-mono font-medium uppercase tracking-eyebrow",
       sizeClass[size],
-      accent ? "text-[color:var(--accent-raw)]" : "text-[color:var(--text-tertiary)]",
+      accent ? "text-[color:var(--accent-raw)]" : "text-[color:var(--ink-3)]",
       className,
     )}
     {...rest}

@@ -62,7 +62,7 @@ const AlternatingSection = ({
           <Eyebrow className="mb-6">
             {String(index + 1).padStart(2, "0")} / {total.toString().padStart(2, "0")}
           </Eyebrow>
-          <h3 className="font-display font-light text-[36px] md:text-[44px] leading-[1.05] tracking-[-0.02em] mb-8">
+          <h3 className="font-display text-[34px] md:text-[42px] leading-[1.0] text-[color:var(--ink)] mb-8">
             {heading}
           </h3>
         </Reveal>
@@ -108,18 +108,21 @@ const PluginPage = () => {
            top tracks SiteHeader's --header-h variable so the strip sits flush
            against the header both at full height (5rem) and shrunken (4rem). */}
       <div
-        className="sticky z-30 bg-[color:var(--bg)]/85 backdrop-blur-md border-b border-hairline transition-[top] duration-[200ms] ease-editorial"
-        style={{ top: "var(--header-h, 5rem)" }}
+        className="sticky z-30 backdrop-blur-md border-b border-hairline transition-[top] duration-[200ms] ease-editorial"
+        style={{
+          top: "var(--header-h, 5rem)",
+          background: "rgba(237, 224, 204, 0.88)",
+        }}
       >
         <div className="max-w-wide mx-auto px-6 md:px-10 h-14 flex items-center justify-between gap-4">
-          <span className="hidden md:inline text-[12px] font-mono uppercase tracking-[0.22em] text-[color:var(--text-primary)]">
+          <span className="hidden md:inline font-mono font-semibold text-[12px] uppercase tracking-[0.18em] text-[color:var(--ink)]">
             {plugin.name}
           </span>
-          <div className="flex-1 md:flex-none flex items-baseline justify-between md:justify-end gap-5 md:gap-8 whitespace-nowrap">
+          <div className="flex-1 md:flex-none flex items-center justify-between md:justify-end gap-3 whitespace-nowrap">
             <button
               type="button"
               onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
-              className="link-draw text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
+              className="btn btn-ghost !py-2 !px-4 text-[11px]"
             >
               {c.ctaTry}
             </button>
@@ -128,13 +131,13 @@ const PluginPage = () => {
               type="button"
               strength={5}
               onClick={() => addToCart(true)}
-              className="group inline-flex items-baseline gap-2 text-[12px] md:text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial tabular-nums"
+              className="btn btn-solid !py-2 !px-4 text-[11px] tabular-nums"
             >
-              <span className="link-draw pb-1">
+              <span>
                 {c.ctaBuy} · ${pricing.price}
               </span>
               {onSale && (
-                <span className="line-through text-[11px] text-[color:var(--text-tertiary)]">
+                <span className="line-through font-normal text-[10px] opacity-70">
                   ${pricing.regularPrice}
                 </span>
               )}
@@ -145,17 +148,17 @@ const PluginPage = () => {
 
       {/* ---------- product hero ---------- */}
       <Section pad="lg" className="relative isolate overflow-hidden">
-        {/* Ambient flow-field behind the screenshot + eyebrow, matching the
-            homepage hero. Pointer-events disabled so it never interferes
-            with hover-zoom / scroll. */}
-        <HeroVisual className="absolute inset-0 z-0 pointer-events-none" />
-        {/* Vignette to anchor the content over the field. */}
+        {/* Warm parchment field behind the screenshot + eyebrow, matching the
+            homepage hero (no flourish — the plugin UI is the artwork here).
+            Pointer-events disabled so it never interferes with hover-zoom. */}
+        <HeroVisual className="absolute inset-0 z-0 pointer-events-none" art={false} />
+        {/* Paper wash to seat the content back onto the page ground. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(20,17,15,0) 35%, rgba(20,17,15,0.45) 100%)",
+              "linear-gradient(to bottom, rgba(237,224,204,0) 35%, rgba(237,224,204,0.65) 100%)",
           }}
         />
         <Container width="wide" className="relative z-10">
@@ -191,10 +194,10 @@ const PluginPage = () => {
               <Eyebrow>{plugin.name}</Eyebrow>
             </Reveal>
             <div className="md:col-span-8">
-              <h1 className="font-display font-light leading-[1.0] tracking-[-0.02em] text-[44px] md:text-[64px] lg:text-[80px]">
+              <h1 className="leading-[1.1] text-[44px] md:text-[60px] lg:text-[72px] text-[color:var(--ink)]">
                 <RevealWords
                   as="span"
-                  className="font-editorial italic font-normal tracking-[-0.015em]"
+                  className="font-editorial italic font-normal"
                   {...MOTION.section.headline}
                   stagger={MOTION.stagger.word}
                 >
@@ -241,10 +244,10 @@ const PluginPage = () => {
                   as="li"
                   className="grid grid-cols-[3rem,1fr] gap-6 md:gap-10 font-sans font-normal text-[17px] md:text-[18px] leading-[1.65] tracking-[0.005em] border-t border-hairline py-7"
                 >
-                  <span className="font-mono text-[12px] tabular-nums text-[color:var(--text-tertiary)] pt-1.5">
+                  <span className="font-mono font-semibold text-[13px] tabular-nums text-[color:var(--accent-raw)] pt-1.5">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="text-[color:var(--text-primary)]">{f}</span>
+                  <span className="text-[color:var(--ink)]">{f}</span>
                 </Reveal>
               ))}
             </ul>
@@ -276,8 +279,8 @@ const PluginPage = () => {
             </Reveal>
             <div className="md:col-span-8">
               <Reveal variant="up" {...MOTION.section.headline}>
-                <h3 className="font-display font-light text-[36px] md:text-[48px] leading-[1.05] tracking-[-0.02em] mb-14">
-                  <span className="font-editorial italic font-normal tracking-[-0.015em]">
+                <h3 className="text-[36px] md:text-[48px] leading-[1.05] text-[color:var(--ink)] mb-14">
+                  <span className="font-editorial italic font-normal">
                     {c.listenHeadline}
                   </span>
                 </h3>
@@ -311,10 +314,10 @@ const PluginPage = () => {
                 <tbody>
                   {plugin.specs.map((spec) => (
                     <tr key={spec.label} className="border-t border-hairline">
-                      <td className="py-6 pr-6 text-[color:var(--text-tertiary)] w-1/3 align-top font-sans font-medium text-[13px] uppercase tracking-[0.06em]">
+                      <td className="py-6 pr-6 text-[color:var(--ink-3)] w-1/3 align-top font-mono font-semibold text-[12px] uppercase tracking-label">
                         {spec.label}
                       </td>
-                      <td className="py-6 font-mono text-[13px] text-[color:var(--text-primary)]">
+                      <td className="py-6 font-mono text-[15px] text-[color:var(--ink)]">
                         {spec.value}
                       </td>
                     </tr>
@@ -334,32 +337,38 @@ const PluginPage = () => {
               <Eyebrow>{c.tryEyebrow}</Eyebrow>
             </Reveal>
             <div className="md:col-span-8">
-              <Reveal variant="up" {...MOTION.section.headline}>
-                <h3 className="font-display font-light text-[36px] md:text-[48px] leading-[1.05] tracking-[-0.02em] mb-8">
-                  <span className="font-editorial italic font-normal tracking-[-0.015em]">
-                    {c.tryHeadline}
-                  </span>
-                </h3>
-              </Reveal>
-              <Reveal variant="up" {...MOTION.section.body}>
-                <p className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[52ch] mb-12">
-                  {c.trySubline}
-                </p>
-              </Reveal>
-              <Reveal variant="up" {...MOTION.section.cta}>
-                <div className="flex flex-col sm:flex-row gap-6 sm:gap-10">
-                  <MagneticLink
-                    as="button"
-                    type="button"
-                    strength={6}
-                    onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
-                    className="accent-glow group inline-flex items-baseline gap-2 px-6 py-3.5 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)]"
-                  >
-                    <span>{c.download}</span>
-                    <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-y-0.5">↓</span>
-                  </MagneticLink>
+              {/* copper-hatched parchment panel — the trial offer as an object */}
+              <div className="relative bg-parchment border border-hairline rounded-lg corner-cut shadow-card px-8 py-10 md:px-12 md:py-12 overflow-hidden">
+                <div aria-hidden="true" className="absolute inset-0 hatch-copper pointer-events-none opacity-70" />
+                <div className="relative">
+                  <Reveal variant="up" {...MOTION.section.headline}>
+                    <h3 className="text-[36px] md:text-[48px] leading-[1.05] text-[color:var(--ink)] mb-8">
+                      <span className="font-editorial italic font-normal">
+                        {c.tryHeadline}
+                      </span>
+                    </h3>
+                  </Reveal>
+                  <Reveal variant="up" {...MOTION.section.body}>
+                    <p className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--ink-2)] max-w-[52ch] mb-10">
+                      {c.trySubline}
+                    </p>
+                  </Reveal>
+                  <Reveal variant="up" {...MOTION.section.cta}>
+                    <div className="flex flex-col sm:flex-row gap-6 sm:gap-10">
+                      <MagneticLink
+                        as="button"
+                        type="button"
+                        strength={6}
+                        onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
+                        className="btn btn-solid text-[13px] px-7 py-3.5"
+                      >
+                        <span>{c.download}</span>
+                        <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-y-0.5">↓</span>
+                      </MagneticLink>
+                    </div>
+                  </Reveal>
                 </div>
-              </Reveal>
+              </div>
             </div>
           </div>
         </Container>

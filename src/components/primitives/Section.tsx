@@ -18,10 +18,11 @@ const padClass = {
   xl: "py-28 md:py-64",
 };
 
+/* Section rules are faded ink hairlines — dividers fade, never hard-rule. */
 const toneClass: Record<SectionTone, string> = {
   default: "",
-  "rule-top": "border-t border-hairline",
-  "rule-bottom": "border-b border-hairline",
+  "rule-top": "rule-top-fade",
+  "rule-bottom": "rule-bottom-fade",
 };
 
 export const Section = ({
