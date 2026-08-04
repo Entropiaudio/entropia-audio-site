@@ -46,7 +46,7 @@ const Index = () => {
             <h1 className="text-[color:var(--ink)]">
               <RevealWords
                 as="span"
-                className="block font-serif-caps leading-[1.05] text-[clamp(30px,5.5vw,58px)] ink-halo"
+                className="block font-serif-caps leading-[0.95] text-[clamp(30px,5.5vw,58px)] ink-halo"
                 {...MOTION.page.headline1}
                 stagger={MOTION.stagger.word}
               >
@@ -54,7 +54,7 @@ const Index = () => {
               </RevealWords>
               <RevealWords
                 as="span"
-                className="block font-display leading-[0.92] tracking-[0.015em] text-[clamp(58px,11.5vw,132px)] mt-2 ink-halo-lg"
+                className="block font-display leading-[0.92] tracking-[0.015em] text-[clamp(58px,11.5vw,132px)] -mt-1 md:-mt-2 ink-halo-lg"
                 {...MOTION.page.headline2}
                 stagger={MOTION.stagger.word}
               >
@@ -101,18 +101,22 @@ const Index = () => {
         className="relative diag-cut-top bg-tan overflow-hidden"
         style={{ "--cut": "44px" } as React.CSSProperties}
       >
-        {/* the flourish, mirrored, hugging the low left corner */}
-        <img
-          src="/art/approach-flourish.png"
-          alt=""
+        {/* the flourish, mirrored, centered in the band behind the words */}
+        <div
           aria-hidden="true"
-          className="absolute left-[-6%] bottom-[-10%] w-[62%] md:w-[42%] max-w-[560px] h-auto pointer-events-none select-none -scale-x-100"
-          style={{
-            filter:
-              "drop-shadow(0 9px 18px rgba(38,16,25,0.30)) drop-shadow(0 3px 5px rgba(38,16,25,0.42)) drop-shadow(0 0 36px rgba(221,110,38,0.30))",
-          }}
-          draggable={false}
-        />
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -scale-x-100 w-[96%] md:w-[68%] max-w-[880px] pointer-events-none"
+        >
+          <img
+            src="/art/approach-flourish.png"
+            alt=""
+            className="art-in block w-full h-auto select-none"
+            style={{
+              filter:
+                "drop-shadow(0 9px 18px rgba(38,16,25,0.30)) drop-shadow(0 3px 5px rgba(38,16,25,0.42)) drop-shadow(0 0 36px rgba(221,110,38,0.30))",
+            }}
+            draggable={false}
+          />
+        </div>
         <div
           aria-hidden="true"
           className="absolute inset-0 pointer-events-none"

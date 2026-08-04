@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
+import DiagonalRule from "@/components/primitives/DiagonalRule";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
 import MagneticLink from "@/components/motion/MagneticLink";
@@ -13,15 +14,7 @@ const NotFound = () => {
   return (
     <SiteLayout>
       <Section pad="xl" className="relative overflow-hidden">
-        {/* a single travelling rule crossing the field at the brand pitch */}
-        <div
-          aria-hidden="true"
-          className="absolute left-[-10%] right-[-10%] top-[58%] h-px pointer-events-none opacity-70"
-          style={{
-            background: "var(--accent-raw)",
-            transform: "rotate(-12deg)",
-          }}
-        />
+        <DiagonalRule top="58%" className="opacity-70" />
         <Container width="wide">
           <div className="md:pl-8 lg:pl-16 max-w-[920px]">
             <Reveal variant="up" {...MOTION.page.eyebrow}>

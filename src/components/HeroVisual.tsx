@@ -32,10 +32,10 @@ const Contours = () => (
     aria-hidden="true"
   >
     <g fill="none" strokeLinecap="round">
-      <path d="M0,120 C160,96 300,140 440,116 560,96 680,120 820,92" stroke="var(--clay)" strokeWidth="1.5" opacity="0.7" />
-      <path d="M0,150 C150,140 320,170 470,150 620,132 720,150 820,130" stroke="var(--accent-raw)" strokeWidth="1.3" opacity="0.5" />
-      <path d="M0,96 C180,70 300,104 460,84 600,68 700,88 820,70" stroke="var(--clay)" strokeWidth="1" opacity="0.42" />
-      <path d="M0,178 C170,180 340,198 500,176 640,160 740,172 820,156" stroke="var(--accent-raw)" strokeWidth="1" opacity="0.32" />
+      <path pathLength={1} className="contour-path" d="M0,120 C160,96 300,140 440,116 560,96 680,120 820,92" stroke="var(--clay)" strokeWidth="1.5" opacity="0.7" />
+      <path pathLength={1} className="contour-path" style={{ animationDelay: "180ms" }} d="M0,150 C150,140 320,170 470,150 620,132 720,150 820,130" stroke="var(--accent-raw)" strokeWidth="1.3" opacity="0.5" />
+      <path pathLength={1} className="contour-path" style={{ animationDelay: "340ms" }} d="M0,96 C180,70 300,104 460,84 600,68 700,88 820,70" stroke="var(--clay)" strokeWidth="1" opacity="0.42" />
+      <path pathLength={1} className="contour-path" style={{ animationDelay: "500ms" }} d="M0,178 C170,180 340,198 500,176 640,160 740,172 820,156" stroke="var(--accent-raw)" strokeWidth="1" opacity="0.32" />
     </g>
   </svg>
 );
@@ -65,16 +65,19 @@ export const HeroVisual = ({ className, art = true, cut = false }: HeroVisualPro
       />
 
       {art && (
-        <img
-          src="/art/hero-flourish.svg"
-          alt=""
-          className="absolute right-[-4%] bottom-0 w-[88%] sm:w-[70%] md:w-[58%] max-w-[880px] h-auto pointer-events-none select-none"
-          style={{
-            filter:
-              "drop-shadow(0 9px 18px rgba(38,16,25,0.30)) drop-shadow(0 3px 5px rgba(38,16,25,0.42)) drop-shadow(0 0 36px rgba(221,110,38,0.30))",
-          }}
-          draggable={false}
-        />
+        /* wrapper owns the centering so the animation can own the transform */
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135%] sm:w-[100%] md:w-[82%] max-w-[1200px] pointer-events-none">
+          <img
+            src="/art/hero-flourish.svg"
+            alt=""
+            className="art-in block w-full h-auto select-none"
+            style={{
+              filter:
+                "drop-shadow(0 9px 18px rgba(38,16,25,0.30)) drop-shadow(0 3px 5px rgba(38,16,25,0.42)) drop-shadow(0 0 36px rgba(221,110,38,0.30))",
+            }}
+            draggable={false}
+          />
+        </div>
       )}
 
       {/* paint flecks */}
@@ -82,14 +85,16 @@ export const HeroVisual = ({ className, art = true, cut = false }: HeroVisualPro
         {FLECKS.map((f, i) => (
           <span
             key={i}
-            className="absolute rounded-full"
+            className="fleck absolute rounded-full"
             style={{
               left: f.l,
               top: f.t,
               width: f.s,
               height: f.s,
               background: f.c,
-              opacity: f.o,
+              ["--fo" as never]: f.o,
+              ["--fleck-dur" as never]: `${3.4 + (i % 4) * 0.9}s`,
+              ["--fleck-delay" as never]: `${(i % 5) * 0.55}s`,
             }}
           />
         ))}

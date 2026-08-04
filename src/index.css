@@ -412,6 +412,44 @@
   }
 }
 
+/* ---------- artwork motion (entrances ease out hard, ambience breathes) --- */
+/* settle-in for the painted flourishes: fast arrival, long deceleration */
+@keyframes art-settle {
+  from { opacity: 0; transform: scale(0.955) translateY(14px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+/* endless slow breathe — barely there, the paint hovering over the paper */
+@keyframes art-drift {
+  from { transform: scale(1) translateY(0); }
+  to   { transform: scale(1.015) translateY(-8px); }
+}
+.art-in {
+  animation:
+    art-settle 1200ms cubic-bezier(0.16, 1, 0.3, 1) both,
+    art-drift 10s cubic-bezier(0.45, 0, 0.55, 1) 1200ms infinite alternate;
+  will-change: transform;
+}
+
+/* paint flecks twinkle between 40% and 100% of their resting opacity */
+@keyframes fleck-shimmer {
+  from { opacity: calc(var(--fo, 0.6) * 0.4); }
+  to   { opacity: var(--fo, 0.6); }
+}
+.fleck {
+  animation: fleck-shimmer var(--fleck-dur, 4s) cubic-bezier(0.45, 0, 0.55, 1)
+    var(--fleck-delay, 0s) infinite alternate;
+}
+
+/* contour hairlines draw on (paths carry pathLength="1") */
+@keyframes contour-draw {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+.contour-path {
+  stroke-dasharray: 1;
+  animation: contour-draw 1600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: translateY(0); }
