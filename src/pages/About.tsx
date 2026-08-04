@@ -1,7 +1,6 @@
 import SiteLayout from "@/components/SiteLayout";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
-import DiagonalRule from "@/components/primitives/DiagonalRule";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
 import RevealWords from "@/components/motion/RevealWords";
@@ -14,8 +13,7 @@ const About = () => {
   return (
     <SiteLayout>
       {/* ---------- headline ---------- */}
-      <Section pad="xl" className="relative overflow-hidden">
-        <DiagonalRule top="62%" />
+      <Section pad="xl">
         <Container width="wide">
           <div className="md:pl-8 lg:pl-16 max-w-[920px]">
             <Reveal variant="up" {...MOTION.page.eyebrow}>
@@ -64,8 +62,12 @@ const About = () => {
         </Container>
       </Section>
 
-      {/* ---------- contact ---------- */}
-      <Section pad="lg" tone="rule-top">
+      {/* ---------- contact — tan band, diagonal separation ---------- */}
+      <Section
+        pad="lg"
+        className="bg-tan diag-cut-top !pt-28 md:!pt-40"
+        style={{ "--cut": "44px" } as React.CSSProperties}
+      >
         <Container width="wide">
           <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
             <Reveal variant="up" {...MOTION.section.eyebrow} className="md:col-span-3 md:col-start-2 md:pt-3">

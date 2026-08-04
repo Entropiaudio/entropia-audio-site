@@ -101,10 +101,11 @@ const Index = () => {
         className="relative diag-cut-top bg-tan overflow-hidden"
         style={{ "--cut": "44px" } as React.CSSProperties}
       >
-        {/* the flourish, mirrored, centered in the band behind the words */}
+        {/* the flourish, mirrored, pinned to the left edge and vertically
+            centered — big enough that its strokes sweep under the words */}
         <div
           aria-hidden="true"
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -scale-x-100 w-[96%] md:w-[68%] max-w-[880px] pointer-events-none"
+          className="absolute left-0 top-1/2 -translate-y-1/2 -scale-x-100 w-[165%] sm:w-[135%] md:w-[118%] max-w-none pointer-events-none"
         >
           <img
             src="/art/approach-flourish.png"

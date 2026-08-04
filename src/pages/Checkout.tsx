@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
-import DiagonalRule from "@/components/primitives/DiagonalRule";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
 import { MOTION } from "@/components/motion/timing";
@@ -38,8 +37,7 @@ const Checkout = () => {
 
   return (
     <SiteLayout>
-      <Section pad="xl" className="relative overflow-hidden">
-        <DiagonalRule top="60%" />
+      <Section pad="xl">
         <Container width="wide">
           <div className="md:pl-8 lg:pl-16 max-w-[720px]">
             <Reveal variant="up" {...MOTION.page.eyebrow}>

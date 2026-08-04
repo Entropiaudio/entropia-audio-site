@@ -1,7 +1,6 @@
 import SiteLayout from "@/components/SiteLayout";
 import Section from "@/components/primitives/Section";
 import Container from "@/components/primitives/Container";
-import DiagonalRule from "@/components/primitives/DiagonalRule";
 import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
 import { MOTION } from "@/components/motion/timing";
@@ -14,9 +13,12 @@ const Legal = ({ kind }: { kind: Kind }) => {
 
   return (
     <SiteLayout>
-      <Section pad="xl" className="relative overflow-hidden">
-        <DiagonalRule top="260px" />
-        <Container width="wide">
+      {/* ---------- header — parchment band, diagonal separation ---------- */}
+      <section
+        className="bg-parchment diag-cut-bottom"
+        style={{ "--cut": "44px" } as React.CSSProperties}
+      >
+        <Container width="wide" className="pt-28 md:pt-44 pb-24 md:pb-32">
           <div className="md:pl-8 lg:pl-16 max-w-[920px]">
             <Reveal variant="up" {...MOTION.page.eyebrow}>
               <Eyebrow accent className="mb-8">
@@ -45,31 +47,36 @@ const Legal = ({ kind }: { kind: Kind }) => {
                 {c.intro}
               </p>
             </Reveal>
+          </div>
+        </Container>
+      </section>
 
-            <div className="mt-16 md:mt-20">
-              {c.sections.map((s, i) => (
-                <Reveal
-                  key={i}
-                  variant="up"
-                  duration={MOTION.duration.base}
-                  delay={i * MOTION.stagger.list}
-                  as="article"
-                  className="grid md:grid-cols-[3rem,1fr] gap-6 md:gap-10 border-t border-hairline py-8 md:py-10"
-                >
-                  <span className="font-mono text-[12px] tabular-nums text-[color:var(--text-tertiary)] md:pt-2">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <h2 className="font-display text-[19px] md:text-[22px] leading-[1.2] tracking-[0.05em] text-[color:var(--ink)] mb-4">
-                      {s.heading}
-                    </h2>
-                    <p className="font-sans text-[16px] md:text-[17px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[58ch]">
-                      {s.body}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
+      {/* ---------- sections ---------- */}
+      <Section pad="md" className="!pt-16 md:!pt-24">
+        <Container width="wide">
+          <div className="md:pl-8 lg:pl-16 max-w-[920px]">
+            {c.sections.map((s, i) => (
+              <Reveal
+                key={i}
+                variant="up"
+                duration={MOTION.duration.base}
+                delay={i * MOTION.stagger.list}
+                as="article"
+                className="grid md:grid-cols-[3rem,1fr] gap-6 md:gap-10 border-t border-hairline py-8 md:py-10 first:border-t-0"
+              >
+                <span className="font-mono text-[12px] tabular-nums text-[color:var(--text-tertiary)] md:pt-2">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h2 className="font-display text-[19px] md:text-[22px] leading-[1.2] tracking-[0.05em] text-[color:var(--ink)] mb-4">
+                    {s.heading}
+                  </h2>
+                  <p className="font-sans text-[16px] md:text-[17px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[58ch]">
+                    {s.body}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
           </div>
         </Container>
       </Section>

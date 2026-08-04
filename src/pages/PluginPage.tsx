@@ -270,8 +270,12 @@ const PluginPage = () => {
         ))}
       </Container>
 
-      {/* ---------- audio demos ---------- */}
-      <Section pad="lg" tone="rule-top">
+      {/* ---------- audio demos — tan band, diagonal separation ---------- */}
+      <Section
+        pad="lg"
+        className="bg-tan diag-cut-top !pt-28 md:!pt-40"
+        style={{ "--cut": "44px" } as React.CSSProperties}
+      >
         <Container width="wide">
           <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
             <Reveal variant="up" {...MOTION.section.eyebrow} className="md:col-span-3 md:col-start-2 md:pt-4">

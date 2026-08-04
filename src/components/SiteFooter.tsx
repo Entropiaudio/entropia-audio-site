@@ -11,8 +11,11 @@ const footerLinkClass =
 const SiteFooter = () => {
   const c = copy.footer;
   return (
-    <footer className="rule-top-fade mt-32">
-      <Section pad="md">
+    <footer
+      className="diag-cut-top bg-tan mt-24"
+      style={{ "--cut": "44px" } as React.CSSProperties}
+    >
+      <Section pad="md" className="!pt-28 md:!pt-32">
         <Container width="wide">
           <div className="grid md:grid-cols-12 gap-12 md:gap-16">
             <div className="md:col-span-5 md:col-start-2">

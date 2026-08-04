@@ -23,23 +23,6 @@ const FLECKS: Array<{ l: string; t: string; s: number; c: string; o: number }> =
   { l: "81%", t: "36%", s: 2, c: "var(--accent-raw)", o: 0.55 },
 ];
 
-/* Topographic hairlines drifting at the low end of the field. */
-const Contours = () => (
-  <svg
-    viewBox="0 0 820 220"
-    preserveAspectRatio="xMidYMid meet"
-    className="absolute left-[-2%] top-1/2 w-[58%] h-auto opacity-60 pointer-events-none"
-    aria-hidden="true"
-  >
-    <g fill="none" strokeLinecap="round">
-      <path pathLength={1} className="contour-path" d="M0,120 C160,96 300,140 440,116 560,96 680,120 820,92" stroke="var(--clay)" strokeWidth="1.5" opacity="0.7" />
-      <path pathLength={1} className="contour-path" style={{ animationDelay: "180ms" }} d="M0,150 C150,140 320,170 470,150 620,132 720,150 820,130" stroke="var(--accent-raw)" strokeWidth="1.3" opacity="0.5" />
-      <path pathLength={1} className="contour-path" style={{ animationDelay: "340ms" }} d="M0,96 C180,70 300,104 460,84 600,68 700,88 820,70" stroke="var(--clay)" strokeWidth="1" opacity="0.42" />
-      <path pathLength={1} className="contour-path" style={{ animationDelay: "500ms" }} d="M0,178 C170,180 340,198 500,176 640,160 740,172 820,156" stroke="var(--accent-raw)" strokeWidth="1" opacity="0.32" />
-    </g>
-  </svg>
-);
-
 /**
  * The daylight hero field: warm parchment radial sampled from the hero
  * painting, paint flecks, contour hairlines, and (on the home page) the
@@ -65,8 +48,10 @@ export const HeroVisual = ({ className, art = true, cut = false }: HeroVisualPro
       />
 
       {art && (
-        /* wrapper owns the centering so the animation can own the transform */
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135%] sm:w-[100%] md:w-[82%] max-w-[1200px] pointer-events-none">
+        /* pinned to the right edge, vertically centered, big enough that the
+           trailing brush strokes sweep past the headline's first letter.
+           Wrapper owns the position so the animation can own the transform. */
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[165%] sm:w-[135%] md:w-[118%] max-w-none pointer-events-none">
           <img
             src="/art/hero-flourish.svg"
             alt=""
@@ -99,8 +84,6 @@ export const HeroVisual = ({ className, art = true, cut = false }: HeroVisualPro
           />
         ))}
       </div>
-
-      <Contours />
 
       {/* paper veil at the top so the header + eyebrow sit quiet */}
       <div
