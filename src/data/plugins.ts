@@ -8,7 +8,7 @@
  *   - slug (the URL bit, like /plugins/chaosverb)
  *   - prices
  *   - version number
- *   - audio file paths under /public
+ *   - audio + image file paths under /public
  * ============================================================================ */
 
 import { copy } from "@/copy";
@@ -25,22 +25,30 @@ export type PluginDemo = {
   wetSrc?: string;
 };
 
+/** "released" plugins are buyable; "in-development" ones only take signups. */
+export type PluginStatus = "released" | "in-development";
+
 export type Plugin = {
   slug: string;
   name: string;
+  status: PluginStatus;
   tagline: string;
   shortDescription: string;
-  /** active sale price */
-  price: number;
+  /** active sale price. undefined while a plugin is still in development. */
+  price?: number;
   /** crossed-out regular price; shown as "regular" when greater than price */
-  regularPrice: number;
+  regularPrice?: number;
   features: readonly string[];
-  sections: readonly { heading: string; body: string }[];
+  sections?: readonly { heading: string; body: string }[];
   demos: PluginDemo[];
-  specs: readonly { label: string; value: string }[];
+  specs?: readonly { label: string; value: string }[];
   version: string;
-  /** path under /public, e.g. /screenshots/chaosverb.png. empty = placeholder. */
+  /** path under /public — the plugin UI, shown big on the product page. */
   screenshot: string;
+  /** path under /public — the 3:2 art on the homepage card. */
+  cardArt: string;
+  /** the hue that codes this plugin on cards and in its numbered lists. */
+  accent: string;
   /** Public installer URLs. Leave undefined to show a "coming soon" state. */
   downloadMacUrl?: string;
   downloadWinUrl?: string;
@@ -50,6 +58,7 @@ export const plugins: Plugin[] = [
   {
     slug: "chaosverb",
     name: copy.chaosverb.name,
+    status: "released",
     tagline: copy.chaosverb.tagline,
     shortDescription: copy.chaosverb.shortDescription,
     price: 36,
@@ -69,7 +78,22 @@ export const plugins: Plugin[] = [
       { label: "Version", value: "1.0.0" },
     ],
     version: "1.0.0",
-    screenshot: "/screenshots/chaosverb.png",
+    screenshot: "/screenshots/chaosverb.webp",
+    cardArt: "/screenshots/chaosverb-card.webp",
+    accent: "var(--accent-raw)",
+  },
+  {
+    slug: "fiction",
+    name: copy.fiction.name,
+    status: "in-development",
+    tagline: copy.fiction.tagline,
+    shortDescription: copy.fiction.shortDescription,
+    features: copy.fiction.features,
+    demos: [],
+    version: "1.42.0",
+    screenshot: "/screenshots/fiction.webp",
+    cardArt: "/screenshots/fiction-card.webp",
+    accent: "var(--section-motion)",
   },
 ];
 

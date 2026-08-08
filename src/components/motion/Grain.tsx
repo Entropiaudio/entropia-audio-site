@@ -1,16 +1,19 @@
 /**
  * Fixed-position SVG noise overlay. Multiply-blended paper grain — the thing
- * that makes the parchment read as material instead of a flat fill.
- * Pointer-events disabled.
+ * that makes the parchment read as material instead of a flat fill. One pass
+ * for the whole site — the tan bands and the hero collage take their grain
+ * from this overlay rather than each carrying their own, so the texture never
+ * doubles where grounds meet. Tile and strength live in index.css
+ * (--grain-img / --grain-scale / --grain-amt). Pointer-events disabled.
  */
 const Grain = () => (
   <div
     aria-hidden="true"
-    className="pointer-events-none fixed inset-0 z-[55] mix-blend-multiply opacity-[0.10]"
+    className="pointer-events-none fixed inset-0 z-[55] mix-blend-multiply"
     style={{
-      backgroundImage:
-        "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
-      backgroundSize: "200px 200px",
+      opacity: "var(--grain-amt)",
+      backgroundImage: "var(--grain-img)",
+      backgroundSize: "var(--grain-scale) var(--grain-scale)",
     }}
   />
 );

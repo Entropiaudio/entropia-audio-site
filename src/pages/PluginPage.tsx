@@ -1,14 +1,10 @@
 import { useParams, Navigate, useNavigate } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
-import PluginScreenshot from "@/components/PluginScreenshot";
 import AudioDemo from "@/components/AudioDemo";
-import HeroVisual from "@/components/HeroVisual";
-import Section from "@/components/primitives/Section";
-import Container from "@/components/primitives/Container";
-import Eyebrow from "@/components/primitives/Eyebrow";
+import InkButton from "@/components/InkButton";
+import LabelledSection from "@/components/primitives/LabelledSection";
 import Reveal from "@/components/motion/Reveal";
 import RevealWords from "@/components/motion/RevealWords";
-import MagneticLink from "@/components/motion/MagneticLink";
 import { MOTION } from "@/components/motion/timing";
 import { useParallax } from "@/hooks/useScrollMotion";
 import { usePluginPricing } from "@/hooks/usePluginPricing";
@@ -18,7 +14,19 @@ import { toast } from "@/hooks/use-toast";
 import { copy } from "@/copy";
 import { Moonbase } from "@/lib/moonbase";
 
-const AlternatingSection = ({
+/* A screenshot as a printed object: hairline frame, soft radius, warm ink
+   shadow. No corner cut here — the plugin UI already has its own geometry. */
+const Shot = ({ src, alt, className = "" }: { src: string; alt: string; className?: string }) => (
+  <img
+    src={src}
+    alt={alt}
+    loading="lazy"
+    className={`block w-full border border-hairline rounded-lg ${className}`}
+    style={{ filter: "drop-shadow(0 12px 28px rgba(42,23,30,0.22))" }}
+  />
+);
+
+const StorySection = ({
   heading,
   body,
   index,
@@ -31,43 +39,32 @@ const AlternatingSection = ({
   index: number;
   total: number;
   pluginName: string;
-  screenshot?: string;
+  screenshot: string;
 }) => {
   const reversed = index % 2 === 1;
-  const parallaxRef = useParallax<HTMLDivElement>(28);
+  const parallaxRef = useParallax<HTMLDivElement>(24);
   return (
-    <article
-      className={`grid md:grid-cols-12 gap-10 md:gap-16 items-center py-24 md:py-32 border-t border-hairline ${
-        reversed ? "md:[&>*:first-child]:order-2" : ""
-      }`}
-    >
+    <article className="grid gap-10 items-center px-[3.2vw] py-14 border-t border-hairline grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
       <Reveal
         variant="up"
         {...MOTION.section.image}
-        className={`md:col-span-6 hover-zoom ${reversed ? "md:col-start-7" : ""}`}
+        className={`hover-zoom ${reversed ? "md:order-2" : ""}`}
       >
         <div ref={parallaxRef}>
-          <PluginScreenshot
-            name={pluginName}
-            ratio="wide"
-            bare
-            src={screenshot}
-            fit="contain"
-            alt={`${pluginName} ${heading}`}
-          />
+          <Shot src={screenshot} alt={`${pluginName}, ${heading}`} />
         </div>
       </Reveal>
-      <div className={`md:col-span-5 ${reversed ? "md:col-start-2" : "md:col-start-8"}`}>
+      <div className={reversed ? "md:order-1" : ""}>
         <Reveal variant="up" {...MOTION.section.eyebrow}>
-          <Eyebrow className="mb-6">
-            {String(index + 1).padStart(2, "0")} / {total.toString().padStart(2, "0")}
-          </Eyebrow>
-          <h3 className="font-display text-[34px] md:text-[42px] leading-[1.0] text-[color:var(--ink)] mb-8">
+          <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--ink-3)] mb-[18px]">
+            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          </div>
+          <h3 className="font-serif-display text-[clamp(28px,2.6vw,42px)] leading-[1.05] text-[color:var(--ink)] mb-5">
             {heading}
           </h3>
         </Reveal>
-        <Reveal variant="up" {...MOTION.section.headline}>
-          <p className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[42ch]">
+        <Reveal variant="up" {...MOTION.section.body}>
+          <p className="font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[44ch] m-0">
             {body}
           </p>
         </Reveal>
@@ -88,7 +85,10 @@ const PluginPage = () => {
     regularPrice: plugin?.regularPrice ?? 0,
   });
 
-  if (!plugin) return <Navigate to="/" replace />;
+  // This is the storefront layout. Unreleased plugins have their own routes
+  // (see App.tsx) and never reach it; if one somehow does, go home rather
+  // than render a page with a price and a buy button on it.
+  if (!plugin || plugin.status !== "released") return <Navigate to="/" replace />;
 
   const c = copy.chaosverb;
   const onSale = pricing.regularPrice > pricing.price;
@@ -104,279 +104,226 @@ const PluginPage = () => {
 
   return (
     <SiteLayout>
-      {/* ---------- sticky CTA strip ----------
-           top tracks SiteHeader's --header-h variable so the strip sits flush
-           against the header both at full height (5rem) and shrunken (4rem). */}
+      {/* ---------- sticky buy strip — the one thing on the site that sticks ---------- */}
       <div
-        className="sticky z-30 backdrop-blur-md border-b border-hairline transition-[top] duration-[200ms] ease-editorial"
+        className="sticky top-0 z-30 border-b border-hairline backdrop-blur-md"
         style={{
-          top: "var(--header-h, 5rem)",
-          background: "rgba(237, 224, 204, 0.88)",
+          background: "rgba(242, 225, 199, 0.97)",
+          boxShadow: "0 4px 14px rgba(42,23,30,0.06)",
         }}
       >
-        <div className="max-w-wide mx-auto px-6 md:px-10 h-14 flex items-center justify-between gap-4">
-          <span className="hidden md:inline font-mono font-semibold text-[12px] uppercase tracking-[0.18em] text-[color:var(--ink)]">
+        <div className="flex items-center gap-3.5 px-[3.2vw] py-2.5">
+          <span className="hidden sm:inline font-mono font-semibold text-[12px] uppercase tracking-[0.18em] text-[color:var(--ink)]">
             {plugin.name}
           </span>
-          <div className="flex-1 md:flex-none flex items-center justify-between md:justify-end gap-3 whitespace-nowrap">
-            <button
-              type="button"
-              onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
-              className="btn btn-ghost !py-2 !px-4 text-[11px]"
-            >
-              {c.ctaTry}
-            </button>
-            <MagneticLink
-              as="button"
-              type="button"
-              strength={5}
-              onClick={() => addToCart(true)}
-              className="btn btn-solid !py-2 !px-4 text-[11px] tabular-nums"
-            >
-              <span>
-                {c.ctaBuy} · ${pricing.price}
-              </span>
-              {onSale && (
-                <span className="line-through font-normal text-[10px] opacity-70">
-                  ${pricing.regularPrice}
-                </span>
-              )}
-            </MagneticLink>
-          </div>
+          <span className="flex-1" />
+          <InkButton
+            variant="ghost"
+            size="sm"
+            onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
+          >
+            {c.ctaTry}
+          </InkButton>
+          <InkButton size="sm" magnetic onClick={() => addToCart(true)}>
+            <span className="tabular-nums">
+              {c.ctaBuy} · ${pricing.price}
+            </span>
+          </InkButton>
+          {onSale && (
+            <span className="font-mono text-[10px] tabular-nums line-through text-[color:var(--ink-3)]">
+              ${pricing.regularPrice}
+            </span>
+          )}
         </div>
       </div>
 
-      {/* ---------- product hero ---------- */}
-      <Section pad="lg" className="relative isolate overflow-hidden">
-        {/* Warm parchment field behind the screenshot + eyebrow, matching the
-            homepage hero (no flourish — the plugin UI is the artwork here).
-            Pointer-events disabled so it never interferes with hover-zoom. */}
-        <HeroVisual className="absolute inset-0 z-0 pointer-events-none" art={false} />
-        {/* Paper wash to seat the content back onto the page ground. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-[1]"
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(237,224,204,0) 35%, rgba(237,224,204,0.65) 100%)",
-          }}
-        />
-        <Container width="wide" className="relative z-10">
-          <div className="md:pl-8 lg:pl-16">
-            <Reveal variant="up" {...MOTION.page.eyebrow}>
-              <Eyebrow className="mb-12">
-                // {plugin.name} · v{plugin.version}
-              </Eyebrow>
-            </Reveal>
-            <Reveal
-              variant="up"
-              delay={MOTION.page.headline1.delay}
-              duration={MOTION.duration.image}
-              className="max-w-[1080px] hover-zoom block"
-            >
-              <PluginScreenshot
-                name={plugin.name}
-                ratio="hero"
-                src={plugin.screenshot}
-                fit="contain"
-                alt={`${plugin.name} plugin interface`}
-              />
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
-
-      {/* ---------- name + tagline ---------- */}
-      <Section pad="lg">
-        <Container width="wide">
-          <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
-            <Reveal variant="up" {...MOTION.section.eyebrow} className="md:col-span-3 md:col-start-2 md:pt-4">
-              <Eyebrow>{plugin.name}</Eyebrow>
-            </Reveal>
-            <div className="md:col-span-8">
-              <h1 className="leading-[1.1] text-[44px] md:text-[60px] lg:text-[72px] text-[color:var(--ink)]">
-                <RevealWords
-                  as="span"
-                  className="font-editorial italic font-normal"
-                  {...MOTION.section.headline}
-                  stagger={MOTION.stagger.word}
-                >
-                  {plugin.tagline}
-                </RevealWords>
-              </h1>
-              <Reveal variant="up" {...MOTION.section.body}>
-                <p className="mt-10 font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[58ch]">
-                  {plugin.shortDescription}
-                </p>
-              </Reveal>
-
-              <Reveal variant="up" {...MOTION.section.cta}>
-                <div key={pricing.price} className="state-fade mt-10 flex items-baseline gap-6 font-mono text-[13px] tabular-nums">
-                  <span className="text-[color:var(--text-primary)]">${pricing.price}</span>
-                  {onSale && (
-                    <>
-                      <span className="line-through text-[color:var(--text-tertiary)]">
-                        ${pricing.regularPrice}
-                      </span>
-                      <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--accent-raw)]">
-                        {c.saleBadge}
-                      </span>
-                    </>
-                  )}
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </Container>
-      </Section>
-
-      {/* ---------- numbered features ---------- */}
-      <Section pad="lg" tone="rule-top">
-        <Container width="wide">
-          <div className="md:pl-8 lg:pl-16 max-w-[880px]">
-            <ul>
-              {plugin.features.map((f, i) => (
-                <Reveal
-                  key={i}
-                  variant="up"
-                  duration={MOTION.duration.base}
-                  delay={i * MOTION.stagger.list}
-                  as="li"
-                  className="grid grid-cols-[3rem,1fr] gap-6 md:gap-10 font-sans font-normal text-[17px] md:text-[18px] leading-[1.65] tracking-[0.005em] border-t border-hairline py-7"
-                >
-                  <span className="font-mono font-semibold text-[13px] tabular-nums text-[color:var(--accent-raw)] pt-1.5">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-[color:var(--ink)]">{f}</span>
-                </Reveal>
-              ))}
-            </ul>
-          </div>
-        </Container>
-      </Section>
-
-      {/* ---------- alternating image / text ---------- */}
-      <Container width="wide">
-        {plugin.sections.map((section, i) => (
-          <AlternatingSection
-            key={i}
-            heading={section.heading}
-            body={section.body}
-            index={i}
-            total={plugin.sections.length}
-            pluginName={plugin.name}
-            screenshot={plugin.screenshot}
-          />
-        ))}
-      </Container>
-
-      {/* ---------- audio demos — tan band, diagonal separation ---------- */}
-      <Section
-        pad="lg"
-        className="bg-tan diag-cut-top !pt-28 md:!pt-40"
-        style={{ "--cut": "44px" } as React.CSSProperties}
+      {/* ---------- the UI, front and centre ---------- */}
+      <section
+        className="relative px-[3.2vw] pt-14 pb-[72px]"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 24%, var(--parchment-hi) 0%, var(--paper) 46%, var(--tan) 100%)",
+        }}
       >
-        <Container width="wide">
-          <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
-            <Reveal variant="up" {...MOTION.section.eyebrow} className="md:col-span-3 md:col-start-2 md:pt-4">
-              <Eyebrow>{c.listenEyebrow}</Eyebrow>
-            </Reveal>
-            <div className="md:col-span-8">
-              <Reveal variant="up" {...MOTION.section.headline}>
-                <h3 className="text-[36px] md:text-[48px] leading-[1.05] text-[color:var(--ink)] mb-14">
-                  <span className="font-editorial italic font-normal">
-                    {c.listenHeadline}
+        <Reveal variant="up" delay={MOTION.page.headline1.delay} duration={MOTION.duration.image}>
+          <img
+            src={plugin.screenshot}
+            alt={`${plugin.name} plugin interface`}
+            className="block w-[min(1040px,96%)] mx-auto border border-hairline rounded-lg"
+            style={{ filter: "drop-shadow(0 18px 40px rgba(42,23,30,0.28))" }}
+          />
+        </Reveal>
+      </section>
+
+      {/* ---------- name, pitch, price ---------- */}
+      <LabelledSection label={plugin.name} className="pt-16 pb-14" labelPad="14px">
+        <div className="max-w-[820px]">
+          <h1
+            className="text-[clamp(38px,4.8vw,68px)] leading-[1.08] tracking-[-0.015em] text-[color:var(--ink)] m-0"
+            style={{ fontWeight: 470 }}
+          >
+            <RevealWords
+              as="span"
+              className="font-editorial italic"
+              {...MOTION.section.headline}
+              stagger={MOTION.stagger.word}
+            >
+              {plugin.tagline}
+            </RevealWords>
+          </h1>
+          <Reveal variant="up" {...MOTION.section.body}>
+            <p className="mt-6 font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[60ch]">
+              {plugin.shortDescription}
+            </p>
+          </Reveal>
+          <Reveal variant="up" {...MOTION.section.cta}>
+            <div key={pricing.price} className="state-fade mt-[30px] flex items-baseline gap-5">
+              <span className="font-mono font-semibold text-[22px] tabular-nums text-[color:var(--ink)]">
+                ${pricing.price}
+              </span>
+              {onSale && (
+                <>
+                  <span className="font-mono text-[14px] tabular-nums line-through text-[color:var(--ink-3)]">
+                    ${pricing.regularPrice}
                   </span>
+                  <span className="font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--accent-raw)]">
+                    {c.saleBadge}
+                  </span>
+                </>
+              )}
+            </div>
+          </Reveal>
+        </div>
+      </LabelledSection>
+
+      {/* ---------- what it does ---------- */}
+      <section className="px-[3.2vw] pt-6 pb-16">
+        <ul className="max-w-[880px] m-0 p-0 list-none md:ml-[max(0px,calc((100%-880px)*0.22))]">
+          {plugin.features.map((f, i) => (
+            <Reveal
+              key={i}
+              variant="up"
+              duration={MOTION.duration.base}
+              delay={i * MOTION.stagger.list}
+              as="li"
+              className="grid grid-cols-[48px_1fr] gap-7 border-t border-hairline py-6"
+            >
+              <span className="font-mono font-semibold text-[12px] tabular-nums pt-0.5 text-[color:var(--accent-raw)]">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="font-mono text-[15.5px] leading-[1.65] tracking-[0.015em] text-[color:var(--ink)]">
+                {f}
+              </span>
+            </Reveal>
+          ))}
+        </ul>
+      </section>
+
+      {/* ---------- the two stories ---------- */}
+      {(plugin.sections ?? []).map((section, i) => (
+        <StorySection
+          key={i}
+          heading={section.heading}
+          body={section.body}
+          index={i}
+          total={(plugin.sections ?? []).length}
+          pluginName={plugin.name}
+          screenshot={plugin.screenshot}
+        />
+      ))}
+
+      {/* ---------- listen: the tan ground ---------- */}
+      <div
+        className="relative diag-band-top mt-2"
+        style={{ background: "var(--tan)", paddingTop: "calc(3vw + 56px)", paddingBottom: "76px" }}
+      >
+        <LabelledSection label={c.listenEyebrow} labelTone="deep" labelPad="10px">
+          <div className="max-w-[780px]">
+            <Reveal variant="up" {...MOTION.section.headline}>
+              <h3
+                className="font-editorial italic text-[clamp(30px,3.2vw,48px)] leading-[1.05] text-[color:var(--ink)] mb-4"
+                style={{ fontWeight: 470 }}
+              >
+                {c.listenHeadline}
+              </h3>
+            </Reveal>
+            {plugin.demos.map((d, i) => (
+              <Reveal
+                key={d.slug}
+                variant="up"
+                duration={MOTION.duration.base}
+                delay={MOTION.section.body.delay + i * MOTION.stagger.body}
+              >
+                <AudioDemo demo={d} index={i} />
+              </Reveal>
+            ))}
+          </div>
+        </LabelledSection>
+      </div>
+
+      {/* ---------- specifications ---------- */}
+      <LabelledSection label={c.specsEyebrow} className="py-16">
+        <table className="w-full max-w-[780px] border-collapse">
+          <tbody>
+            {(plugin.specs ?? []).map((spec, i, all) => (
+              <tr
+                key={spec.label}
+                className={`border-t border-hairline ${
+                  i === all.length - 1 ? "border-b" : ""
+                }`}
+              >
+                <td className="py-5 pr-5 align-top w-1/3 font-mono font-semibold text-[11px] uppercase tracking-[0.14em] text-[color:var(--ink-3)]">
+                  {spec.label}
+                </td>
+                <td className="py-5 font-mono text-[14px] text-[color:var(--ink)]">
+                  {spec.value}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </LabelledSection>
+
+      {/* ---------- the trial ---------- */}
+      <LabelledSection id="try" label={c.tryEyebrow} className="pt-6 pb-[90px] scroll-mt-16">
+        <div className="max-w-[780px]">
+          <div className="relative overflow-hidden corner-cut rounded-lg border border-[color:var(--border-subtle)] bg-parchment-hi shadow-card px-8 py-10 md:px-12 md:py-11">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "repeating-linear-gradient(102deg, rgba(194,90,30,0.10) 0 1.5px, transparent 1.5px 9px)",
+              }}
+            />
+            <div className="relative">
+              <Reveal variant="up" {...MOTION.section.headline}>
+                <h3
+                  className="font-editorial italic text-[clamp(30px,3.2vw,46px)] leading-[1.05] text-[color:var(--ink)] mb-4"
+                  style={{ fontWeight: 470 }}
+                >
+                  {c.tryHeadline}
                 </h3>
               </Reveal>
-              <div>
-                {plugin.demos.map((d, i) => (
-                  <Reveal
-                    key={d.slug}
-                    variant="up"
-                    duration={MOTION.duration.base}
-                    delay={MOTION.section.body.delay + i * MOTION.stagger.body}
-                  >
-                    <AudioDemo demo={d} index={i} />
-                  </Reveal>
-                ))}
-              </div>
+              <Reveal variant="up" {...MOTION.section.body}>
+                <p className="font-mono text-[15px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] mb-7">
+                  {c.trySubline}
+                </p>
+              </Reveal>
+              <Reveal variant="up" {...MOTION.section.cta}>
+                <InkButton
+                  size="lg"
+                  magnetic
+                  trailing="↓"
+                  onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
+                >
+                  {c.download}
+                </InkButton>
+              </Reveal>
             </div>
           </div>
-        </Container>
-      </Section>
-
-      {/* ---------- specs ---------- */}
-      <Section pad="lg" tone="rule-top">
-        <Container width="wide">
-          <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
-            <Reveal variant="up" {...MOTION.section.eyebrow} className="md:col-span-3 md:col-start-2 md:pt-4">
-              <Eyebrow>{c.specsEyebrow}</Eyebrow>
-            </Reveal>
-            <Reveal variant="up" {...MOTION.section.headline} className="md:col-span-8">
-              <table className="w-full text-[15px]">
-                <tbody>
-                  {plugin.specs.map((spec) => (
-                    <tr key={spec.label} className="border-t border-hairline">
-                      <td className="py-6 pr-6 text-[color:var(--ink-3)] w-1/3 align-top font-mono font-semibold text-[12px] uppercase tracking-label">
-                        {spec.label}
-                      </td>
-                      <td className="py-6 font-mono text-[15px] text-[color:var(--ink)]">
-                        {spec.value}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
-
-      {/* ---------- try / download ---------- */}
-      <Section pad="lg" tone="rule-top">
-        <Container width="wide" id="try">
-          <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
-            <Reveal variant="up" {...MOTION.section.eyebrow} className="md:col-span-3 md:col-start-2 md:pt-4">
-              <Eyebrow>{c.tryEyebrow}</Eyebrow>
-            </Reveal>
-            <div className="md:col-span-8">
-              {/* copper-hatched parchment panel — the trial offer as an object */}
-              <div className="relative bg-parchment border border-hairline rounded-lg corner-cut shadow-card px-8 py-10 md:px-12 md:py-12 overflow-hidden">
-                <div aria-hidden="true" className="absolute inset-0 hatch-copper pointer-events-none opacity-70" />
-                <div className="relative">
-                  <Reveal variant="up" {...MOTION.section.headline}>
-                    <h3 className="text-[36px] md:text-[48px] leading-[1.05] text-[color:var(--ink)] mb-8">
-                      <span className="font-editorial italic font-normal">
-                        {c.tryHeadline}
-                      </span>
-                    </h3>
-                  </Reveal>
-                  <Reveal variant="up" {...MOTION.section.body}>
-                    <p className="font-sans font-normal text-[17px] md:text-[18px] leading-[1.7] tracking-[0.005em] text-[color:var(--ink-2)] max-w-[52ch] mb-10">
-                      {c.trySubline}
-                    </p>
-                  </Reveal>
-                  <Reveal variant="up" {...MOTION.section.cta}>
-                    <div className="flex flex-col sm:flex-row gap-6 sm:gap-10">
-                      <MagneticLink
-                        as="button"
-                        type="button"
-                        strength={6}
-                        onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
-                        className="btn btn-solid text-[13px] px-7 py-3.5"
-                      >
-                        <span>{c.download}</span>
-                        <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-y-0.5">↓</span>
-                      </MagneticLink>
-                    </div>
-                  </Reveal>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </Section>
+        </div>
+      </LabelledSection>
     </SiteLayout>
   );
 };

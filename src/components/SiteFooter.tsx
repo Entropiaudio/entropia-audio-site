@@ -1,74 +1,69 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { copy } from "@/copy";
-import Section from "./primitives/Section";
-import Container from "./primitives/Container";
-import Eyebrow from "./primitives/Eyebrow";
 import Logo from "./Logo";
 
-const footerLinkClass =
-  "font-mono font-medium text-[14px] tracking-[0.06em] lowercase text-[color:var(--ink-2)] hover:text-[color:var(--accent-deep)] transition-colors duration-[200ms] ease-editorial";
+/* Two lines: the lockup and the links, then a hairline with the colophon
+   centred on it and one ink mark at the end. No columns, no blurb — the
+   footer is a rule, not a sitemap. */
 
 const SiteFooter = () => {
   const c = copy.footer;
+  const { pathname } = useLocation();
+  const isHome = pathname === "/";
+
+  const links = [
+    { to: "/plugins/chaosverb", label: c.nav.chaosverb },
+    { to: "/plugins/fiction", label: c.nav.fiction },
+    { to: "/about", label: c.nav.about },
+    { to: "/account", label: c.nav.account },
+    { to: "/legal/eula", label: c.nav.eula },
+    { to: "/legal/privacy", label: c.nav.privacy },
+  ];
+
   return (
-    <footer
-      className="diag-cut-top bg-tan mt-24"
-      style={{ "--cut": "44px" } as React.CSSProperties}
-    >
-      <Section pad="md" className="!pt-28 md:!pt-32">
-        <Container width="wide">
-          <div className="grid md:grid-cols-12 gap-12 md:gap-16">
-            <div className="md:col-span-5 md:col-start-2">
-              <div className="flex items-center gap-4 mb-6">
-                <Logo size={44} className="text-[color:var(--ink)]" />
-                <span className="font-editorial italic text-[18px] text-[color:var(--ink)]">
-                  {c.title}
-                </span>
-              </div>
-              <p className="font-sans font-normal text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--ink-2)] max-w-[36ch]">
-                {c.blurb}
-              </p>
-              <a
-                href={`mailto:${copy.contactEmail}`}
-                className="group inline-flex items-baseline gap-2 mt-6 font-mono font-medium text-[14px] lowercase tracking-[0.06em] text-[color:var(--ink)] hover:text-[color:var(--accent-deep)] transition-colors duration-[200ms] ease-editorial"
-              >
-                <span className="border-b border-[color:var(--ink-line-2)] group-hover:border-[color:var(--accent-raw)] pb-1 transition-colors duration-[200ms] ease-editorial">
-                  {copy.contactEmail}
-                </span>
-              </a>
-            </div>
+    <footer className="relative z-10 px-[3.2vw] pt-10 pb-10 mt-4">
+      <div className="flex items-center gap-6 flex-wrap">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2.5 text-[color:var(--ink)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-raw)]"
+        >
+          <Logo size={22} />
+          <span className="font-editorial italic text-[16px] leading-none">{c.title}</span>
+        </Link>
 
-            <nav className="md:col-span-2 flex flex-col gap-3">
-              <Eyebrow className="mb-2">{c.siteHeading}</Eyebrow>
-              <Link to="/plugins/chaosverb" className={footerLinkClass + " normal-case"}>
-                {c.nav.chaosverb}
-              </Link>
-              <Link to="/about" className={footerLinkClass}>
-                {c.nav.about}
-              </Link>
-              <Link to="/account" className={footerLinkClass}>
-                {c.nav.account}
-              </Link>
-            </nav>
+        <span className="flex-1" />
 
-            <nav className="md:col-span-2 flex flex-col gap-3">
-              <Eyebrow className="mb-2">{c.legalHeading}</Eyebrow>
-              <Link to="/legal/eula" className={footerLinkClass}>
-                {c.nav.eula}
-              </Link>
-              <Link to="/legal/privacy" className={footerLinkClass}>
-                {c.nav.privacy}
-              </Link>
-            </nav>
-          </div>
-        </Container>
-      </Section>
+        <nav className="flex gap-5 flex-wrap">
+          {links.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className="nav-link !text-[10px]"
+              data-active={pathname === l.to || undefined}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
 
-      <div className="rule-top-fade">
-        <Container width="wide" className="py-6 flex items-center justify-between font-mono font-medium text-[10px] uppercase tracking-eyebrow text-[color:var(--ink-3)]">
-          <span>© {new Date().getFullYear()} {c.copyright}</span>
-          <span>{c.tagLine}</span>
-        </Container>
+      <div className="flex items-center gap-4 mt-6">
+        <span
+          className="flex-1 h-px"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(42,23,30,0.28), transparent)",
+          }}
+        />
+        <span className="font-mono font-semibold text-[9px] uppercase tracking-[0.14em] text-[color:var(--ink-3)] text-center">
+          {isHome ? c.colophonHome : c.colophon} · {new Date().getFullYear()}
+        </span>
+        <img
+          src="/art/mark-footer.png"
+          alt=""
+          aria-hidden="true"
+          className="w-[18px] mix-blend-multiply opacity-70"
+        />
       </div>
     </footer>
   );

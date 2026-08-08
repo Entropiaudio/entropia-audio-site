@@ -2,10 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* entropia audio — daylight register. parchment paper, plum ink, one burnt
-   copper accent, hard 12° diagonals. tokens live here; tailwind reads the
-   HSL-channel vars, components can also read the raw hex/rgba vars directly
-   when an exact spec value is required. */
+/* entropia audio — daylight register, colour + texture pass. warm parchment
+   paper, plum-black ink, one burnt copper accent, hard 12° diagonals, paper
+   grain on every surface. tokens live here; tailwind reads the HSL-channel
+   vars, components can also read the raw hex/rgba vars directly when an exact
+   spec value is required. */
 
 /* ---------- brand webfonts, self-hosted (public/fonts) ------------------- */
 @font-face {
@@ -34,90 +35,96 @@
 @layer base {
   :root {
     /* ---------- raw palette (spec values, used directly when needed) ------ */
-    /* grounds — parchment world sampled from the hero painting */
-    --paper:            #EDE0CC;
-    --parchment:        #F0E0D0;
-    --parchment-hi:     #F7ECDC;
-    --tan:              #E0D0B0;
-    --clay:             #D0B090;
-    --umber:            #A07040;
-    --field:            #E4D3BB;   /* inset fields: inputs, tracks, meters */
+    /* grounds — parchment world sampled from the hero collage */
+    --paper:            #F2E1C7;
+    --parchment:        #F6E6CF;
+    --parchment-hi:     #FAEDDA;
+    --tan:              #E2C5A1;
+    --clay:             #C59D74;
+    --umber:            #9A6A45;
+    --field:            #ECD9BD;   /* inset fields: inputs, tracks, meters */
 
     /* ink — plum-black type + line */
-    --ink:              #261019;
-    --ink-2:            rgba(38, 16, 25, 0.72);
-    --ink-3:            rgba(38, 16, 25, 0.50);
-    --ink-4:            rgba(38, 16, 25, 0.30);
-    --ink-line:         rgba(38, 16, 25, 0.16);
-    --ink-line-2:       rgba(38, 16, 25, 0.28);
-    --plum:             #302030;
+    --ink:              #2A171E;
+    --ink-2:            rgba(42, 23, 30, 0.74);
+    --ink-3:            rgba(42, 23, 30, 0.52);
+    --ink-4:            rgba(42, 23, 30, 0.32);
+    --ink-line:         rgba(42, 23, 30, 0.16);
+    --ink-line-2:       rgba(42, 23, 30, 0.30);
+    --plum:             #2C1920;
+    --plum-block:       #412830;   /* the footer wedge in the page backdrop */
 
-    /* heat — burnt copper + the painting's pink (the single loud moment) */
-    --accent-raw:       #DD6E26;
-    --accent-bright:    #F08030;
-    --accent-deep:      #A84A16;
-    --accent-tint:      rgba(221, 110, 38, 0.10);
-    --accent-muted:     rgba(221, 110, 38, 0.18);
-    --pop:              #FF5C80;
+    /* heat — burnt copper + the collage's pink (the single loud moment) */
+    --accent-raw:       #C25A1E;
+    --accent-bright:    #E8791F;
+    --accent-deep:      #93400F;
+    --accent-tint:      rgba(194, 90, 30, 0.10);
+    --accent-muted:     rgba(194, 90, 30, 0.18);
+    --pop:              #F14E71;
+
+    /* the one demoted section hue still in play — Fiction's mulberry */
+    --section-motion:   #8A5A7E;
 
     /* states, warmed for paper */
     --state-success:    #3E9A5E;
     --state-warning:    #C98A32;
     --state-error:      #C24A3A;
+    --action-create:    #1F8F6B;
 
     /* legacy names, repointed to the daylight register */
     --bg:               var(--paper);
     --surface:          var(--parchment);
     --surface-elevated: var(--parchment-hi);
-    --border-soft:      rgba(38, 16, 25, 0.10);
-    --text-primary:     #261019;
-    --text-secondary:   rgba(38, 16, 25, 0.72);
-    --text-tertiary:    rgba(38, 16, 25, 0.50);
+    --border-soft:      rgba(42, 23, 30, 0.10);
+    --border-subtle:    rgba(42, 23, 30, 0.15);
+    --text-primary:     #2A171E;
+    --text-secondary:   rgba(42, 23, 30, 0.74);
+    --text-tertiary:    rgba(42, 23, 30, 0.52);
 
     /* ---------- shadcn / tailwind HSL channels (derived from raw) --------- */
-    --background: 36 48% 86%;         /* #EDE0CC paper */
-    --foreground: 335 41% 11%;        /* #261019 ink */
+    --background: 36 62% 87%;         /* #F2E1C7 paper */
+    --foreground: 338 29% 13%;        /* #2A171E ink */
 
-    --card: 30 52% 88%;               /* #F0E0D0 parchment */
-    --card-foreground: 335 41% 11%;
+    --card: 35 68% 89%;               /* #F6E6CF parchment */
+    --card-foreground: 338 29% 13%;
 
-    --popover: 36 63% 92%;            /* #F7ECDC parchment-hi */
-    --popover-foreground: 335 41% 11%;
+    --popover: 36 76% 92%;            /* #FAEDDA parchment-hi */
+    --popover-foreground: 338 29% 13%;
 
-    --primary: 335 41% 11%;           /* ink fill, paper text — the solid CTA */
-    --primary-foreground: 36 48% 86%;
+    --primary: 338 29% 13%;           /* ink fill, paper text — the solid CTA */
+    --primary-foreground: 36 62% 87%;
 
-    --secondary: 35 43% 81%;          /* #E4D3BB field */
-    --secondary-foreground: 335 41% 11%;
+    --secondary: 36 55% 83%;          /* #ECD9BD field */
+    --secondary-foreground: 338 29% 13%;
 
-    --muted: 35 43% 81%;              /* field */
-    --muted-foreground: 357 12% 33%;  /* ink-2 flattened onto paper */
+    --muted: 36 55% 83%;              /* field */
+    --muted-foreground: 340 12% 34%;  /* ink-2 flattened onto paper */
 
-    --accent: 24 73% 51%;             /* #DD6E26 burnt copper */
-    --accent-foreground: 36 48% 86%;
+    --accent: 22 73% 44%;             /* #C25A1E burnt copper */
+    --accent-foreground: 36 62% 87%;
 
     --destructive: 7 54% 49%;         /* #C24A3A warmed error */
-    --destructive-foreground: 36 63% 92%;
+    --destructive-foreground: 36 76% 92%;
 
-    --border: 335 41% 11%;            /* ink channels; used at low alpha */
-    --input: 335 41% 11%;
-    --ring: 24 73% 51%;
+    --border: 338 29% 13%;            /* ink channels; used at low alpha */
+    --input: 338 29% 13%;
+    --ring: 22 73% 44%;
 
-    --hairline: 335 41% 11%;
+    --hairline: 338 29% 13%;
     --plugin-surface: 30 12% 10%;     /* night register: screenshots stay dark */
     --plugin-surface-foreground: 40 28% 87%;
 
     /* daylight buttons 4–6px, surfaces 8–12px */
     --radius: 0.375rem;               /* 6px */
 
-    --sidebar-background: 36 48% 86%;
-    --sidebar-foreground: 335 41% 11%;
-    --sidebar-primary: 335 41% 11%;
-    --sidebar-primary-foreground: 36 48% 86%;
-    --sidebar-accent: 35 43% 81%;
-    --sidebar-accent-foreground: 335 41% 11%;
-    --sidebar-border: 335 41% 11%;
-    --sidebar-ring: 24 73% 51%;
+    --sidebar-background: 36 62% 87%;
+    --sidebar-foreground: 338 29% 13%;
+    --sidebar-primary: 338 29% 13%;
+    --sidebar-primary-foreground: 36 62% 87%;
+    --sidebar-accent: 36 55% 83%;
+    --sidebar-accent-foreground: 338 29% 13%;
+    --sidebar-border: 338 29% 13%;
+    --sidebar-ring: 22 73% 44%;
 
     /* ---------- motion ---------------------------------------------------- */
     --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
@@ -126,15 +133,23 @@
     --t-slow: 350ms;
 
     /* ---------- shadows — warm plum ink, the way paper casts. no glows. --- */
-    --shadow-card: 0 6px 20px rgba(38, 16, 25, 0.10);
-    --shadow-lift: 0 14px 34px rgba(38, 16, 25, 0.18);
-    --shadow-ink:  0 3px 7px rgba(38, 16, 25, 0.24);
+    --shadow-card: 0 6px 20px rgba(42, 23, 30, 0.10);
+    --shadow-lift: 0 14px 34px rgba(42, 23, 30, 0.18);
+    --shadow-ink:  0 3px 7px rgba(42, 23, 30, 0.24);
 
     /* ---------- the diagonal motif (from the logo's slice gaps) ----------- */
     --pitch: 12deg;
     --hatch-copper: repeating-linear-gradient(102deg, var(--accent-tint) 0 1px, transparent 1px 7px);
-    --hatch-umber:  repeating-linear-gradient(102deg, rgba(160, 112, 64, 0.22) 0 1px, transparent 1px 8px);
+    --hatch-umber:  repeating-linear-gradient(102deg, rgba(154, 106, 69, 0.22) 0 1px, transparent 1px 8px);
+    --hatch-column: repeating-linear-gradient(102deg, rgba(194, 90, 30, 0.32) 0 1.6px, transparent 1.6px 7px);
     --divider-fade: linear-gradient(90deg, transparent 0%, var(--ink-line) 50%, transparent 100%);
+
+    /* ---------- paper grain, the texture half of this pass ---------------- */
+    /* one tile, referenced by the fixed overlay and by any surface that wants
+       its own multiply pass (tan bands sitting above the overlay's blend). */
+    --grain-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    --grain-scale: 230px;
+    --grain-amt: 0.09;
   }
 }
 
@@ -203,7 +218,7 @@
   }
 
   ::selection {
-    background: rgba(221, 110, 38, 0.35);
+    background: rgba(194, 90, 30, 0.28);
     color: var(--ink);
   }
 
@@ -251,6 +266,16 @@
     font-weight: 600;
     letter-spacing: 0.02em;
     text-transform: uppercase;
+  }
+  /* the headline voice — Fraunces roman at 490, sentence case. this is what
+     carries "Entropia Audio", "The plugins", "make any sound dreamy". */
+  .font-serif-display {
+    font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+    font-weight: 490;
+    font-optical-sizing: auto;
+    letter-spacing: -0.012em;
+    line-height: 1.0;
+    text-wrap: balance;
   }
   /* editorial voice — Fraunces, usually italic, optical size high */
   .font-editorial {
@@ -310,6 +335,13 @@
     background-image: var(--hatch-copper);
   }
 
+  /* section cut used as a *separation* between grounds: the band's top edge
+     rises across the page at the brand pitch. `--rise` is the vertical travel. */
+  .diag-band-top {
+    clip-path: polygon(0 var(--rise, 3vw), 100% 0, 100% 100%, 0 100%);
+  }
+
+
   /* faded hairline rules — dividers are fades, never hard lines */
   .rule-fade {
     height: 1px;
@@ -343,72 +375,198 @@
 }
 
 @layer components {
-  /* ---------- the two brand buttons (kit: InkButton) ---------- */
+  /* ---------- the brand buttons (design-system: Button) ----------
+     Fixed heights, not padding: sm 22px (the plugin control scale), md 34px,
+     lg 42px. Everything else — face, border, text — follows the variant. */
   .btn {
     display: inline-flex;
-    align-items: baseline;
-    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
     font-family: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
     font-weight: 600;
-    font-size: 12px;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    padding: 12px 22px;
-    border-radius: 4px;
+    white-space: nowrap;
     cursor: pointer;
-    transition: background-color var(--t-fast) ease, color var(--t-fast) ease,
-      border-color var(--t-fast) ease, transform var(--t-fast) var(--ease-editorial),
-      box-shadow var(--t-base) var(--ease-editorial);
+    /* md is the default metric set */
+    height: 34px;
+    padding: 0 20px;
+    font-size: 11px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    transition: background-color var(--t-fast) var(--ease-editorial),
+      color var(--t-fast) var(--ease-editorial),
+      border-color var(--t-fast) var(--ease-editorial),
+      transform var(--t-fast) var(--ease-editorial),
+      box-shadow var(--t-fast) var(--ease-editorial);
   }
-  .btn:active {
-    transform: translateY(1px) scale(0.99);
+  .btn-sm {
+    height: 22px;
+    padding: 0 14px;
+    font-size: 9px;
+    border-radius: 4px;
   }
+  .btn-md {
+    height: 34px;
+    padding: 0 20px;
+    font-size: 11px;
+    border-radius: 5px;
+  }
+  .btn-lg {
+    height: 42px;
+    padding: 0 28px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.4;
+    cursor: default;
+    transform: none;
+  }
+
   /* solid: ink fill that warms to copper — the primary CTA */
   .btn-solid {
     background: var(--ink);
+    border-color: var(--ink);
     color: var(--paper);
-    border: 1px solid transparent;
   }
-  .btn-solid:hover {
+  .btn-solid:hover:not(:disabled) {
     background: var(--accent-raw);
+    border-color: var(--accent-raw);
     color: #FFF8EE;
+    box-shadow: var(--shadow-ink);
   }
+
   /* ghost: white pill on parchment — nav & secondary actions */
   .btn-ghost {
     background: rgba(255, 255, 255, 0.85);
+    border-color: var(--ink-line-2);
     color: var(--ink);
-    border: 1px solid var(--ink-line-2);
   }
-  .btn-ghost:hover {
+  .btn-ghost:hover:not(:disabled) {
     background: #ffffff;
-    border-color: var(--ink);
-  }
-  .btn-ghost:active {
-    background: var(--accent-muted);
+    border-color: var(--accent-raw);
+    color: var(--accent-raw);
+    box-shadow: var(--shadow-card);
   }
 
-  /* header nav pill (kit: Nav) */
-  .nav-pill {
+  /* pill: the plugin's technical control — outline only, copper on hover */
+  .btn-pill {
+    background: rgba(255, 252, 245, 0.72);
+    border-color: var(--ink-line-2);
+    border-radius: 14px;
+    color: var(--ink);
+    letter-spacing: 0.16em;
+  }
+  .btn-pill:hover:not(:disabled) {
+    border-color: var(--accent-raw);
+    color: var(--accent-raw);
+  }
+
+  /* ---------- the two link voices ---------- */
+  /* nav / footer: small caps in dim ink, copper on hover, no rule */
+  .nav-link {
     font-family: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
     font-weight: 600;
     font-size: 11px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    transition: color var(--t-fast) var(--ease-editorial);
+  }
+  .nav-link:hover,
+  .nav-link[data-active="true"] {
+    color: var(--accent-raw);
+  }
+
+  /* in-page action: caps under a solid ink rule, both warm to copper */
+  .link-ink {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+    font-family: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink);
-    background: rgba(255, 255, 255, 0.65);
-    border: 1px solid transparent;
-    padding: 7px 13px;
-    border-radius: 4px;
-    transition: background-color var(--t-fast) ease, color var(--t-fast) ease,
-      border-color var(--t-fast) ease;
+    transition: color var(--t-fast) var(--ease-editorial);
   }
-  .nav-pill:hover {
-    background: #ffffff;
-    color: var(--accent-deep);
+  .link-ink > span:first-child {
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 3px;
   }
-  .nav-pill[data-active="true"] {
-    background: var(--ink);
-    color: var(--paper);
+  .link-ink:hover {
+    color: var(--accent-raw);
+  }
+
+  /* ---------- the hero's one CTA ----------
+     A notched box drawn in ink on the painting's clear field; it fills with
+     ink on hover. Fraunces, because it sits with the headline, not with the
+     technical labels. */
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(10px, 1vw, 18px);
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 450;
+    font-size: clamp(14px, 1.15vw, 22px);
+    color: #2A161F;
+    background: rgba(250, 236, 214, 0.42);
+    border: 1px solid rgba(42, 23, 30, 0.8);
+    padding: clamp(10px, 1.05vw, 20px) clamp(20px, 2vw, 38px);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%);
+    transition: background-color var(--t-base) var(--ease-editorial),
+      color var(--t-base) var(--ease-editorial),
+      border-color var(--t-base) var(--ease-editorial);
+  }
+  .hero-cta:hover {
+    background: #2A161F;
+    border-color: #2A161F;
+    color: var(--parchment);
+  }
+
+  /* ---------- status chip (the "coming soon" / version marker) ---------- */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+    padding: 0 14px;
+    border: 1px solid var(--ink-line);
+    border-radius: 14px;
+    font-family: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+
+  /* ---------- inset field (inputs) ---------- */
+  .field-ink {
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--ink-line-2);
+    border-radius: 6px;
+    background: rgba(255, 252, 245, 0.75);
+    font-family: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    outline: none;
+    transition: border-color var(--t-fast) var(--ease-editorial);
+  }
+  .field-ink::placeholder {
+    color: var(--ink-3);
+  }
+  .field-ink:focus {
+    border-color: var(--accent-raw);
   }
 }
 

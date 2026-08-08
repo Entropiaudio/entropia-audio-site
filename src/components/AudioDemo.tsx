@@ -368,38 +368,30 @@ const AudioDemo = ({ demo, index }: Props) => {
   };
 
   return (
-    <article className="grid md:grid-cols-[auto,1fr] gap-6 md:gap-10 py-10 md:py-14 border-t border-hairline first:border-t-0">
-      <div className="text-[11px] font-mono tabular-nums tracking-[0.18em] uppercase text-[color:var(--text-tertiary)] md:pt-2">
+    <article
+      className="grid md:grid-cols-[minmax(70px,90px)_1fr] gap-4 md:gap-6 pt-[30px] pb-[26px]"
+      style={{ borderTop: "1px solid rgba(42,23,30,0.18)" }}
+    >
+      <div className="font-mono font-semibold text-[10px] tabular-nums tracking-[0.18em] uppercase text-[color:var(--ink-3)] md:pt-1.5">
         {String(index + 1).padStart(2, "0")} / demo
       </div>
 
       <div>
-        <h4 className="font-editorial italic text-[22px] md:text-[26px] leading-[1.25] text-[color:var(--text-primary)] mb-3">
+        <h4 className="font-editorial italic text-[23px] leading-[1.25] text-[color:var(--ink)] mb-2">
           {demo.title}
         </h4>
-        <p className="font-sans font-normal text-[15px] md:text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[48ch] mb-8">
+        <p className="font-mono text-[14px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] mb-[18px]">
           {demo.caption}
         </p>
 
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={onToggle}
             disabled={!anyStem || loading}
-            aria-label={playing ? "stop" : "play"}
-            className="w-11 h-11 rounded-full bg-white/70 border border-[color:var(--ink-line-2)] text-[color:var(--ink)] hover:bg-white hover:border-[color:var(--accent-raw)] hover:text-[color:var(--accent-deep)] shadow-card transition-colors duration-[200ms] ease-editorial flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+            className="btn btn-sm btn-pill min-w-[74px] disabled:opacity-30"
           >
-            {playing ? (
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden>
-                <rect x="0" y="0" width="10" height="10" />
-              </svg>
-            ) : loading ? (
-              <span className="block w-2 h-2 rounded-full bg-current animate-pulse" />
-            ) : (
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
-                <path d="M2 1 L11 6 L2 11 Z" />
-              </svg>
-            )}
+            {loading ? "…" : playing ? "stop" : "play"}
           </button>
 
           <div
@@ -417,20 +409,23 @@ const AudioDemo = ({ demo, index }: Props) => {
               anyStem ? "cursor-pointer" : ""
             }`}
           >
-            <div className="absolute inset-x-0 h-px bg-[color:var(--ink-line-2)]" />
+            <div
+              className="absolute inset-x-0 h-px"
+              style={{ background: "rgba(42,23,30,0.32)" }}
+            />
             <div
               ref={progressFillRef}
-              className="absolute h-px top-1/2 -translate-y-1/2 left-0 bg-[color:var(--accent-raw)]"
+              className="absolute h-px top-1/2 -translate-y-1/2 left-0 bg-[color:var(--accent-deep)]"
               style={{ width: "0%" }}
             />
             <div
               ref={progressKnobRef}
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-[color:var(--accent-raw)] rounded-full"
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-[color:var(--accent-deep)] rounded-full"
               style={{ left: "0%", opacity: anyStem ? 1 : 0 }}
             />
           </div>
 
-          <span className="text-[12px] font-mono tabular-nums text-[color:var(--text-tertiary)] w-20 text-right">
+          <span className="font-mono text-[11px] tabular-nums text-[color:var(--ink-3)] w-[88px] text-right">
             {anyStem
               ? `${formatTime(currentSec)} / ${formatTime(duration)}`
               : "0:00 / 0:00"}
@@ -438,8 +433,8 @@ const AudioDemo = ({ demo, index }: Props) => {
         </div>
 
         {anyStem && (
-          <div className="mt-5 flex items-center gap-4 text-[11px] font-mono uppercase tracking-[0.18em]">
-            <span className="text-[color:var(--text-tertiary)]">mode</span>
+          <div className="mt-3 flex items-baseline gap-4 font-mono font-semibold text-[10px] uppercase tracking-[0.16em]">
+            <span className="text-[9px] tracking-[0.18em] text-[color:var(--ink-4)]">mode</span>
             {MODE_ORDER.map((m) => {
               const enabled = !!stemUrl(demo, m);
               const isActive = mode === m;
@@ -449,10 +444,10 @@ const AudioDemo = ({ demo, index }: Props) => {
                   type="button"
                   disabled={!enabled}
                   onClick={() => setMode(m)}
-                  className={`pb-1 transition-colors duration-[200ms] ease-editorial disabled:opacity-30 disabled:cursor-not-allowed ${
+                  className={`pb-0.5 border-b transition-colors duration-[120ms] ease-editorial disabled:opacity-30 disabled:cursor-not-allowed ${
                     isActive
-                      ? "text-[color:var(--text-primary)] border-b border-[color:var(--text-primary)]"
-                      : "text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)]"
+                      ? "text-[color:var(--ink)] border-[color:var(--ink)]"
+                      : "text-[color:var(--ink-3)] border-transparent hover:text-[color:var(--ink)]"
                   }`}
                 >
                   {MODE_LABELS[m]}
@@ -463,8 +458,8 @@ const AudioDemo = ({ demo, index }: Props) => {
         )}
 
         {!anyStem && (
-          <p className="mt-5 text-[11px] font-mono text-[color:var(--text-tertiary)] uppercase tracking-[0.18em]">
-            // audio coming soon
+          <p className="mt-3 font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--ink-4)]">
+            audio coming soon
           </p>
         )}
       </div>

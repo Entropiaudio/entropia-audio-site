@@ -1,10 +1,6 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
-import Section from "@/components/primitives/Section";
-import Container from "@/components/primitives/Container";
-import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
-import MagneticLink from "@/components/motion/MagneticLink";
 import { MOTION } from "@/components/motion/timing";
 import { useAuth } from "@/context/AuthContext";
 import { copy } from "@/copy";
@@ -20,101 +16,108 @@ const OrderSuccess = () => {
 
   return (
     <SiteLayout>
-      <Section pad="xl">
-        <Container width="wide">
-          <div className="md:pl-8 lg:pl-16 max-w-[920px]">
-            <Reveal variant="up" {...MOTION.page.eyebrow}>
-              <Eyebrow accent className="mb-8">
-                {copy.orderSuccess.eyebrow}
-              </Eyebrow>
+      <section className="relative px-[3.2vw] pt-[84px] pb-[100px]">
+        <div className="max-w-[920px]">
+          <Reveal variant="up" {...MOTION.page.eyebrow}>
+            <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--action-create)] mb-6">
+              {copy.orderSuccess.eyebrow}
+            </div>
+          </Reveal>
+
+          <h1
+            className="font-editorial italic text-[clamp(36px,4.4vw,56px)] leading-[1.05] tracking-[-0.015em] text-[color:var(--ink)] m-0"
+            style={{ fontWeight: 470 }}
+          >
+            <Reveal
+              as="span"
+              variant="up"
+              className="inline-block"
+              delay={MOTION.page.headline1.delay}
+              duration={MOTION.duration.instant}
+            >
+              {copy.orderSuccess.headline}
             </Reveal>
-            <h1 className="text-[44px] md:text-[56px] leading-[1.05] text-[color:var(--ink)]">
-              <Reveal
-                as="span"
-                variant="up"
-                className="inline-block font-editorial italic font-normal tracking-[-0.015em]"
-                delay={MOTION.page.headline1.delay}
-                duration={MOTION.duration.instant}
+          </h1>
+
+          <Reveal variant="up" {...MOTION.page.body0}>
+            <p className="font-mono text-[14px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] mt-6 mb-16">
+              order{" "}
+              <span className="tabular-nums text-[color:var(--ink)] selectable">{order.id}</span>{" "}
+              · charged to card ending{" "}
+              <span className="tabular-nums text-[color:var(--ink)]">{order.paymentLast4}</span>
+            </p>
+          </Reveal>
+
+          <Reveal
+            variant="up"
+            {...MOTION.section.headline}
+            as="section"
+            className="border-t border-hairline pt-8 mb-14"
+          >
+            <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--ink-3)] mb-5">
+              licenses issued
+            </div>
+            {issued.map((l) => (
+              <div
+                key={l.key}
+                className="grid grid-cols-[1.4fr_0.7fr_2fr] gap-4 items-baseline border-t border-hairline py-4"
               >
-                {copy.orderSuccess.headline}
-              </Reveal>
-            </h1>
-            <Reveal variant="up" {...MOTION.page.body0}>
-              <p className="mt-8 font-sans text-[15px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] mb-16 md:mb-20">
-                order <span className="font-mono tabular-nums text-[color:var(--text-primary)]">{order.id}</span> · charged to card ending{" "}
-                <span className="font-mono tabular-nums text-[color:var(--text-primary)]">{order.paymentLast4}</span>
-              </p>
-            </Reveal>
-
-            <Reveal variant="up" {...MOTION.section.headline} as="section" className="mb-16 border-t border-hairline pt-10">
-              <Eyebrow className="mb-8">licenses issued</Eyebrow>
-              <table className="w-full">
-                <tbody>
-                  {issued.map((l) => (
-                    <tr key={l.key} className="border-t border-hairline">
-                      <td className="py-5 pr-6 font-sans text-[15px] text-[color:var(--text-primary)]">
-                        {l.plugin}
-                      </td>
-                      <td className="py-5 pr-6 font-mono text-[13px] text-[color:var(--text-tertiary)]">
-                        {l.version}
-                      </td>
-                      <td className="py-5 font-mono text-[13px] tabular-nums text-[color:var(--text-secondary)]">
-                        {l.key}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Reveal>
-
-            <Reveal variant="up" {...MOTION.section.body} as="section" className="border-t border-hairline pt-10 mb-16">
-              <Eyebrow className="mb-8">order</Eyebrow>
-              <ul className="space-y-4 text-[15px]">
-                {order.items.map((it) => (
-                  <li key={`${it.slug}:${it.license}`} className="flex justify-between items-baseline">
-                    <span className="font-sans text-[color:var(--text-primary)]">
-                      {it.name}{" "}
-                      <span className="text-[color:var(--text-tertiary)] font-mono text-[12px]">
-                        × {it.quantity}
-                      </span>
-                    </span>
-                    <span className="font-mono tabular-nums text-[color:var(--text-secondary)]">
-                      ${(it.price * it.quantity).toFixed(2)}
-                    </span>
-                  </li>
-                ))}
-                <li className="flex justify-between border-t border-hairline pt-4 items-baseline">
-                  <span className="font-sans text-[color:var(--text-primary)]">total</span>
-                  <span className="font-mono tabular-nums text-[16px] text-[color:var(--text-primary)]">
-                    ${order.total.toFixed(2)}
-                  </span>
-                </li>
-              </ul>
-            </Reveal>
-
-            <Reveal variant="up" {...MOTION.section.cta}>
-              <div className="flex flex-wrap items-baseline gap-10">
-                <MagneticLink
-                  to="/account"
-                  strength={6}
-                  className="group inline-flex items-baseline gap-2 text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-primary)] hover:text-[color:var(--accent-raw)] transition-colors duration-[200ms] ease-editorial"
-                >
-                  <span className="link-draw pb-1">
-                    go to account
-                  </span>
-                  <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
-                </MagneticLink>
-                <Link
-                  to="/"
-                  className="link-draw text-[13px] font-mono uppercase tracking-[0.18em] text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] transition-colors duration-[200ms] ease-editorial"
-                >
-                  keep browsing
-                </Link>
+                <span className="font-mono text-[15px] text-[color:var(--ink)]">{l.plugin}</span>
+                <span className="font-mono text-[12px] text-[color:var(--ink-3)]">{l.version}</span>
+                <span className="font-mono text-[13px] tabular-nums tracking-[0.06em] text-[color:var(--ink-2)] selectable">
+                  {l.key}
+                </span>
               </div>
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
+            ))}
+          </Reveal>
+
+          <Reveal
+            variant="up"
+            {...MOTION.section.body}
+            as="section"
+            className="border-t border-hairline pt-8 mb-16 max-w-[560px]"
+          >
+            <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--ink-3)] mb-5">
+              order
+            </div>
+            {order.items.map((it) => (
+              <div
+                key={`${it.slug}:${it.license}`}
+                className="flex justify-between items-baseline py-1.5"
+              >
+                <span className="font-mono text-[15px] text-[color:var(--ink)]">
+                  {it.name}{" "}
+                  <span className="text-[11px] text-[color:var(--ink-3)]">× {it.quantity}</span>
+                </span>
+                <span className="font-mono text-[13px] tabular-nums text-[color:var(--ink-2)]">
+                  ${(it.price * it.quantity).toFixed(2)}
+                </span>
+              </div>
+            ))}
+            <div className="flex justify-between items-baseline border-t border-hairline mt-3.5 pt-4">
+              <span className="font-mono text-[15px] text-[color:var(--ink)]">total</span>
+              <span className="font-mono text-[16px] tabular-nums text-[color:var(--ink)]">
+                ${order.total.toFixed(2)}
+              </span>
+            </div>
+          </Reveal>
+
+          <Reveal variant="up" {...MOTION.section.cta}>
+            <div className="flex flex-wrap items-baseline gap-9">
+              <Link to="/account" className="link-ink">
+                <span>go to account</span>
+                <span aria-hidden="true">→</span>
+              </Link>
+              <Link
+                to="/"
+                className="font-mono font-semibold text-[12px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--ink)]"
+              >
+                keep browsing
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
     </SiteLayout>
   );
 };

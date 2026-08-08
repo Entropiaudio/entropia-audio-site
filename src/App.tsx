@@ -5,8 +5,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
+import ScrollToHash from "@/components/ScrollToHash";
 import Index from "./pages/Index.tsx";
 import PluginPage from "./pages/PluginPage.tsx";
+import Fiction from "./pages/Fiction.tsx";
 import About from "./pages/About.tsx";
 import Account from "./pages/Account.tsx";
 import Cart from "./pages/Cart.tsx";
@@ -26,8 +28,12 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <ScrollToHash />
             <Routes>
               <Route path="/" element={<Index />} />
+              {/* Fiction isn't out yet and has no storefront layout, so it
+                  claims its slug ahead of the generic product route. */}
+              <Route path="/plugins/fiction" element={<Fiction />} />
               <Route path="/plugins/:slug" element={<PluginPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/cart" element={<Cart />} />

@@ -127,6 +127,7 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength = 14) 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (strength <= 0) return;
     if (prefersReducedMotion()) return;
 
     let raf = 0;

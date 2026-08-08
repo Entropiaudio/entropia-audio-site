@@ -29,28 +29,62 @@ export const copy = {
    * top header (shows on every page)
    * ------------------------------------------------------------------------- */
   header: {
-    wordmark: "entropia audio",
+    wordmark: "Entropia Audio",
     nav: {
+      plugins: "plugins",
       about: "about",
       account: "account",
       cart: "cart",
     },
+    /* the one button in the header, home page only */
+    cta: "get the demo",
   },
 
   /* -------------------------------------------------------------------------
    * homepage  (/)
    * ------------------------------------------------------------------------- */
   home: {
-    eyebrow: "// entropia audio",
-    headlineLine1: "chaos,",
-    headlineLine2: "built precisely.",
-    subline:
-      "a boutique studio making audio stuff. the kind that makes your mix shine, or destroys it!",
-    featuredEyebrow: "featured",
-    aboutEyebrow: "about",
-    aboutBlurb:
-      "we're two friends who love this. it was always our dream to make our own tools, and now that dream comes true. we hope you like it.",
-    aboutLink: "more on us",
+    /* the painted hero */
+    headline: "Entropia Audio",
+    subline: "Precisely Chaotic",
+    heroCta: "Explore plugins",
+
+    /* the plugin grid */
+    pluginsEyebrow: "VST3 · Made loud on purpose",
+    pluginsHeadline: "The plugins",
+
+    /* three lines from the beta crew */
+    quotes: [
+      {
+        body: "The chaos engine is the first randomizer that makes musical decisions. I stopped programming automation.",
+        source: "beta crew, 2am",
+      },
+      {
+        body: "Chaosverb on the drum bus, chaos at nine o'clock. It's the room I kept pretending my samples had.",
+        source: "mix engineer, allegedly sleeping",
+      },
+      {
+        body: "Fiction flipped is my new favorite wrong answer.",
+        source: "sound designer, field notes",
+      },
+    ],
+
+    /* the tan band at the foot of the page */
+    approachEyebrow: "The approach",
+    approach: [
+      {
+        heading: "Measured, not vibed",
+        body: "Every release ships with null tests, BS.1770 loudness checks, and a changelog that admits what was broken.",
+      },
+      {
+        heading: "One shell, no relearning",
+        body: "Same sidebar, same knobs, same metering in every plugin. Your hands already know the next one.",
+      },
+      {
+        heading: "Trials that respect you",
+        body: "Seven days, full quality, no nag screens mid-session. If it earns a place in your template, buy it.",
+      },
+    ],
   },
 
   /* -------------------------------------------------------------------------
@@ -146,15 +180,56 @@ export const copy = {
     /* sticky CTA bar buttons */
     ctaTry: "try free",
     ctaBuy: "buy",
+
+    /* the homepage card */
+    card: {
+      status: "v1.0.0",
+      tagline: "Every destination, one reverb",
+      blurb:
+        "a gorgeous reverb that can bring any sound to life — and a chaos engine that can randomize every parameter on the device, on the fly.",
+      saleNote: "launch sale",
+      primaryButton: "see Chaosverb",
+      secondaryButton: "try free",
+    },
   },
 
   /* -------------------------------------------------------------------------
-   * homepage product row buttons
+   * fiction plugin  (/plugins/fiction) — not released yet
+   *
+   * features: 4 numbered bullets shown big on the product page.
+   * the page has no price and no cart; it ends on the mailing-list block.
    * ------------------------------------------------------------------------- */
-  productRow: {
-    eyebrow: "01 / plugin",
-    primaryButton: "see Chaosverb",
-    secondaryButton: "try free",
+  fiction: {
+    name: "Fiction",
+    headline: "make any sound dreamy",
+    tagline: "much more than a gate",
+    shortDescription:
+      "Fiction features a spectral gate, color pitch quantization effect and a grain delay, all in one. this makes Fiction fit for every kind of sound or mission, from simple cleanup and tone control to complete spectral manipulation.",
+
+    status: "coming soon",
+    notifyLink: "get notified",
+    screenshotCaption: "the interface at v1.42.0 · still moving",
+
+    featuresEyebrow: "what it does",
+    features: [
+      "per-frequency gating - every band opens and closes on its own threshold.",
+      "sidechain another source to spectrally seperate sound from each other",
+      "COLOR engine - make any sound in tune with per frequency pitch quantization",
+      "DELAY - use grain delay for some extra glitter and depth",
+    ],
+
+    notifySubline: "first word on Fiction goes to the list.",
+
+    /* the homepage card */
+    card: {
+      status: "in development",
+      tagline: "Gate, but spectral",
+      blurb:
+        "per-frequency gating with a COLOR stage. flip it to keep only the quiet stuff. the next one out of the workshop.",
+      price: "coming soon",
+      primaryButton: "preview",
+      secondaryButton: "get notified",
+    },
   },
 
   /* -------------------------------------------------------------------------
@@ -165,32 +240,32 @@ export const copy = {
     headlineLine1: "we ship rarely,",
     headlineLine2:
       "when there's something worth saying.",
+    subline: "no schedule, no filler. release notes and the odd new plugin.",
     placeholder: "your email",
     button: "subscribe",
     successTitle: "subscribed.",
     successDescription:
       "we'll be in touch sparingly, when there's something worth saying.",
-    afterSubmit: "// thanks.",
+    /* replaces the form once the address is in */
+    successInline: "thanks. we'll be in touch sparingly.",
   },
 
   /* -------------------------------------------------------------------------
    * footer (every page)
    * ------------------------------------------------------------------------- */
   footer: {
-    title: "entropia audio",
-    blurb:
-      "hit us up",
-    siteHeading: "site",
-    legalHeading: "legal",
+    title: "Entropia Audio",
     nav: {
       chaosverb: "Chaosverb",
+      fiction: "Fiction",
       about: "about",
       account: "account",
       eula: "eula",
       privacy: "privacy",
     },
-    copyright: "entropia audio",
-    tagLine: "unleashing chaos",
+    /* the small line centred on the hairline. `home` runs on the front page. */
+    colophon: "© entropia audio · unleashing chaos",
+    colophonHome: "made loud on purpose · unleashing chaos",
   },
 
   /* -------------------------------------------------------------------------

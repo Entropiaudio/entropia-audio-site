@@ -1,15 +1,25 @@
 import { FormEvent, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { copy } from "@/copy";
-import { subscribeToNewsletter } from "@/lib/newsletter";
-import Section from "./primitives/Section";
-import Container from "./primitives/Container";
-import Eyebrow from "./primitives/Eyebrow";
+import { subscribeToNewsletter, type NewsletterResult } from "@/lib/newsletter";
+import InkButton from "./InkButton";
+import LabelledSection from "./primitives/LabelledSection";
 import Reveal from "./motion/Reveal";
-import MagneticLink from "./motion/MagneticLink";
 import { MOTION } from "./motion/timing";
 
-const NewsletterSignup = () => {
+interface NewsletterSignupProps {
+  /** Anchor id, so a "get notified" link elsewhere can land on it. */
+  id?: string;
+  /** Page-specific line under the headline. */
+  subline?: string;
+}
+
+/**
+ * The mailing-list band: tan ground torn in at the brand pitch, the label in
+ * the margin, and one field. Posts to whatever `lib/newsletter` is wired to;
+ * on success the form is replaced by a single line rather than a toast alone.
+ */
+const NewsletterSignup = ({ id, subline }: NewsletterSignupProps) => {
   const c = copy.newsletter;
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -24,7 +34,9 @@ const NewsletterSignup = () => {
     try {
       const result = await subscribeToNewsletter(email);
       if (!result.ok) {
-        setError(result.error);
+        // tsconfig runs with strict off, so the discriminated union doesn't
+        // narrow on `ok` here — read the failure branch explicitly.
+        setError((result as Extract<NewsletterResult, { ok: false }>).error);
         return;
       }
       setSubmitted(true);
@@ -36,69 +48,72 @@ const NewsletterSignup = () => {
   };
 
   return (
-    <Section pad="lg">
-      <Container width="wide">
-        <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-end">
-          <Reveal variant="up" {...MOTION.section.eyebrow} className="md:col-span-5 md:col-start-2">
-            <Eyebrow className="mb-6">{c.eyebrow}</Eyebrow>
-            <h3 className="text-[color:var(--ink)]">
-              <span className="block font-display text-[38px] md:text-[50px] leading-[0.95]">
-                {c.headlineLine1}
-              </span>
-              <span className="block font-editorial italic text-[24px] md:text-[30px] leading-[1.25] mt-2 text-[color:var(--ink-2)]">
-                {c.headlineLine2}
-              </span>
+    <div
+      className="relative diag-band-top"
+      style={{
+        background: "var(--tan)",
+        paddingTop: "calc(3vw + 56px)",
+        paddingBottom: "96px",
+      }}
+    >
+      <LabelledSection id={id} label={c.eyebrow} labelTone="deep" labelPad="10px" className="scroll-mt-8">
+        <div className="max-w-[640px]">
+          <Reveal variant="up" {...MOTION.section.headline}>
+            <h3
+              className="font-editorial italic text-[clamp(28px,3vw,44px)] leading-[1.12] text-[color:var(--ink)] mb-3.5"
+              style={{ fontWeight: 470 }}
+            >
+              {c.headlineLine1}
+              <br />
+              {c.headlineLine2}
             </h3>
           </Reveal>
 
-          <Reveal variant="up" {...MOTION.section.headline} className="md:col-span-5">
-            <form
-              onSubmit={onSubmit}
-              className="flex flex-col sm:flex-row gap-4 sm:items-center"
-              noValidate
-            >
-              <label className="flex-1 block">
-                <span className="sr-only">email</span>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (error) setError(null);
-                  }}
-                  placeholder={c.placeholder}
-                  aria-label="email address"
-                  aria-invalid={error ? true : undefined}
-                  className="w-full rounded-sm bg-[color:var(--field)] border border-[color:var(--ink-line)] focus:border-[color:var(--accent-raw)] outline-none px-4 py-3 text-[15px] font-sans text-[color:var(--ink)] placeholder:text-[color:var(--ink-3)] shadow-[inset_0_1px_3px_rgba(38,16,25,0.08)] transition-colors duration-[200ms] ease-editorial"
-                />
-              </label>
-              <MagneticLink
-                as="button"
-                type="submit"
-                strength={5}
-                disabled={busy}
-                className="btn btn-solid self-start sm:self-auto disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span>{busy ? "…" : c.button}</span>
-                <span aria-hidden="true" className="transition-transform duration-[200ms] ease-editorial group-hover:translate-x-1">→</span>
-              </MagneticLink>
-            </form>
-            {error && (
-              <p className="mt-4 text-[13px] font-mono font-medium tracking-[0.04em] text-[color:var(--state-error)]">
-                {error}
+          <Reveal variant="up" {...MOTION.section.body}>
+            <p className="font-mono text-[14px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] mb-6">
+              {subline ?? c.subline}
+            </p>
+          </Reveal>
+
+          <Reveal variant="up" {...MOTION.section.cta}>
+            {submitted ? (
+              <p className="state-fade font-mono font-semibold text-[13px] uppercase tracking-[0.16em] text-[color:var(--accent-deep)] m-0">
+                {c.successInline}
               </p>
+            ) : (
+              <>
+                <form onSubmit={onSubmit} className="flex gap-3 flex-wrap" noValidate>
+                  <label className="flex-1 min-w-[220px] block">
+                    <span className="sr-only">email</span>
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (error) setError(null);
+                      }}
+                      placeholder={c.placeholder}
+                      aria-label="email address"
+                      aria-invalid={error ? true : undefined}
+                      className="field-ink w-full"
+                    />
+                  </label>
+                  <InkButton size="md" type="submit" disabled={busy}>
+                    {busy ? "…" : c.button}
+                  </InkButton>
+                </form>
+                {error && (
+                  <p className="mt-4 font-mono font-medium text-[13px] tracking-[0.04em] text-[color:var(--state-error)]">
+                    {error}
+                  </p>
+                )}
+              </>
             )}
           </Reveal>
         </div>
-
-        {submitted && (
-          <p className="md:pl-[8.333%] mt-10 text-[11px] font-mono font-medium uppercase tracking-eyebrow text-[color:var(--ink-3)]">
-            {c.afterSubmit}
-          </p>
-        )}
-      </Container>
-    </Section>
+      </LabelledSection>
+    </div>
   );
 };
 

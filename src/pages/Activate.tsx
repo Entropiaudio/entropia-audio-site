@@ -9,9 +9,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
-import Section from "@/components/primitives/Section";
-import Container from "@/components/primitives/Container";
-import Eyebrow from "@/components/primitives/Eyebrow";
 import Reveal from "@/components/motion/Reveal";
 import { MOTION } from "@/components/motion/timing";
 import { Moonbase } from "@/lib/moonbase";
@@ -51,34 +48,44 @@ const Activate = () => {
 
   return (
     <SiteLayout>
-      <Section pad="xl">
-        <Container width="wide">
-          <div className="md:pl-8 lg:pl-16 max-w-[720px]">
-            <Reveal variant="up" {...MOTION.page.eyebrow}>
-              <Eyebrow accent className="mb-8">// activate</Eyebrow>
+      <section className="relative px-[3.2vw] pt-[84px] pb-[130px] min-h-[56vh]">
+        {/* a single brush mark drifting in from the right margin */}
+        <img
+          src="/art/mark-drift.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute right-[6%] top-[60px] z-0 w-[clamp(110px,12vw,200px)] mix-blend-multiply opacity-55 pointer-events-none"
+        />
+        <div className="relative max-w-[720px]">
+          <h1
+            className="font-editorial italic text-[clamp(42px,5.4vw,72px)] leading-none tracking-[-0.015em] text-[color:var(--ink)] m-0 mb-8"
+            style={{ fontWeight: 470 }}
+          >
+            <Reveal
+              key={status}
+              as="span"
+              variant="up"
+              className="inline-block"
+              delay={MOTION.page.headline1.delay}
+              duration={MOTION.duration.instant}
+            >
+              opening activation
             </Reveal>
-            <h1 className="text-[56px] md:text-[72px] leading-[1.0] text-[color:var(--ink)] mb-10">
-              <Reveal
-                key={status}
-                as="span"
-                variant="up"
-                className="inline-block font-editorial italic font-normal tracking-[-0.015em]"
-                delay={MOTION.page.headline1.delay}
-                duration={MOTION.duration.instant}
-              >
-                opening activation
-              </Reveal>
-            </h1>
-            <Reveal variant="up" {...MOTION.page.body0}>
-              <p className="font-sans text-[16px] leading-[1.7] tracking-[0.005em] text-[color:var(--text-secondary)] max-w-[52ch]">
-                {status === "missing"
-                  ? "no activation token in this link. sign in and we'll try to match your account."
-                  : "if the activation window doesn't appear, your browser may be blocking pop-ups. the plugin can resend the link from the activation screen."}
-              </p>
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
+          </h1>
+          <Reveal variant="up" {...MOTION.page.body0}>
+            <p className="font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] m-0">
+              {status === "missing"
+                ? "no activation token in this link. sign in and we'll try to match your account."
+                : "if the activation window doesn't appear, your browser may be blocking pop-ups. the plugin can resend the link from the activation screen."}
+            </p>
+          </Reveal>
+          <Reveal variant="up" {...MOTION.page.body1}>
+            <p className="font-mono font-semibold text-[11px] uppercase tracking-[0.16em] text-[color:var(--ink-4)] mt-11 mb-0">
+              your activation token is used once and scrubbed from the address bar.
+            </p>
+          </Reveal>
+        </div>
+      </section>
     </SiteLayout>
   );
 };
