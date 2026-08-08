@@ -3,40 +3,200 @@
   <head>
     <meta charset="UTF-8" />
     <title>entropia audio, og card</title>
+    <!--
+      social-share card source, daylight register. to regenerate og.png, from
+      this directory (public/):
+        chrome --headless=new --screenshot=og.png --window-size=1200,630
+               --force-device-scale-factor=1 --hide-scrollbars
+               --virtual-time-budget=10000 --allow-file-access-from-files
+               "file://$PWD/og.html"
+      pass the full file:// URL, not a bare `og.html` — chrome resolves a bare
+      relative name as a hostname and screenshots its DNS error page instead.
+      tokens mirror src/index.css; fonts + art resolve relative to /public.
+    -->
     <style>
+      /* brand webfonts, same files the site ships (public/fonts) */
+      @font-face {
+        font-family: 'Fraunces';
+        src: url('fonts/Fraunces-Variable.woff2') format('woff2-variations');
+        font-weight: 100 900;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Barlow Condensed';
+        /* single 300 master; 600 renders faux-bold on purpose, like the site */
+        src: url('fonts/BarlowCondensed-300.woff2') format('woff2');
+        font-weight: 300 700;
+        font-style: normal;
+      }
+
       * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --paper:         #F2E1C7;
+        --parchment:     #F6E6CF;
+        --parchment-hi:  #FAEDDA;
+        --tan:           #E2C5A1;
+        --clay:          #C59D74;
+        --field:         #ECD9BD;
+        --ink:           #2A171E;
+        --plum:          #2C1920;
+        --accent-raw:    #C25A1E;
+        --accent-bright: #E8791F;
+        --accent-deep:   #93400F;
+        --pop:           #F14E71;
+
+        /* paper grain, sitewide values from index.css */
+        --grain-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        --grain-scale: 230px;
+        --grain-amt: 0.09;
+      }
+
       html, body {
         width: 1200px;
         height: 630px;
-        background: #14110F;
-        display: grid;
-        place-items: center;
         overflow: hidden;
       }
-      .mark {
-        width: 380px;
-        height: 380px;
-        color: #E8E2D6;
+
+      /* the hero field is the painted collage itself, cropped 1200x630 out of
+         the 16:9 master. the radial under it is the fallback register, so a
+         missed image decode still renders as parchment rather than white. */
+      .card {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        background-color: var(--paper);
+        background-image:
+          url('art/hero-collage.webp'),
+          radial-gradient(135% 100% at 66% 12%,
+            var(--parchment-hi) 0%, var(--paper) 38%, var(--tan) 74%, var(--clay) 100%);
+        background-size: cover, cover;
+        background-position: center, center;
+        background-repeat: no-repeat, no-repeat;
+      }
+      .card > * { position: absolute; }
+
+      /* one grain pass over the whole card, same as the site's <Grain /> */
+      .grain {
+        inset: 0;
+        mix-blend-mode: multiply;
+        opacity: var(--grain-amt);
+        background-image: var(--grain-img);
+        background-size: var(--grain-scale) var(--grain-scale);
+      }
+
+      /* the collage's travelling copper rule runs straight through the lockup's
+         line, and its hatch column sits under the mark. this is a local paper
+         wash — the same trick as .ink-halo, sized for the whole lockup — so
+         both pass *behind* the wordmark instead of striking through it. kept
+         tight on purpose: a full-card veil greys out the plum torn edges. */
+      .lockup-wash {
+        left: 0;
+        top: 0;
+        width: 540px;
+        height: 165px;
+        background: radial-gradient(ellipse 46% 48% at 36% 43%,
+          rgba(246, 230, 207, 0.94) 0%,
+          rgba(246, 230, 207, 0.66) 50%,
+          rgba(246, 230, 207, 0) 78%);
+      }
+
+      /* header lockup: fractured-ring mark + fraunces italic wordmark */
+      .brand {
+        left: 64px;
+        top: 50px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: var(--ink);
+      }
+      .brand svg {
         display: block;
+        width: 42px;
+        height: 42px;
+        /* paper halo, the mark's version of .ink-halo */
+        filter: drop-shadow(0 0 7px var(--paper)) drop-shadow(0 0 3px var(--paper));
+      }
+      .brand .wordmark {
+        font-family: 'Fraunces', Georgia, serif;
+        font-style: italic;
+        font-weight: 400;
+        font-optical-sizing: auto;
+        font-size: 30px;
+        letter-spacing: -0.005em;
+        line-height: 1;
+        padding-bottom: 4px;
+        /* ink-halo */
+        text-shadow: 0 2px 14px var(--paper), 0 0 5px var(--paper);
+      }
+
+      /* the hero headline lockup, seated in the collage's clear field */
+      .headline {
+        left: 128px;
+        top: 208px;
+        color: var(--ink);
+      }
+      .h-serif {
+        font-family: 'Fraunces', Georgia, serif;
+        font-weight: 500;
+        font-optical-sizing: auto;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 58px;
+        line-height: 1.05;
+        /* ink-halo */
+        text-shadow: 0 2px 14px var(--paper), 0 0 5px var(--paper);
+      }
+      .h-display {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.015em;
+        font-size: 132px;
+        line-height: 0.92;
+        margin-top: 10px;
+        /* ink-halo-lg */
+        text-shadow: 0 3px 22px var(--paper), 0 1px 6px var(--paper);
+      }
+      /* the hero's copper rule, carrying the accent into the type lockup */
+      .rule {
+        height: 2px;
+        width: 62px;
+        margin: 26px 0 0 3px;
+        background: var(--accent-raw);
       }
     </style>
   </head>
   <body>
-    <svg class="mark" viewBox="25 67 160 160" aria-hidden="true">
-      <defs>
-        <mask id="m" maskUnits="userSpaceOnUse" x="25" y="67" width="160" height="160">
-          <rect x="25" y="67" width="160" height="160" fill="white" />
-          <circle cx="105" cy="147.2025" r="56.192581" fill="black" />
-          <rect x="177.07288" y="100.86997" width="15.444228" height="20.592251" fill="black" />
-          <rect x="105" y="60.69001" width="87.517105" height="40.179966" fill="black" />
-          <path d="m 27.107966,157.3138 c 5.520134,-11.82217 7.382086,-16.86861 15.741747,-28.63028 5.843195,-8.2211 12.564764,-15.78216 18.722568,-23.77036 8.512682,-11.043109 16.858104,-22.214149 25.287181,-33.321199 0,0 -0.354186,-0.21055 -0.354186,-0.21055 v 0 c -8.428563,11.10627 -16.31905,22.64226 -25.285741,33.318829 -6.60064,7.85934 -13.958246,15.06482 -21.338849,22.1968 -1.217043,1.17607 -22.050724,19.0991 -26.107876,22.59371 z" fill="black" />
-          <path d="m 67.06547,244.07256 c 6.15595,-10.47476 9.375446,-16.80606 21.035087,-26.29888 11.747469,-9.56443 25.231433,-16.77419 37.973093,-24.96759 46.71367,-30.03884 44.53965,-28.07898 94.04018,-57.22885 0,0 -0.34544,-0.22394 -0.34544,-0.22394 v 0 c -49.49574,29.14771 -47.33185,27.19387 -94.04131,57.23055 -12.74192,8.19376 -24.77202,17.53862 -37.973862,24.96872 -11.745975,6.61073 -25.072405,10.04392 -36.842014,16.66413 z" fill="black" />
-          <path d="m 45.579206,208.05635 c 2.397159,-1.50226 4.70051,-3.16575 7.191452,-4.50672 10.294715,-5.54214 24.844737,-11.98901 35.474869,-15.17489 10.735462,-3.21744 21.789073,-5.25751 32.683613,-7.88621 0,0 -0.33875,-0.23424 -0.33875,-0.23424 v 0 c -10.89484,2.62917 -21.736507,5.48922 -32.684481,7.88745 -18.707185,4.09796 -37.679413,6.73753 -56.446445,10.50822 z" fill="black" />
-          <path d="m 116.67987,236.06897 c 8.19222,-14.36315 16.02119,-28.94442 23.27687,-43.80528 3.71999,-7.61918 7.43056,-15.24831 10.82715,-23.01704 3.55195,-8.12426 6.67389,-16.42984 10.01087,-24.6447 0,0 -0.35934,-0.20078 -0.35934,-0.20078 v 0 c -3.33635,8.21384 -6.1838,16.64364 -10.00907,24.64151 -9.58677,20.04388 -21.51185,37.25458 -38.39754,51.75755 -2.89327,2.48502 -6.23158,4.39912 -9.34734,6.59868 z" fill="black" />
-          <path d="m 147.35044,159.05637 c 0.27902,-0.43707 0.58404,-0.85865 0.83728,-1.31111 0.66502,-1.18817 1.19775,-2.45084 1.91575,-3.60776 2.09691,-3.37878 5.77144,-8.24349 8.24169,-11.11539 3.44745,-4.00803 8.36323,-8.79676 12.07658,-12.52102 7.62639,-7.17073 15.91596,-13.68705 25.04342,-18.84963 4.71156,-2.66495 5.88341,-3.04019 10.66797,-5.13107 5.48156,-2.14767 2.86572,-1.19667 7.83293,-2.89291 0,0 -14.73334,-9.772259 -14.73334,-9.772259 v 0 c -4.05698,2.41259 -1.87776,1.13114 -6.5436,3.83459 -3.48642,2.06257 -6.30792,3.663979 -9.69406,5.973249 -3.22753,2.20105 -8.54028,6.21191 -11.45393,8.67242 -3.05666,2.58129 -9.48118,8.65312 -12.30721,11.29218 -6.22427,5.93031 -12.38043,11.90927 -18.90163,17.51654 -1.61356,1.3874 -3.21177,2.79684 -4.90132,4.0907 -1.52372,1.16696 -3.44076,2.32311 -5.13617,3.36977 z" fill="black" />
-        </mask>
-      </defs>
-      <ellipse cx="105" cy="147.2025" rx="77.22094" ry="77.220955" fill="currentColor" mask="url(#m)" />
-    </svg>
+    <div class="card">
+      <div class="grain"></div>
+      <div class="lockup-wash"></div>
+
+      <div class="brand">
+        <svg viewBox="25 67 160 160" fill="currentColor" aria-hidden="true">
+          <defs>
+            <mask id="m" maskUnits="userSpaceOnUse" x="25" y="67" width="160" height="160">
+              <rect x="25" y="67" width="160" height="160" fill="white" />
+              <circle cx="105" cy="147.2025" r="56.192581" fill="black" />
+              <rect x="177.07288" y="100.86997" width="15.444228" height="20.592251" fill="black" />
+              <rect x="105" y="60.69001" width="87.517105" height="40.179966" fill="black" />
+              <path d="m 27.107966,157.3138 c 5.520134,-11.82217 7.382086,-16.86861 15.741747,-28.63028 5.843195,-8.2211 12.564764,-15.78216 18.722568,-23.77036 8.512682,-11.043109 16.858104,-22.214149 25.287181,-33.321199 0,0 -0.354186,-0.21055 -0.354186,-0.21055 v 0 c -8.428563,11.10627 -16.31905,22.64226 -25.285741,33.318829 -6.60064,7.85934 -13.958246,15.06482 -21.338849,22.1968 -1.217043,1.17607 -22.050724,19.0991 -26.107876,22.59371 z" fill="black" />
+              <path d="m 67.06547,244.07256 c 6.15595,-10.47476 9.375446,-16.80606 21.035087,-26.29888 11.747469,-9.56443 25.231433,-16.77419 37.973093,-24.96759 46.71367,-30.03884 44.53965,-28.07898 94.04018,-57.22885 0,0 -0.34544,-0.22394 -0.34544,-0.22394 v 0 c -49.49574,29.14771 -47.33185,27.19387 -94.04131,57.23055 -12.74192,8.19376 -24.77202,17.53862 -37.973862,24.96872 -11.745975,6.61073 -25.072405,10.04392 -36.842014,16.66413 z" fill="black" />
+              <path d="m 45.579206,208.05635 c 2.397159,-1.50226 4.70051,-3.16575 7.191452,-4.50672 10.294715,-5.54214 24.844737,-11.98901 35.474869,-15.17489 10.735462,-3.21744 21.789073,-5.25751 32.683613,-7.88621 0,0 -0.33875,-0.23424 -0.33875,-0.23424 v 0 c -10.89484,2.62917 -21.736507,5.48922 -32.684481,7.88745 -18.707185,4.09796 -37.679413,6.73753 -56.446445,10.50822 z" fill="black" />
+              <path d="m 116.67987,236.06897 c 8.19222,-14.36315 16.02119,-28.94442 23.27687,-43.80528 3.71999,-7.61918 7.43056,-15.24831 10.82715,-23.01704 3.55195,-8.12426 6.67389,-16.42984 10.01087,-24.6447 0,0 -0.35934,-0.20078 -0.35934,-0.20078 v 0 c -3.33635,8.21384 -6.1838,16.64364 -10.00907,24.64151 -9.58677,20.04388 -21.51185,37.25458 -38.39754,51.75755 -2.89327,2.48502 -6.23158,4.39912 -9.34734,6.59868 z" fill="black" />
+              <path d="m 147.35044,159.05637 c 0.27902,-0.43707 0.58404,-0.85865 0.83728,-1.31111 0.66502,-1.18817 1.19775,-2.45084 1.91575,-3.60776 2.09691,-3.37878 5.77144,-8.24349 8.24169,-11.11539 3.44745,-4.00803 8.36323,-8.79676 12.07658,-12.52102 7.62639,-7.17073 15.91596,-13.68705 25.04342,-18.84963 4.71156,-2.66495 5.88341,-3.04019 10.66797,-5.13107 5.48156,-2.14767 2.86572,-1.19667 7.83293,-2.89291 0,0 -14.73334,-9.772259 -14.73334,-9.772259 v 0 c -4.05698,2.41259 -1.87776,1.13114 -6.5436,3.83459 -3.48642,2.06257 -6.30792,3.663979 -9.69406,5.973249 -3.22753,2.20105 -8.54028,6.21191 -11.45393,8.67242 -3.05666,2.58129 -9.48118,8.65312 -12.30721,11.29218 -6.22427,5.93031 -12.38043,11.90927 -18.90163,17.51654 -1.61356,1.3874 -3.21177,2.79684 -4.90132,4.0907 -1.52372,1.16696 -3.44076,2.32311 -5.13617,3.36977 z" fill="black" />
+            </mask>
+          </defs>
+          <ellipse cx="105" cy="147.2025" rx="77.22094" ry="77.220955" mask="url(#m)" />
+        </svg>
+        <span class="wordmark">entropia audio</span>
+      </div>
+
+      <div class="headline">
+        <div class="h-serif">chaos,</div>
+        <div class="h-display">built precisely.</div>
+        <div class="rule"></div>
+      </div>
+    </div>
   </body>
 </html>
