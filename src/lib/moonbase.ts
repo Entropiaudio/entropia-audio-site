@@ -14,7 +14,8 @@
  *   3. Set VITE_MOONBASE_URL in .env.local (and in Netlify env for prod).
  */
 
-// @ts-expect-error, @moonbase.sh/storefront has no bundled type re-exports for the default.
+// 2.8.0 ships proper types for the default export, so the error-suppression
+// directive that used to sit on this import is gone (tsc flagged it unused).
 import Moonbase, { MoonbaseEvent } from "@moonbase.sh/storefront";
 
 export { Moonbase, MoonbaseEvent };
