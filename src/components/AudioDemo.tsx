@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { PluginDemo } from "@/data/plugins";
 import {
   claimPlayback,
+  getAnalyser,
   getAudioContext,
   loadAudioBuffer,
   releasePlayback,
@@ -37,6 +38,22 @@ const stemUrl = (demo: PluginDemo, mode: Mode): string | undefined => {
 
 const FADE_SECONDS = 0.025;
 
+/* The playback level bars: five log-spaced bands over the shared analyser's
+ * 128 bins (fftSize 256 ≈ 187Hz per bin) — lows on the left, air on the
+ * right. EQ_REST is the "signal off" height the CSS also uses. */
+const EQ_BANDS: ReadonlyArray<readonly [number, number]> = [
+  [1, 4],
+  [4, 10],
+  [10, 24],
+  [24, 56],
+  [56, 118],
+];
+const EQ_REST = 0.12;
+
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 const AudioDemo = ({ demo, index }: Props) => {
   const [mode, setMode] = useState<Mode>("dryWet");
   const [playing, setPlaying] = useState(false);
@@ -69,6 +86,14 @@ const AudioDemo = ({ demo, index }: Props) => {
   const progressFillRef = useRef<HTMLDivElement | null>(null);
   const progressKnobRef = useRef<HTMLDivElement | null>(null);
   const progressBarRef = useRef<HTMLDivElement | null>(null);
+  // The level-bar elements, written to directly from the rAF tick (no React
+  // state on the audio frame). Reduced-motion captured once per mount.
+  const eqBarsRef = useRef<Array<HTMLElement | null>>([]);
+  const freqDataRef = useRef<Uint8Array | null>(null);
+  const reducedMotionRef = useRef(false);
+  useEffect(() => {
+    reducedMotionRef.current = prefersReducedMotion();
+  }, []);
 
   const availableModes = MODE_ORDER.filter((m) => !!stemUrl(demo, m));
   const anyStem = availableModes.length > 0;
@@ -106,6 +131,10 @@ const AudioDemo = ({ demo, index }: Props) => {
     if (rafRef.current !== null) {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
+    }
+    // Bars fall back to the CSS resting height ("signal off").
+    for (const el of eqBarsRef.current) {
+      if (el) el.style.transform = "";
     }
     setVisualPosition(0);
     lastSecondRef.current = -1;
@@ -158,7 +187,8 @@ const AudioDemo = ({ demo, index }: Props) => {
       const gain = ctx.createGain();
       gain.gain.value = m === modeRef.current ? 1 : 0;
 
-      source.connect(gain).connect(ctx.destination);
+      // Through the shared analyser so the level bars see the mix.
+      source.connect(gain).connect(getAnalyser());
       // start(when, offset) — schedules looped playback to begin at `startAt`
       // with the source already advanced to `offset` seconds into its buffer.
       source.start(startAt, offset);
@@ -227,6 +257,30 @@ const AudioDemo = ({ demo, index }: Props) => {
         setCurrentSec(loopPos);
       }
     }
+
+    // Drive the level bars from the live spectrum — direct scaleY writes on
+    // the frame we already own. Skipped under reduced motion (bars stay at
+    // their resting height).
+    if (!reducedMotionRef.current) {
+      const analyser = getAnalyser();
+      let data = freqDataRef.current;
+      if (!data || data.length !== analyser.frequencyBinCount) {
+        data = new Uint8Array(analyser.frequencyBinCount);
+        freqDataRef.current = data;
+      }
+      analyser.getByteFrequencyData(data);
+      for (let b = 0; b < EQ_BANDS.length; b++) {
+        const el = eqBarsRef.current[b];
+        if (!el) continue;
+        const [lo, hi] = EQ_BANDS[b];
+        let sum = 0;
+        for (let i = lo; i < hi; i++) sum += data[i];
+        // Perceptual lift (x^0.7) so quiet detail still registers.
+        const v = Math.min(1, Math.pow(sum / ((hi - lo) * 255), 0.7) * 1.25);
+        el.style.transform = `scaleY(${(EQ_REST + (1 - EQ_REST) * v).toFixed(3)})`;
+      }
+    }
+
     rafRef.current = requestAnimationFrame(tickProgress);
   }, []);
 
@@ -430,6 +484,20 @@ const AudioDemo = ({ demo, index }: Props) => {
               ? `${formatTime(currentSec)} / ${formatTime(duration)}`
               : "0:00 / 0:00"}
           </span>
+
+          {anyStem && (
+            /* the pulse: five bars breathing with the actual signal */
+            <span aria-hidden="true" className="eq shrink-0 hidden sm:inline-flex">
+              {EQ_BANDS.map((_, i) => (
+                <i
+                  key={i}
+                  ref={(el) => {
+                    eqBarsRef.current[i] = el;
+                  }}
+                />
+              ))}
+            </span>
+          )}
         </div>
 
         {anyStem && (

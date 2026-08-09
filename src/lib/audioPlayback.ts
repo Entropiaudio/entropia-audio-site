@@ -45,6 +45,23 @@ export const unlockAudio = (): Promise<void> => {
   return Promise.resolve();
 };
 
+/** One analyser for the whole page, sitting between every demo's gains and
+ *  the destination. Mutual exclusion means at most one demo feeds it at a
+ *  time, so its spectrum is always "the demo that's playing". Cheap enough
+ *  to leave connected for the life of the context. */
+let _analyser: AnalyserNode | null = null;
+
+export const getAnalyser = (): AnalyserNode => {
+  const ctx = getAudioContext();
+  if (!_analyser) {
+    _analyser = ctx.createAnalyser();
+    _analyser.fftSize = 256;
+    _analyser.smoothingTimeConstant = 0.82;
+    _analyser.connect(ctx.destination);
+  }
+  return _analyser;
+};
+
 const bufferCache = new Map<string, Promise<AudioBuffer>>();
 
 export const loadAudioBuffer = (url: string): Promise<AudioBuffer> => {

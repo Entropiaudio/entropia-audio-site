@@ -3,7 +3,6 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { copy } from "@/copy";
-import InkButton from "./InkButton";
 import Logo from "./Logo";
 
 /* Small ink caps, no pills, no chrome — the header is a line of text and a
@@ -76,11 +75,23 @@ const SiteHeader = ({ overlay = false }: SiteHeaderProps) => {
             cross a dark torn shape at the top right, so they carry a paper
             halo there; on plain paper it's invisible. */}
         <nav className="hidden md:flex items-center gap-6">
-          {overlay && (
-            <a href="#plugins" className={navClass}>
-              {c.nav.plugins}
-            </a>
-          )}
+          {/* the products lead, and they lead everywhere — the home-only
+              "#plugins" jump link and the demo button both pointed at the same
+              two records, so these replace them rather than joining them */}
+          <NavLink
+            to="/plugins/chaosverb"
+            className={navClass}
+            data-active={pathname === "/plugins/chaosverb" || undefined}
+          >
+            {c.nav.chaosverb}
+          </NavLink>
+          <NavLink
+            to="/plugins/fiction"
+            className={navClass}
+            data-active={pathname === "/plugins/fiction" || undefined}
+          >
+            {c.nav.fiction}
+          </NavLink>
           <NavLink
             to="/about"
             className={navClass}
@@ -104,11 +115,6 @@ const SiteHeader = ({ overlay = false }: SiteHeaderProps) => {
             {c.nav.cart}
             {count > 0 && <span className="text-[10px] tabular-nums opacity-70">({count})</span>}
           </NavLink>
-          {overlay && (
-            <InkButton to="/plugins/chaosverb#try" size="md" className="ml-1">
-              {c.cta}
-            </InkButton>
-          )}
         </nav>
 
         {/* mobile menu toggle */}
@@ -133,10 +139,10 @@ const SiteHeader = ({ overlay = false }: SiteHeaderProps) => {
         >
           <nav className="px-6 pt-6 pb-10 flex flex-col divide-y divide-hairline">
             <NavLink to="/plugins/chaosverb" className={mobileNavLinkClass}>
-              Chaosverb
+              {c.nav.chaosverb}
             </NavLink>
             <NavLink to="/plugins/fiction" className={mobileNavLinkClass}>
-              Fiction
+              {c.nav.fiction}
             </NavLink>
             <NavLink to="/about" className={mobileNavLinkClass}>
               {c.nav.about}

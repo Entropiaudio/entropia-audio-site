@@ -12,7 +12,7 @@ const About = () => {
     // ends on the tan contact band, so the plum wedge would collide with it
     <SiteLayout plum={false}>
       {/* ---------- headline ---------- */}
-      <section className="relative px-[3.2vw] pt-[84px] pb-14">
+      <section data-ink-anchor="About headline" className="relative px-[3.2vw] pt-[84px] pb-14">
         <h1 className="max-w-[940px] m-0">
           <RevealWords
             as="span"
@@ -35,7 +35,7 @@ const About = () => {
 
       {/* ---------- the message ---------- */}
       <section className="px-[3.2vw] pt-10 pb-[84px] border-t border-hairline">
-        <div className="max-w-[640px] md:ml-[8vw] flex flex-col gap-5">
+        <div className="md:ml-[8vw] max-w-[640px] flex flex-col gap-5">
           {[c.paragraph1, c.paragraph2, c.paragraph3].map((p, i) => (
             <Reveal
               key={i}
@@ -53,6 +53,7 @@ const About = () => {
 
       {/* ---------- contact: the tan ground ---------- */}
       <div
+        data-ink-anchor="Contact"
         className="relative diag-band-top"
         style={{
           background: "var(--tan)",

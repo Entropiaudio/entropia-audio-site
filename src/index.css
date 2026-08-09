@@ -626,6 +626,133 @@
   transform: translateY(0);
 }
 
+/* ---------- drawn rules (reveal variant "draw") ----------
+   For the copper strokes: instead of fading up, the rule draws itself left to
+   right, like a line being inked. Height/colour come from the element. */
+[data-reveal="draw"] {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--reveal-duration, 480ms) var(--ease-editorial)
+    var(--reveal-delay, 0ms);
+}
+[data-reveal="draw"][data-revealed="true"] {
+  transform: scaleX(1);
+}
+
+/* ---------- diagonal wipe (reveal variant "wipe") ----------
+   The plugin-UI plates arrive behind a sweep whose leading edge leans at the
+   brand pitch. The clip lives on the wrapper's CHILDREN, not the observed
+   wrapper itself — Chromium's IntersectionObserver reports a fully clip-pathed
+   target as never intersecting, so clipping the observed element would keep
+   the reveal from ever firing. Polygon points sit far outside the box so the
+   resting state never clips the plate's drop-shadow; the slant is only
+   visible mid-sweep. */
+[data-reveal="wipe"] > * {
+  clip-path: polygon(-40% -40%, -40% -40%, -61% 140%, -61% 140%);
+  transition: clip-path var(--reveal-duration, 700ms) var(--ease-editorial)
+    var(--reveal-delay, 0ms);
+}
+[data-reveal="wipe"][data-revealed="true"] > * {
+  clip-path: polygon(-40% -40%, 161% -40%, 140% 140%, -61% 140%);
+}
+
+/* ---------- the home hero painting ----------
+   The collage settles into place on arrival, then hovers — the same
+   "paint over paper" idea as art-drift, scaled way down because the type
+   sits inside the painting's clear field. Scale stays ≥1 so cover-cropped
+   edges are never exposed. */
+@keyframes hero-settle {
+  from { transform: scale(1.028); }
+  to   { transform: scale(1); }
+}
+@keyframes hero-breathe {
+  from { transform: scale(1); }
+  to   { transform: scale(1.016) translateY(-4px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-art {
+    animation:
+      hero-settle 1600ms var(--ease-editorial) both,
+      hero-breathe 24s cubic-bezier(0.45, 0, 0.55, 1) 1600ms infinite alternate;
+    will-change: transform;
+  }
+}
+
+/* ---------- the backdrop's travelling rule inks itself in ----------
+   One-shot on page mount. The bead fades up right as the drawn line passes
+   beneath it (~60% of the draw). Gated on no-preference rather than relying
+   on the global reduced-motion clamp so the `both` fill can't hold the bead
+   invisible through its delay. */
+@keyframes rule-ink {
+  from { transform: rotate(-1.72deg) scaleX(0); }
+  to   { transform: rotate(-1.72deg) scaleX(1); }
+}
+/* `from`-only: ends at the element's own resting opacity (the bead sits at
+   .85, not 1), instead of a keyframe pinning it elsewhere. */
+@keyframes bead-in {
+  from { opacity: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .backdrop-rule {
+    animation: rule-ink 900ms var(--ease-editorial) 120ms both;
+  }
+  .backdrop-bead {
+    animation: bead-in 420ms var(--ease-editorial) 640ms both;
+  }
+}
+
+/* ---------- editorial ticker (the one marquee, used once) ----------
+   Content is rendered twice; -50% of the doubled track is exactly one copy,
+   so the loop is seamless. Drifts slowly, pauses on hover, static under
+   reduced motion. */
+.ticker-track {
+  display: flex;
+  width: max-content;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ticker-track {
+    animation: ticker-slide 52s linear infinite;
+    will-change: transform;
+  }
+  .ticker:hover .ticker-track {
+    animation-play-state: paused;
+  }
+}
+@keyframes ticker-slide {
+  to { transform: translateX(-50%); }
+}
+
+/* ---------- playback level bars (the audio demo's pulse) ----------
+   Heights are driven from the real Web Audio signal by rAF (scaleY writes,
+   no React state). CSS only shapes the cluster. */
+.eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 15px;
+}
+.eq > i {
+  width: 2px;
+  height: 100%;
+  background: var(--accent-deep);
+  border-radius: 1px;
+  transform: scaleY(0.12);
+  transform-origin: bottom;
+}
+
+/* ---------- trailing-arrow nudge on the editorial links ---------- */
+.link-ink > span[aria-hidden="true"],
+.hero-cta > span[aria-hidden="true"] {
+  display: inline-block;
+  transition: transform 160ms var(--ease-editorial);
+}
+.link-ink:hover > span[aria-hidden="true"] {
+  transform: translateX(3px);
+}
+.hero-cta:hover > span[aria-hidden="true"] {
+  transform: translateX(4px);
+}
+
 /* ---------- short crossfade for conditional state swaps ----------
    Apply with a changing React `key` so an empty↔filled / price-resolved swap
    fades in instead of snapping. */
@@ -662,9 +789,11 @@
   transform: scaleX(1);
 }
 
-/* reduced motion: kill long reveals */
+/* reduced motion: kill long reveals (children too — the wipe variant clips
+   the wrapper's children rather than the wrapper itself) */
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal] {
+  [data-reveal],
+  [data-reveal="wipe"] > * {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;

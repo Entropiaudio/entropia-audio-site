@@ -36,9 +36,10 @@ const PageBackdrop = ({ foot = true, plum = true, ruleTop = 124 }: PageBackdropP
       style={{ transform: "skewX(-12deg)", backgroundImage: "var(--hatch-column)" }}
     />
 
-    {/* the travelling rule and its bead */}
+    {/* the travelling rule and its bead — both ink themselves in on mount
+        (backdrop-rule / backdrop-bead, index.css) */}
     <div
-      className="absolute left-0 right-[5.5%] h-px opacity-70"
+      className="backdrop-rule absolute left-0 right-[5.5%] h-px opacity-70"
       style={{
         top: ruleTop,
         background: "var(--accent-raw)",
@@ -47,7 +48,7 @@ const PageBackdrop = ({ foot = true, plum = true, ruleTop = 124 }: PageBackdropP
       }}
     />
     <div
-      className="absolute left-[61%] w-[9px] h-[9px] rounded-full opacity-85"
+      className="backdrop-bead absolute left-[61%] w-[9px] h-[9px] rounded-full opacity-85"
       style={{ top: `calc(${ruleTop - 4}px - 1.83vw)`, background: "var(--accent-raw)" }}
     />
 

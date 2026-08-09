@@ -23,8 +23,14 @@ dist-ssr
 *.sln
 *.sw?
 
-# Claude Code local dev-server config (not portable across users)
-.claude/
+# Claude Code. Project conventions (skills, agents, hooks, shared settings) are
+# checked in so every contributor gets them; machine-local config — the dev-server
+# launch profile and personal permission grants — is not portable, so it stays out.
+.claude/*
+!.claude/agents/
+!.claude/hooks/
+!.claude/skills/
+!.claude/settings.json
 
 # Stale bun lockfile — package-lock.json is the single source of truth
 bun.lockb

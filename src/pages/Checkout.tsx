@@ -34,7 +34,7 @@ const Checkout = () => {
 
   return (
     <SiteLayout>
-      <section className="relative px-[3.2vw] pt-[84px] pb-[130px] min-h-[56vh]">
+      <section data-ink-anchor="Checkout body" className="relative px-[3.2vw] pt-[84px] pb-[130px] min-h-[56vh]">
         <div className="max-w-[720px]">
           <h1
             className="font-editorial italic text-[clamp(42px,5.4vw,72px)] leading-none tracking-[-0.015em] text-[color:var(--ink)] m-0 mb-8"

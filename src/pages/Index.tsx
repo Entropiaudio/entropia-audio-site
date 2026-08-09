@@ -14,10 +14,14 @@ const Index = () => {
       {/* Narrow screens crop the 16:9 collage hard, so they hold the left third
           — the torn cream field the type was composed to sit in — instead of
           the middle, where the orange wedge and the ink splatter live. */}
-      <section
-        className="relative w-full overflow-hidden min-h-[620px] md:min-h-0 md:aspect-[1672/941] bg-cover bg-[position:20%_center] md:bg-center"
-        style={{ backgroundImage: "url(/art/hero-collage.webp)" }}
-      >
+      <section className="relative w-full overflow-hidden min-h-[620px] md:min-h-0 md:aspect-[1672/941]">
+        {/* the painting on its own layer so it can settle + breathe (hero-art,
+            index.css) without carrying the type along */}
+        <div
+          aria-hidden="true"
+          className="hero-art absolute inset-0 bg-cover bg-[position:20%_center] md:bg-center"
+          style={{ backgroundImage: "url(/art/hero-collage.webp)" }}
+        />
         <div className="relative z-[4] px-[3.2vw] pt-[150px] pb-24 md:p-0 md:absolute md:left-[12%] md:top-[26.5%] md:max-w-[62%]">
           <Reveal variant="up" {...MOTION.page.headline1}>
             <h1
@@ -28,7 +32,8 @@ const Index = () => {
             </h1>
           </Reveal>
 
-          <Reveal variant="up" {...MOTION.page.headline2}>
+          {/* the copper stroke draws itself instead of fading up */}
+          <Reveal variant="draw" delay={MOTION.page.headline2.delay} duration={MOTION.duration.draw}>
             <div
               className="h-0.5 bg-[color:var(--accent-raw)] ml-[3px]"
               style={{
@@ -64,6 +69,7 @@ const Index = () => {
       {/* ---------- the plugins: a paper sheet torn across the collage ---------- */}
       <div
         id="plugins"
+        data-ink-anchor="The plugins"
         className="relative z-[6] -mt-[5.2vw]"
         style={{ filter: "drop-shadow(0 -10px 26px rgba(42,23,30,0.20))" }}
       >
@@ -74,42 +80,49 @@ const Index = () => {
             padding: "calc(5vw + 48px) 3.2vw 56px",
           }}
         >
-          <Reveal variant="up" {...MOTION.section.eyebrow}>
-            <div className="flex items-baseline gap-6 mb-1.5">
-              <div>
-                <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--accent-raw)] mb-2.5">
-                  {c.pluginsEyebrow}
+          {/* heading and cards share one centred measure, so the hairline ends
+              where the cards do instead of running out to the page edge */}
+          <div className="max-w-[1100px] mx-auto">
+            <Reveal variant="up" {...MOTION.section.eyebrow}>
+              <div className="flex items-baseline gap-6 mb-1.5">
+                <div>
+                  <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--accent-raw)] mb-2.5">
+                    {c.pluginsEyebrow}
+                  </div>
+                  <h2 className="font-serif-display text-[clamp(34px,3.2vw,58px)] tracking-[-0.01em] text-[color:var(--ink)] m-0">
+                    {c.pluginsHeadline}
+                  </h2>
                 </div>
-                <h2 className="font-serif-display text-[clamp(34px,3.2vw,58px)] tracking-[-0.01em] text-[color:var(--ink)] m-0">
-                  {c.pluginsHeadline}
-                </h2>
+                <div
+                  className="flex-1 h-px self-center mt-[34px]"
+                  style={{
+                    background: "linear-gradient(90deg, rgba(42,23,30,0.3), transparent)",
+                  }}
+                />
               </div>
-              <div
-                className="flex-1 h-px self-center mt-[34px]"
-                style={{
-                  background: "linear-gradient(90deg, rgba(42,23,30,0.3), transparent)",
-                }}
-              />
-            </div>
-          </Reveal>
+            </Reveal>
 
-          <div className="grid gap-[22px] mt-[30px] max-w-[1100px] grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
-            {plugins.map((p, i) => (
-              <Reveal
-                key={p.slug}
-                variant="up"
-                duration={MOTION.duration.base}
-                delay={MOTION.section.body.delay + i * MOTION.stagger.body}
-              >
-                <PluginCard plugin={p} />
-              </Reveal>
-            ))}
+            <div className="grid gap-[22px] mt-[30px] grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
+              {plugins.map((p, i) => (
+                <Reveal
+                  key={p.slug}
+                  variant="up"
+                  duration={MOTION.duration.base}
+                  delay={MOTION.section.body.delay + i * MOTION.stagger.body}
+                >
+                  <PluginCard plugin={p} />
+                </Reveal>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* ---------- three lines from people who ran it ---------- */}
-      <section className="relative px-[3.2vw] pt-[34px] pb-[62px] grid gap-[22px] grid-cols-[repeat(auto-fit,minmax(260px,1fr))]">
+      <section
+        data-ink-anchor="Quotes"
+        className="relative px-[3.2vw] pt-[34px] pb-[62px] grid gap-[22px] grid-cols-[repeat(auto-fit,minmax(260px,1fr))]"
+      >
         {c.quotes.map((q, i) => (
           <Reveal
             key={i}
@@ -131,6 +144,7 @@ const Index = () => {
 
       {/* ---------- the approach: the tan ground, torn in at the pitch ---------- */}
       <section
+        data-ink-anchor="Approach"
         className="relative diag-band-top"
         style={{
           background: "var(--tan)",

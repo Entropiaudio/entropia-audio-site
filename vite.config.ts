@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import { inkSavePlugin } from "./scripts/ink-save-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -27,12 +28,16 @@ export default defineConfig(({ mode }) => {
   return {
     server: {
       host: "::",
-      port: 8080,
+      // PORT lets the Claude preview tooling assign a free port per session;
+      // 8080 stays the default for a plain `npm run dev`.
+      port: Number(process.env.PORT) || 8080,
       hmr: {
         overlay: false,
       },
     },
-    plugins: [react()],
+    // inkSavePlugin is `apply: "serve"` — the ink editor's save endpoint exists
+    // in `npm run dev` only and is never part of a build.
+    plugins: [react(), inkSavePlugin()],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

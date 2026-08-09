@@ -139,20 +139,29 @@ const PluginPage = () => {
 
       {/* ---------- the UI, front and centre ---------- */}
       <section
+        data-ink-anchor="Product hero"
         className="relative px-[3.2vw] pt-14 pb-[72px]"
         style={{
           background:
             "radial-gradient(ellipse at 50% 24%, var(--parchment-hi) 0%, var(--paper) 46%, var(--tan) 100%)",
         }}
       >
-        <Reveal variant="up" delay={MOTION.page.headline1.delay} duration={MOTION.duration.image}>
-          <img
-            src={plugin.screenshot}
-            alt={`${plugin.name} plugin interface`}
-            className="block w-[min(1040px,96%)] mx-auto border border-hairline rounded-lg"
-            style={{ filter: "drop-shadow(0 18px 40px rgba(42,23,30,0.28))" }}
-          />
-        </Reveal>
+        {/* The UI plate sweeps in behind the brand-pitch wipe. The width cap
+            lives on an anchor div OUTSIDE the Reveal: ink pinned to the plate
+            must track this exact box (the section keeps growing after the
+            plate stops at 1040px), and it can't live inside the Reveal — the
+            wipe leaves a clip-path on its children, which would isolate the
+            marks' blending into a grey rectangle. */}
+        <div className="relative w-[min(1040px,96%)] mx-auto" data-ink-anchor="Product shot">
+          <Reveal variant="wipe" delay={MOTION.page.headline1.delay} duration={MOTION.duration.image}>
+            <img
+              src={plugin.screenshot}
+              alt={`${plugin.name} plugin interface`}
+              className="block w-full border border-hairline rounded-lg"
+              style={{ filter: "drop-shadow(0 18px 40px rgba(42,23,30,0.28))" }}
+            />
+          </Reveal>
+        </div>
       </section>
 
       {/* ---------- name, pitch, price ---------- */}
@@ -234,6 +243,7 @@ const PluginPage = () => {
 
       {/* ---------- listen: the tan ground ---------- */}
       <div
+        data-ink-anchor="Listen"
         className="relative diag-band-top mt-2"
         style={{ background: "var(--tan)", paddingTop: "calc(3vw + 56px)", paddingBottom: "76px" }}
       >

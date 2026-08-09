@@ -18,6 +18,9 @@ export const MOTION = {
     headline: 420,
     /** Hero imagery only — the one place a longer reveal is earned. */
     image: 700,
+    /** Drawn rules (variant "draw") — a stroke being inked, slightly slower
+     *  than a headline so the travel reads. */
+    draw: 520,
     /** Funnel / utility headlines — a single fast fade, no word cascade. */
     instant: 160,
   },

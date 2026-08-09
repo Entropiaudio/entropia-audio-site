@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils";
 interface RevealProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode;
   as?: ElementType;
-  /** Visual variant for the entrance. */
-  variant?: "up" | "blur" | "mask";
+  /** Visual variant for the entrance. "draw" scales a rule in from the left;
+   *  "wipe" sweeps the content in behind a brand-pitch diagonal edge. */
+  variant?: "up" | "blur" | "mask" | "draw" | "wipe";
   /** Animation delay in ms. */
   delay?: number;
   /** Animation duration in ms. */

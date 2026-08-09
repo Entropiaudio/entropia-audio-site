@@ -14,7 +14,7 @@ const Cart = () => {
 
   return (
     <SiteLayout>
-      <section className="relative px-[3.2vw] pt-[84px] pb-[110px] min-h-[52vh]">
+      <section data-ink-anchor="Cart body" className="relative px-[3.2vw] pt-[84px] pb-[110px] min-h-[52vh]">
         <div className="max-w-[1000px]">
           <h1
             className="font-editorial italic text-[clamp(48px,5.6vw,72px)] leading-none tracking-[-0.015em] text-[color:var(--ink)] m-0 mb-14"

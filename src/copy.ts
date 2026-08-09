@@ -31,13 +31,13 @@ export const copy = {
   header: {
     wordmark: "Entropia Audio",
     nav: {
-      plugins: "plugins",
+      /* the two products, linked from every page */
+      chaosverb: "Chaosverb",
+      fiction: "Fiction",
       about: "about",
       account: "account",
       cart: "cart",
     },
-    /* the one button in the header, home page only */
-    cta: "get the demo",
   },
 
   /* -------------------------------------------------------------------------

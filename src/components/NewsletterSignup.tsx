@@ -49,6 +49,7 @@ const NewsletterSignup = ({ id, subline }: NewsletterSignupProps) => {
 
   return (
     <div
+      data-ink-anchor="Notify"
       className="relative diag-band-top"
       style={{
         background: "var(--tan)",

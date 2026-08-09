@@ -23,8 +23,11 @@ const Fiction = () => {
     // collide with it — drop the wedge, keep the fleck.
     <SiteLayout plum={false}>
       {/* ---------- hero ---------- */}
-      <section className="relative px-[3.2vw] pt-[72px] pb-10">
-        <div className="max-w-[940px]">
+      <section data-ink-anchor="Fiction hero" className="relative px-[3.2vw] pt-[72px] pb-10">
+        {/* Anchor on the copy block, not just the section: the hero stain is
+            composed against the headline, and this box tracks the text at
+            every viewport width where the full-bleed section doesn't. */}
+        <div className="max-w-[940px]" data-ink-anchor="Fiction copy">
           <h1 className="font-serif-display text-[clamp(46px,7vw,110px)] leading-[0.98] text-[color:var(--ink)] m-0">
             <RevealWords as="span" {...MOTION.page.headline1} stagger={MOTION.stagger.word}>
               {c.headline}
@@ -61,22 +64,31 @@ const Fiction = () => {
       </section>
 
       {/* ---------- the interface, as it stands today ---------- */}
-      <section className="px-[3.2vw] pt-8 pb-16">
+      <section data-ink-anchor="Fiction preview" className="relative px-[3.2vw] pt-8 pb-16">
+        {/* The interface plate sweeps in behind the brand-pitch wipe. The
+            width cap sits on an anchor div OUTSIDE the Reveal so ink pinned to
+            the plate tracks its exact box, and doesn't inherit the wipe's
+            lingering clip-path (which would isolate the marks' blending). The
+            caption gets its own reveal on the same clock. */}
+        <div className="relative w-[min(1306px,96%)] mx-auto" data-ink-anchor="Fiction shot">
+          <Reveal variant="wipe" {...MOTION.section.image}>
+            <div
+              className="relative w-full overflow-hidden rounded-[10px] border border-hairline"
+              style={{
+                aspectRatio: "1306/713",
+                background: "linear-gradient(120deg, #EFDCC0, #E4C9A6)",
+                boxShadow: "0 14px 34px rgba(42,23,30,0.16)",
+              }}
+            >
+              <img
+                src={plugin.screenshot}
+                alt={`${plugin.name} plugin interface`}
+                className="absolute inset-0 w-full h-full object-contain"
+              />
+            </div>
+          </Reveal>
+        </div>
         <Reveal variant="up" {...MOTION.section.image}>
-          <div
-            className="relative w-[min(1306px,96%)] mx-auto overflow-hidden rounded-[10px] border border-hairline"
-            style={{
-              aspectRatio: "1306/713",
-              background: "linear-gradient(120deg, #EFDCC0, #E4C9A6)",
-              boxShadow: "0 14px 34px rgba(42,23,30,0.16)",
-            }}
-          >
-            <img
-              src={plugin.screenshot}
-              alt={`${plugin.name} plugin interface`}
-              className="absolute inset-0 w-full h-full object-contain"
-            />
-          </div>
           <p className="text-center font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--ink-4)] mt-4 mb-0">
             {c.screenshotCaption}
           </p>

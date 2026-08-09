@@ -48,7 +48,7 @@ const Activate = () => {
 
   return (
     <SiteLayout>
-      <section className="relative px-[3.2vw] pt-[84px] pb-[130px] min-h-[56vh]">
+      <section data-ink-anchor="Activate body" className="relative px-[3.2vw] pt-[84px] pb-[130px] min-h-[56vh]">
         {/* a single brush mark drifting in from the right margin */}
         <img
           src="/art/mark-drift.png"

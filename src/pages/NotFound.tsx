@@ -9,7 +9,7 @@ const NotFound = () => {
 
   return (
     <SiteLayout>
-      <section className="relative overflow-hidden px-[3.2vw] pt-[90px] pb-[140px] min-h-[60vh]">
+      <section data-ink-anchor="404 body" className="relative overflow-hidden px-[3.2vw] pt-[90px] pb-[140px] min-h-[60vh]">
         {/* one rule crossing the field, a hair off the pitch */}
         <div
           aria-hidden="true"

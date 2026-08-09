@@ -2,6 +2,8 @@ import { ReactNode } from "react";
 import SiteHeader from "./SiteHeader";
 import SiteFooter from "./SiteFooter";
 import PageBackdrop from "./PageBackdrop";
+import InkLayer from "./InkLayer";
+import InkEditor from "./ink/InkEditor";
 import ScrollProgress from "./motion/ScrollProgress";
 import Grain from "./motion/Grain";
 
@@ -33,11 +35,15 @@ const SiteLayout = ({
     <ScrollProgress />
     <Grain />
     {backdrop && <PageBackdrop foot plum={plum} />}
+    <InkLayer />
     <SiteHeader overlay={overlay} />
     <main id="main" className="relative z-10 flex-1">
       {children}
     </main>
     <SiteFooter />
+    {/* Dev only. `import.meta.env.DEV` is a compile-time false in a build, so
+        the editor and its save endpoint never reach production. */}
+    {import.meta.env.DEV && <InkEditor />}
   </div>
 );
 

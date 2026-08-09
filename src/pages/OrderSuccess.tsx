@@ -16,7 +16,7 @@ const OrderSuccess = () => {
 
   return (
     <SiteLayout>
-      <section className="relative px-[3.2vw] pt-[84px] pb-[100px]">
+      <section data-ink-anchor="Order body" className="relative px-[3.2vw] pt-[84px] pb-[100px]">
         <div className="max-w-[920px]">
           <Reveal variant="up" {...MOTION.page.eyebrow}>
             <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--action-create)] mb-6">
@@ -39,8 +39,18 @@ const OrderSuccess = () => {
             </Reveal>
           </h1>
 
+          {/* the one celebratory stroke on the site — post-purchase is the
+              rare moment that earns it */}
+          <Reveal
+            variant="draw"
+            delay={MOTION.page.headline2.delay}
+            duration={MOTION.duration.draw}
+          >
+            <div className="h-[3px] w-[92px] rounded-[1px] bg-[color:var(--accent-raw)] mt-7" />
+          </Reveal>
+
           <Reveal variant="up" {...MOTION.page.body0}>
-            <p className="font-mono text-[14px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] mt-6 mb-16">
+            <p className="font-mono text-[14px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] mt-5 mb-16">
               order{" "}
               <span className="tabular-nums text-[color:var(--ink)] selectable">{order.id}</span>{" "}
               · charged to card ending{" "}
