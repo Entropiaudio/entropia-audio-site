@@ -9,11 +9,13 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import Reveal from "@/components/motion/Reveal";
 import { MOTION } from "@/components/motion/timing";
 import { Moonbase } from "@/lib/moonbase";
 
 const Activate = () => {
+  usePageTitle("activate");
   const [params] = useSearchParams();
   const [status, setStatus] = useState<"working" | "missing">("working");
 
@@ -80,7 +82,7 @@ const Activate = () => {
             </p>
           </Reveal>
           <Reveal variant="up" {...MOTION.page.body1}>
-            <p className="font-mono font-semibold text-[11px] uppercase tracking-[0.16em] text-[color:var(--ink-4)] mt-11 mb-0">
+            <p className="font-mono font-semibold text-[11px] uppercase tracking-[0.16em] text-[color:var(--ink-3)] mt-11 mb-0">
               your activation token is used once and scrubbed from the address bar.
             </p>
           </Reveal>

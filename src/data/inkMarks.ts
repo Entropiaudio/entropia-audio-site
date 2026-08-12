@@ -45,6 +45,14 @@ export interface InkItem {
   fx: boolean;
   fy: boolean;
   /**
+   * Size strictly follows the anchor box: no small-screen boost. Set it on
+   * marks pinned to a piece of artwork, where the mark has to hold its exact
+   * proportion to the thing it hugs at every window width. Leave it off for
+   * marks that ride the page margins — those want the boost so they don't
+   * shrink to a speck on a phone.
+   */
+  lockToAnchor?: boolean;
+  /**
    * Key into ERASE. A *reference*, not inlined strokes, so the editor can
    * round-trip a mark through JSON without carrying hundreds of coordinates —
    * and so Chaosverb's rotational pair provably shares one stroke set.
@@ -369,59 +377,8 @@ export const ERASE: Record<string, InkEraseStroke[]> = {
 // comments other than each mark's `note` — is lost on the next save. The
 // ERASE data above and this file's header are never touched by the editor.
 export const INK_PAGES: Record<string, InkItem[]> = {
-  // entropia-website — 5 marks
+  // entropia-website — 2 marks
   "entropia-website": [
-    // The faintest mark in the system. Sits on top of the quote strip at 31%
-    // darken so it only bites the paper, never the type.
-    {
-      src: "/ink/el-3-14.webp",
-      anchor: "Quotes",
-      layer: "front",
-      x: 0.2611,
-      y: 0.7985,
-      w: 0.13,
-      rot: 0,
-      op: 0.31,
-      blend: "darken",
-      fx: false,
-      fy: false,
-      note: "The faintest mark in the system. Sits on top of the quote strip at 31% darken so it only bites the paper, never the type.",
-    },
-    // Half off the left edge of the approach band. The handoff paired this with
-    // a bg stain of the same brush at 0.1334/0.7456 — one brush reading twice at
-    // two depths; the bg half was removed on request (2026-08-09).
-    {
-      src: "/ink/el-4-1.webp",
-      anchor: "Approach",
-      layer: "mid",
-      x: 0.0291,
-      y: 0.8462,
-      w: 0.13,
-      rot: 0,
-      op: 0.6,
-      blend: "hard-light",
-      fx: false,
-      fy: false,
-      note: "Half off the left edge of the approach band. The handoff paired this with a bg stain of the same brush at 0.1334/0.7456 — one brush reading twice at two depths; the bg half was removed on request (2026-08-09).",
-    },
-    // The big right-hand sweep. Oversized on purpose and then rubbed back with 6
-    // erase strokes so it dies out before it reaches the copy — the erasure is
-    // what makes the scale legal.
-    {
-      src: "/ink/el-1-1.webp",
-      anchor: "Approach",
-      layer: "mid",
-      x: 0.9081,
-      y: 0.4667,
-      w: 0.3185,
-      rot: -7.9,
-      op: 0.53,
-      blend: "hard-light",
-      fx: false,
-      fy: false,
-      eraseRef: "home-el-1-1",
-      note: "The big right-hand sweep. Oversized on purpose and then rubbed back with 6 erase strokes so it dies out before it reaches the copy — the erasure is what makes the scale legal.",
-    },
     // Top-left corner of the plugin grid, mostly outside the section box. Marks
     // the seam where the band starts.
     {
@@ -458,37 +415,43 @@ export const INK_PAGES: Record<string, InkItem[]> = {
   ],
   // fiction — 3 marks
   "fiction": [
-    // Page-anchored, not section-anchored: it hangs off the right margin and
-    // stays there regardless of how the sections reflow.
+    // The plate's top-right corner. Anchored to the plate itself, and locked to
+    // it: position AND size are fractions of the artwork, so the pair holds the
+    // exact same relationship to the picture at every window width. The plate is
+    // capped at 1040px while the page keeps widening, so anchoring these to any
+    // full-width box let them drift outward on wide screens.
     {
       src: "/ink/el-2-0.webp",
-      anchor: "__page",
+      anchor: "Fiction shot",
       layer: "mid",
-      x: 0.9395,
-      y: 0.2704,
-      w: 0.13,
+      x: 0.9907,
+      y: -0.009,
+      w: 0.1782,
       rot: 0,
       op: 0.75,
       blend: "multiply",
       fx: false,
       fy: false,
-      note: "Page-anchored, not section-anchored: it hangs off the right margin and stays there regardless of how the sections reflow.",
+      lockToAnchor: true,
+      note: "The plate's top-right corner. Anchored to the plate itself, and locked to it: position AND size are fractions of the artwork, so the pair holds the exact same relationship to the picture at every window width. The plate is capped at 1040px while the page keeps widening, so anchoring these to any full-width box let them drift outward on wide screens.",
     },
-    // The mirror of the right-margin mark, flipped by rotation (187.2 deg, not
-    // 180) so the pair never reads as a symmetrical clip-art frame.
+    // The mirror of the corner mark, flipped by rotation (187.2 deg, not 180) so
+    // the pair never reads as a symmetrical clip-art frame. Pinned and locked to
+    // the plate's bottom-left corner.
     {
       src: "/ink/el-2-0.webp",
-      anchor: "__page",
+      anchor: "Fiction shot",
       layer: "mid",
-      x: 0.0548,
-      y: 0.5595,
-      w: 0.13,
+      x: 0.0018,
+      y: 1.0311,
+      w: 0.1782,
       rot: 187.2,
       op: 0.75,
       blend: "multiply",
       fx: false,
       fy: false,
-      note: "The mirror of the right-margin mark, flipped by rotation (187.2 deg, not 180) so the pair never reads as a symmetrical clip-art frame.",
+      lockToAnchor: true,
+      note: "The mirror of the corner mark, flipped by rotation (187.2 deg, not 180) so the pair never reads as a symmetrical clip-art frame. Pinned and locked to the plate's bottom-left corner.",
     },
     // A wash, not a mark: half the section wide, stood on end at 89 deg, 15%
     // opacity. It exists to warm the left of the notify block, and should read
@@ -516,8 +479,8 @@ export const INK_PAGES: Record<string, InkItem[]> = {
       src: "/ink/el-1-9.webp",
       anchor: "About headline",
       layer: "front",
-      x: 0.724,
-      y: 0.5947,
+      x: 0.6546,
+      y: 0.6789,
       w: 0.1879,
       rot: 0,
       op: 0.5,
@@ -532,9 +495,9 @@ export const INK_PAGES: Record<string, InkItem[]> = {
       src: "/ink/el-3-8.webp",
       anchor: "Contact",
       layer: "mid",
-      x: 0.1144,
-      y: 0.528,
-      w: 0.2519,
+      x: 0.0716,
+      y: 0.4528,
+      w: 0.1877,
       rot: 0,
       op: 0.75,
       blend: "hard-light",

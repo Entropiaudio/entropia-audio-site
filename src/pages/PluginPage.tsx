@@ -3,65 +3,58 @@ import SiteLayout from "@/components/SiteLayout";
 import AudioDemo from "@/components/AudioDemo";
 import InkButton from "@/components/InkButton";
 import LabelledSection from "@/components/primitives/LabelledSection";
+import PluginShot from "@/components/primitives/PluginShot";
 import Reveal from "@/components/motion/Reveal";
 import RevealWords from "@/components/motion/RevealWords";
 import { MOTION } from "@/components/motion/timing";
 import { useParallax } from "@/hooks/useScrollMotion";
 import { usePluginPricing } from "@/hooks/usePluginPricing";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { getPlugin } from "@/data/plugins";
 import { useCart } from "@/context/CartContext";
 import { toast } from "@/hooks/use-toast";
 import { copy } from "@/copy";
 import { Moonbase } from "@/lib/moonbase";
 
-/* A screenshot as a printed object: hairline frame, soft radius, warm ink
-   shadow. No corner cut here — the plugin UI already has its own geometry. */
-const Shot = ({ src, alt, className = "" }: { src: string; alt: string; className?: string }) => (
-  <img
-    src={src}
-    alt={alt}
-    loading="lazy"
-    className={`block w-full border border-hairline rounded-lg ${className}`}
-    style={{ filter: "drop-shadow(0 12px 28px rgba(42,23,30,0.22))" }}
-  />
-);
-
 const StorySection = ({
   heading,
   body,
   index,
-  total,
   pluginName,
   screenshot,
+  screenshotSize,
 }: {
   heading: string;
   body: string;
   index: number;
-  total: number;
   pluginName: string;
   screenshot: string;
+  screenshotSize?: { w: number; h: number };
 }) => {
   const reversed = index % 2 === 1;
   const parallaxRef = useParallax<HTMLDivElement>(24);
   return (
-    <article className="grid gap-10 items-center px-[3.2vw] py-14 border-t border-hairline grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
+    <article className="grid gap-10 items-center px-[3.2vw] py-14 rule-top-fade grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
       <Reveal
         variant="up"
         {...MOTION.section.image}
         className={`hover-zoom ${reversed ? "md:order-2" : ""}`}
       >
         <div ref={parallaxRef}>
-          <Shot src={screenshot} alt={`${pluginName}, ${heading}`} />
+          <PluginShot
+            src={screenshot}
+            size={screenshotSize}
+            alt={`${pluginName}, ${heading}`}
+          />
         </div>
       </Reveal>
       <div className={reversed ? "md:order-1" : ""}>
         <Reveal variant="up" {...MOTION.section.eyebrow}>
-          <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--ink-3)] mb-[18px]">
-            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-          </div>
-          <h3 className="font-serif-display text-[clamp(28px,2.6vw,42px)] leading-[1.05] text-[color:var(--ink)] mb-5">
+          {/* h2: these panels are peers of "listen" and "specifications", not
+              children of anything — the page used to jump h1 → h3 here */}
+          <h2 className="font-serif-display text-[clamp(28px,2.6vw,42px)] leading-[1.05] text-[color:var(--ink)] mb-5">
             {heading}
-          </h3>
+          </h2>
         </Reveal>
         <Reveal variant="up" {...MOTION.section.body}>
           <p className="font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[44ch] m-0">
@@ -84,6 +77,7 @@ const PluginPage = () => {
     price: plugin?.price ?? 0,
     regularPrice: plugin?.regularPrice ?? 0,
   });
+  usePageTitle(plugin?.slug);
 
   // This is the storefront layout. Unreleased plugins have their own routes
   // (see App.tsx) and never reach it; if one somehow does, go home rather
@@ -154,18 +148,26 @@ const PluginPage = () => {
             marks' blending into a grey rectangle. */}
         <div className="relative w-[min(1040px,96%)] mx-auto" data-ink-anchor="Product shot">
           <Reveal variant="wipe" delay={MOTION.page.headline1.delay} duration={MOTION.duration.image}>
-            <img
+            <PluginShot
               src={plugin.screenshot}
+              size={plugin.screenshotSize}
               alt={`${plugin.name} plugin interface`}
-              className="block w-full border border-hairline rounded-lg"
-              style={{ filter: "drop-shadow(0 18px 40px rgba(42,23,30,0.28))" }}
+              elevation="hero"
+              priority
             />
           </Reveal>
         </div>
       </section>
 
       {/* ---------- name, pitch, price ---------- */}
-      <LabelledSection label={plugin.name} className="pt-16 pb-14" labelPad="14px">
+      {/* labelAs="div": this block opens on the page's h1, and the margin label
+          only repeats the product name — it must not outrank it. */}
+      <LabelledSection
+        label={plugin.name}
+        className="pt-16 pb-14"
+        labelPad="14px"
+        labelAs="div"
+      >
         <div className="max-w-[820px]">
           <h1
             className="text-[clamp(38px,4.8vw,68px)] leading-[1.08] tracking-[-0.015em] text-[color:var(--ink)] m-0"
@@ -195,7 +197,7 @@ const PluginPage = () => {
                   <span className="font-mono text-[14px] tabular-nums line-through text-[color:var(--ink-3)]">
                     ${pricing.regularPrice}
                   </span>
-                  <span className="font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--accent-raw)]">
+                  <span className="font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--accent-ink)]">
                     {c.saleBadge}
                   </span>
                 </>
@@ -215,9 +217,9 @@ const PluginPage = () => {
               duration={MOTION.duration.base}
               delay={i * MOTION.stagger.list}
               as="li"
-              className="grid grid-cols-[48px_1fr] gap-7 border-t border-hairline py-6"
+              className="grid grid-cols-[48px_1fr] gap-7 rule-top-fade py-6"
             >
-              <span className="font-mono font-semibold text-[12px] tabular-nums pt-0.5 text-[color:var(--accent-raw)]">
+              <span className="font-mono font-semibold text-[12px] tabular-nums pt-0.5 text-[color:var(--accent-ink)]">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="font-mono text-[15.5px] leading-[1.65] tracking-[0.015em] text-[color:var(--ink)]">
@@ -235,19 +237,24 @@ const PluginPage = () => {
           heading={section.heading}
           body={section.body}
           index={i}
-          total={(plugin.sections ?? []).length}
           pluginName={plugin.name}
-          screenshot={plugin.screenshot}
+          // the section's own shot when it has one, the main plate otherwise
+          screenshot={section.shot ?? plugin.screenshot}
+          screenshotSize={section.shot ? section.shotSize : plugin.screenshotSize}
         />
       ))}
 
       {/* ---------- listen: the tan ground ---------- */}
       <div
         data-ink-anchor="Listen"
-        className="relative diag-band-top mt-2"
-        style={{ background: "var(--tan)", paddingTop: "calc(3vw + 56px)", paddingBottom: "76px" }}
+        className="relative diag-band mt-2"
+        style={{
+          background: "var(--tan)",
+          paddingTop: "calc(3vw + 56px)",
+          paddingBottom: "calc(3vw + 64px)",
+        }}
       >
-        <LabelledSection label={c.listenEyebrow} labelTone="deep" labelPad="10px">
+        <LabelledSection label={c.listenEyebrow} labelTone="copper" labelPad="10px">
           <div className="max-w-[780px]">
             <Reveal variant="up" {...MOTION.section.headline}>
               <h3
@@ -264,7 +271,7 @@ const PluginPage = () => {
                 duration={MOTION.duration.base}
                 delay={MOTION.section.body.delay + i * MOTION.stagger.body}
               >
-                <AudioDemo demo={d} index={i} />
+                <AudioDemo demo={d} />
               </Reveal>
             ))}
           </div>
@@ -278,9 +285,7 @@ const PluginPage = () => {
             {(plugin.specs ?? []).map((spec, i, all) => (
               <tr
                 key={spec.label}
-                className={`border-t border-hairline ${
-                  i === all.length - 1 ? "border-b" : ""
-                }`}
+                className={i === all.length - 1 ? "rule-row-both-fade" : "rule-row-top-fade"}
               >
                 <td className="py-5 pr-5 align-top w-1/3 font-mono font-semibold text-[11px] uppercase tracking-[0.14em] text-[color:var(--ink-3)]">
                   {spec.label}

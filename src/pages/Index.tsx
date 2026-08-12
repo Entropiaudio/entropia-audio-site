@@ -57,7 +57,7 @@ const Index = () => {
             <div style={{ marginTop: "clamp(20px,2.4vw,46px)" }}>
               <a href="#plugins" className="hero-cta">
                 {c.heroCta}
-                <span aria-hidden="true" className="font-mono text-[color:var(--accent-raw)]">
+                <span aria-hidden="true" className="font-mono text-[color:var(--accent-ink)]">
                   →
                 </span>
               </a>
@@ -71,33 +71,38 @@ const Index = () => {
         id="plugins"
         data-ink-anchor="The plugins"
         className="relative z-[6] -mt-[5.2vw]"
-        style={{ filter: "drop-shadow(0 -10px 26px rgba(42,23,30,0.20))" }}
+        style={{
+          filter: "drop-shadow(0 -10px 26px rgba(42,23,30,0.20))",
+          // The shadow exists to lift the sheet's torn TOP edge off the
+          // collage, but drop-shadow silhouettes the whole element — so it
+          // also throws a 16px smudge (26px blur less the 10px offset) below
+          // the sheet's straight bottom edge, which reads as grey dirt on the
+          // paper underneath. clip-path runs after filter in the paint order,
+          // so this cuts the downward spill dead while the negative top inset
+          // lets the wanted shadow through.
+          clipPath: "inset(-40px 0 0 0)",
+        }}
       >
         <div
           className="bg-paper"
           style={{
             clipPath: "polygon(0 5vw, 100% 0, 100% 100%, 0 100%)",
-            padding: "calc(5vw + 48px) 3.2vw 56px",
+            padding: "calc(5vw + 48px) 3.2vw calc(3vw + 62px)",
           }}
         >
           {/* heading and cards share one centred measure, so the hairline ends
               where the cards do instead of running out to the page edge */}
           <div className="max-w-[1100px] mx-auto">
             <Reveal variant="up" {...MOTION.section.eyebrow}>
-              <div className="flex items-baseline gap-6 mb-1.5">
-                <div>
-                  <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--accent-raw)] mb-2.5">
-                    {c.pluginsEyebrow}
-                  </div>
-                  <h2 className="font-serif-display text-[clamp(34px,3.2vw,58px)] tracking-[-0.01em] text-[color:var(--ink)] m-0">
-                    {c.pluginsHeadline}
-                  </h2>
-                </div>
+              <div className="flex items-center gap-6 mb-1.5">
+                <h2 className="font-serif-display text-[clamp(34px,3.2vw,58px)] tracking-[-0.01em] text-[color:var(--ink)] m-0">
+                  {c.pluginsHeadline}
+                </h2>
+                {/* the hairline runs from the headline's optical middle now
+                    that no eyebrow sits above it */}
                 <div
-                  className="flex-1 h-px self-center mt-[34px]"
-                  style={{
-                    background: "linear-gradient(90deg, rgba(42,23,30,0.3), transparent)",
-                  }}
+                  className="flex-1 h-px mt-[10px]"
+                  style={{ background: "var(--divider-fade)" }}
                 />
               </div>
             </Reveal>
@@ -118,77 +123,6 @@ const Index = () => {
         </div>
       </div>
 
-      {/* ---------- three lines from people who ran it ---------- */}
-      <section
-        data-ink-anchor="Quotes"
-        className="relative px-[3.2vw] pt-[34px] pb-[62px] grid gap-[22px] grid-cols-[repeat(auto-fit,minmax(260px,1fr))]"
-      >
-        {c.quotes.map((q, i) => (
-          <Reveal
-            key={i}
-            variant="up"
-            duration={MOTION.duration.base}
-            delay={i * MOTION.stagger.body}
-            as="blockquote"
-            className="border-l-2 border-[color:var(--accent-raw)] pl-4 py-1 m-0"
-          >
-            <p className="font-editorial italic text-[15.5px] leading-[1.6] text-[color:var(--ink)] m-0 mb-2">
-              “{q.body}”
-            </p>
-            <cite className="not-italic font-mono font-semibold text-[9px] uppercase tracking-[0.14em] text-[color:var(--ink-3)]">
-              {q.source}
-            </cite>
-          </Reveal>
-        ))}
-      </section>
-
-      {/* ---------- the approach: the tan ground, torn in at the pitch ---------- */}
-      <section
-        data-ink-anchor="Approach"
-        className="relative diag-band-top"
-        style={{
-          background: "var(--tan)",
-          padding: "calc(3vw + 52px) 3.2vw 150px",
-        }}
-      >
-        <div
-          aria-hidden="true"
-          className="absolute right-[9%] top-0 bottom-0 w-[88px] opacity-55 pointer-events-none"
-          style={{
-            transform: "skewX(-12deg)",
-            backgroundImage:
-              "repeating-linear-gradient(102deg, rgba(184,78,29,0.34) 0 1.5px, transparent 1.5px 7px)",
-          }}
-        />
-        <Reveal variant="up" {...MOTION.section.eyebrow}>
-          <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--accent-deep)] mb-[34px]">
-            {c.approachEyebrow}
-          </div>
-        </Reveal>
-        <div className="grid gap-10 grid-cols-[repeat(auto-fit,minmax(240px,1fr))]">
-          {c.approach.map((a, i) => (
-            <Reveal
-              key={i}
-              variant="up"
-              duration={MOTION.duration.base}
-              delay={MOTION.section.body.delay + i * MOTION.stagger.body}
-            >
-              <div className="font-mono font-semibold text-[10px] tracking-[0.14em] text-[color:var(--pop)] mb-3">
-                {String(i + 1).padStart(2, "0")}
-              </div>
-              <h3 className="font-editorial italic text-[20px] text-[color:var(--ink)] mb-2.5">
-                {a.heading}
-              </h3>
-              <p
-                className="font-mono text-[13.5px] tracking-[0.015em] leading-[1.65] m-0"
-                style={{ color: "rgba(42,23,30,0.78)" }}
-              >
-                {a.body}
-              </p>
-            </Reveal>
-          ))}
-        </div>
-      </section>
     </SiteLayout>
   );
 };

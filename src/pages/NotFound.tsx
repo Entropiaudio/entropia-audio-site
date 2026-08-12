@@ -1,10 +1,12 @@
 import { useLocation } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import InkButton from "@/components/InkButton";
 import Reveal from "@/components/motion/Reveal";
 import { MOTION } from "@/components/motion/timing";
 
 const NotFound = () => {
+  usePageTitle("notFound");
   const location = useLocation();
 
   return (

@@ -40,6 +40,7 @@ interface CleanMark {
   blend: string;
   fx: boolean;
   fy: boolean;
+  lockToAnchor?: boolean;
   eraseRef?: string;
   note?: string;
 }
@@ -81,6 +82,8 @@ const cleanMark = (raw: unknown, where: string): CleanMark => {
     fx: m.fx === true,
     fy: m.fy === true,
   };
+  // only emitted when true, so the common case stays out of the file
+  if (m.lockToAnchor === true) out.lockToAnchor = true;
   if (m.eraseRef != null) {
     const ref = str(m.eraseRef, `${where}.eraseRef`, 60);
     if (!ERASE_REF_RE.test(ref)) throw new Error(`${where}.eraseRef: ${ref}`);
@@ -125,6 +128,7 @@ export const INK_PAGES: Record<string, InkItem[]> = {
       out += `      rot: ${m.rot},\n      op: ${m.op},\n`;
       out += `      blend: ${JSON.stringify(m.blend)},\n`;
       out += `      fx: ${m.fx},\n      fy: ${m.fy},\n`;
+      if (m.lockToAnchor) out += `      lockToAnchor: true,\n`;
       if (m.eraseRef) out += `      eraseRef: ${JSON.stringify(m.eraseRef)},\n`;
       if (m.note) out += `      note: ${JSON.stringify(m.note)},\n`;
       out += `    },\n`;

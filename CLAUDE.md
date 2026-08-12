@@ -83,6 +83,11 @@ Type is a trio, applied via utility classes, not raw `font-family`:
 `.font-serif-display` (Fraunces 490, headlines), `.font-editorial` (Fraunces italic,
 body), `.font-display` / `.font-mono-spec` (Barlow Condensed caps, labels + values).
 
+**No slash-counter eyebrows.** The `01 / 02` (and `01 / demo`) index-of-total
+labels above section headings are banned by the owner (2026-08-12) and were removed
+site-wide — never reintroduce them on new sections. Plain numerals as markers inside
+genuinely numbered lists (the feature lists, the homepage approach grid) are fine.
+
 Motion timings are canonical in
 [src/components/motion/timing.ts](src/components/motion/timing.ts) — import `MOTION`,
 never hardcode a duration or stagger. Reduced motion is handled globally in

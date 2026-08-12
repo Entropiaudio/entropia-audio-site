@@ -44,32 +44,53 @@
     --umber:            #9A6A45;
     --field:            #ECD9BD;   /* inset fields: inputs, tracks, meters */
 
-    /* ink — plum-black type + line */
+    /* ink — plum-black type + line.
+       The ramp is tuned so every step that carries type clears 4.5:1 on the
+       darkest ground type ever sits on (--tan). Measured on tan / paper:
+         ink-2  6.1 / 7.6      ink-3  4.6 / 5.2
+       --ink-4 is BELOW that line (2.5:1 on paper) and is decoration only —
+       hairline ticks, disabled marks. Never set type in it. */
     --ink:              #2A171E;
-    --ink-2:            rgba(42, 23, 30, 0.74);
-    --ink-3:            rgba(42, 23, 30, 0.52);
+    --ink-2:            rgba(42, 23, 30, 0.80);
+    --ink-3:            rgba(42, 23, 30, 0.68);
     --ink-4:            rgba(42, 23, 30, 0.32);
     --ink-line:         rgba(42, 23, 30, 0.16);
     --ink-line-2:       rgba(42, 23, 30, 0.30);
     --plum:             #2C1920;
     --plum-block:       #412830;   /* the footer wedge in the page backdrop */
 
-    /* heat — burnt copper + the collage's pink (the single loud moment) */
+    /* heat — burnt copper + the collage's pink (the single loud moment).
+       Three coppers, and the difference between them is a contrast decision:
+         --accent-raw   rules, borders, fills, focus rings, type ≥ 24px.
+                        3.4:1 on paper — legal for a 1px line, not for a label.
+         --accent-deep  headline-scale copper on the tan bands.
+         --accent-ink   ANY copper type below 24px, on any ground. 5.1:1 on
+                        tan, 6.6:1 on paper. Reach for this one by default.
+       --pop is the collage pink. It cannot carry type — 2.1:1 on tan, and
+       darkening it far enough to pass turns it into a different colour. Use
+       it for marks, wedges and rules only. */
     --accent-raw:       #C25A1E;
     --accent-bright:    #E8791F;
     --accent-deep:      #93400F;
+    --accent-ink:       #82370C;
     --accent-tint:      rgba(194, 90, 30, 0.10);
     --accent-muted:     rgba(194, 90, 30, 0.18);
     --pop:              #F14E71;
 
-    /* the one demoted section hue still in play — Fiction's mulberry */
-    --section-motion:   #8A5A7E;
+    /* the one demoted section hue still in play — Fiction's mulberry.
+       Set as type on the Fiction page (status chip, numerals), so it carries
+       the same rule as --accent-ink: 5.0:1 on tan, 6.5:1 on paper. The lighter
+       #8A5A7E it replaces was 3.3:1 on tan. */
+    --section-motion:   #6C405F;
 
-    /* states, warmed for paper */
-    --state-success:    #3E9A5E;
-    --state-warning:    #C98A32;
-    --state-error:      #C24A3A;
-    --action-create:    #1F8F6B;
+    /* states, warmed for paper. Every one of these is only ever set as type —
+       a form error, a confirmation line — so they follow the same rule as
+       --accent-ink: ≥4.8:1 on tan, ≥6:1 on paper. The brighter set they
+       replaced ran 1.8–2.9:1 on tan, which is a warning nobody can read. */
+    --state-success:    #215C36;
+    --state-warning:    #6F470D;
+    --state-error:      #8E2A1D;
+    --action-create:    #1A5B3E;
 
     /* legacy names, repointed to the daylight register */
     --bg:               var(--paper);
@@ -78,8 +99,8 @@
     --border-soft:      rgba(42, 23, 30, 0.10);
     --border-subtle:    rgba(42, 23, 30, 0.15);
     --text-primary:     #2A171E;
-    --text-secondary:   rgba(42, 23, 30, 0.74);
-    --text-tertiary:    rgba(42, 23, 30, 0.52);
+    --text-secondary:   rgba(42, 23, 30, 0.80);
+    --text-tertiary:    rgba(42, 23, 30, 0.68);
 
     /* ---------- shadcn / tailwind HSL channels (derived from raw) --------- */
     --background: 36 62% 87%;         /* #F2E1C7 paper */
@@ -142,7 +163,9 @@
     --hatch-copper: repeating-linear-gradient(102deg, var(--accent-tint) 0 1px, transparent 1px 7px);
     --hatch-umber:  repeating-linear-gradient(102deg, rgba(154, 106, 69, 0.22) 0 1px, transparent 1px 8px);
     --hatch-column: repeating-linear-gradient(102deg, rgba(194, 90, 30, 0.32) 0 1.6px, transparent 1.6px 7px);
-    --divider-fade: linear-gradient(90deg, transparent 0%, var(--ink-line) 50%, transparent 100%);
+    /* every horizontal rule decays left→right, full strength to nothing —
+       one gesture, from the section-heading hairlines down to spec-table rows */
+    --divider-fade: linear-gradient(90deg, var(--ink-line-2), transparent);
 
     /* ---------- paper grain, the texture half of this pass ---------------- */
     /* one tile, referenced by the fixed overlay and by any surface that wants
@@ -211,8 +234,11 @@
     font-family: 'Barlow Condensed', 'Inter', 'Segoe UI', system-ui, sans-serif;
   }
 
+  /* 2px, not 1px: the ring has to survive being drawn over grain and over the
+     painted hero, where a hairline disappears. Copper is 3.4:1 on paper, which
+     clears the 3:1 that SC 1.4.11 asks of a focus indicator. */
   :where(a, button, [role="button"], input, select, textarea, [tabindex]):focus-visible {
-    outline: 1px solid var(--accent-raw);
+    outline: 2px solid var(--accent-raw);
     outline-offset: 3px;
     border-radius: 2px;
   }
@@ -340,9 +366,20 @@
   .diag-band-top {
     clip-path: polygon(0 var(--rise, 3vw), 100% 0, 100% 100%, 0 100%);
   }
+  /* the full band: tears in at the top AND back out at the bottom, both edges
+     at the same pitch. A ground never changes on a straight seam — if a band
+     has anything after it (more sections, the footer), this is the class it
+     wants. `--fall` is the bottom edge's travel; give the band ~3vw of extra
+     bottom padding to pay for the cut. */
+  .diag-band {
+    clip-path: polygon(0 var(--rise, 3vw), 100% 0, 100% calc(100% - var(--fall, 3vw)), 0 100%);
+  }
 
 
-  /* faded hairline rules — dividers are fades, never hard lines */
+  /* decaying hairline rules — every divider decays to the right, never a
+     hard line. The .rule-row-* variants below paint the same line as a row
+     BACKGROUND, for rows in collapsed tables where a border can't take a
+     gradient and a tr can't host a pseudo-element. */
   .rule-fade {
     height: 1px;
     border: none;
@@ -372,9 +409,58 @@
     height: 1px;
     background: var(--divider-fade);
   }
+  .rule-row-top-fade {
+    background: var(--divider-fade) left top / 100% 1px no-repeat;
+  }
+  .rule-row-both-fade {
+    background:
+      var(--divider-fade) left top / 100% 1px no-repeat,
+      var(--divider-fade) left bottom / 100% 1px no-repeat;
+  }
 }
 
 @layer components {
+  /* ---------- the homepage header, fixed over the painting ----------
+     At rest a parchment scrim pours down over the collage so the ink caps
+     stay legible against its noise without hiding the art; the wash uses the
+     paper tone (--paper, #F2E1C7) and is gone half a header below the links.
+     Once the page scrolls, the bar swaps to the plugin pages' buy-strip
+     material — paper at .97 over a blur, hairline, soft ink shadow — so the
+     site's floating surfaces are one material. */
+  .header-float {
+    transition:
+      background-color var(--t-base) var(--ease-editorial),
+      box-shadow var(--t-base) var(--ease-editorial);
+  }
+  .header-float::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 160%;
+    /* the header is its own stacking context (fixed + z-30), so -1 pins the
+       wash under the logo and links but still over the painting — without it
+       the positioned pseudo paints LAST and veils the very text it serves */
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(242, 225, 199, 0.92) 0%,
+      rgba(242, 225, 199, 0.55) 55%,
+      transparent 100%
+    );
+    transition: opacity var(--t-base) var(--ease-editorial);
+  }
+  /* no backdrop blur here on purpose: over the collage any frosting reads as
+     smear, and at .97 paper the bar is opaque enough to carry the type alone */
+  .header-float.is-stuck {
+    background: rgba(242, 225, 199, 0.97);
+    border-bottom: 1px solid var(--ink-line);
+    box-shadow: 0 4px 14px rgba(42, 23, 30, 0.06);
+  }
+  .header-float.is-stuck::before {
+    opacity: 0;
+  }
+
   /* ---------- the brand buttons (design-system: Button) ----------
      Fixed heights, not padding: sm 22px (the plugin control scale), md 34px,
      lg 42px. Everything else — face, border, text — follows the variant. */
@@ -401,22 +487,25 @@
       transform var(--t-fast) var(--ease-editorial),
       box-shadow var(--t-fast) var(--ease-editorial);
   }
+  /* Every step clears a 32px hit box. The old sm (22px/9px) was the smallest
+     thing on the site and it was carrying the buy button — a label that size
+     belongs on a caption, not on the thing someone has to hit to pay us. */
   .btn-sm {
-    height: 22px;
-    padding: 0 14px;
-    font-size: 9px;
+    height: 32px;
+    padding: 0 16px;
+    font-size: 11px;
     border-radius: 4px;
   }
   .btn-md {
-    height: 34px;
-    padding: 0 20px;
-    font-size: 11px;
+    height: 40px;
+    padding: 0 22px;
+    font-size: 12px;
     border-radius: 5px;
   }
   .btn-lg {
-    height: 42px;
-    padding: 0 28px;
-    font-size: 12px;
+    height: 48px;
+    padding: 0 30px;
+    font-size: 13px;
     border-radius: 6px;
   }
   .btn:active:not(:disabled) {
@@ -435,9 +524,11 @@
     border-color: var(--ink);
     color: var(--paper);
   }
+  /* the fill warms to the deep copper, not the raw one: paper-on-raw is
+     3.4:1, which is a failing label the moment a pointer touches it */
   .btn-solid:hover:not(:disabled) {
-    background: var(--accent-raw);
-    border-color: var(--accent-raw);
+    background: var(--accent-ink);
+    border-color: var(--accent-ink);
     color: #FFF8EE;
     box-shadow: var(--shadow-ink);
   }
@@ -451,7 +542,7 @@
   .btn-ghost:hover:not(:disabled) {
     background: #ffffff;
     border-color: var(--accent-raw);
-    color: var(--accent-raw);
+    color: var(--accent-ink);
     box-shadow: var(--shadow-card);
   }
 
@@ -465,7 +556,7 @@
   }
   .btn-pill:hover:not(:disabled) {
     border-color: var(--accent-raw);
-    color: var(--accent-raw);
+    color: var(--accent-ink);
   }
 
   /* ---------- the two link voices ---------- */
@@ -478,10 +569,15 @@
     text-transform: uppercase;
     color: var(--ink-2);
     transition: color var(--t-fast) var(--ease-editorial);
+    /* 11px caps are a 17px-tall hit box. The padding is vertical only and the
+       element stays inline, so the target grows past 24px without the header
+       or footer rows changing height by a pixel. */
+    padding: 5px 3px;
+    margin: 0 -3px;
   }
   .nav-link:hover,
   .nav-link[data-active="true"] {
-    color: var(--accent-raw);
+    color: var(--accent-ink);
   }
 
   /* in-page action: caps under a solid ink rule, both warm to copper */
@@ -496,13 +592,17 @@
     text-transform: uppercase;
     color: var(--ink);
     transition: color var(--t-fast) var(--ease-editorial);
+    /* 12px caps alone are a 22px hit box; the padding buys the target its
+       24px+ without moving anything, the margin gives the space back */
+    padding: 6px 2px;
+    margin: -6px -2px;
   }
   .link-ink > span:first-child {
     border-bottom: 1px solid currentColor;
     padding-bottom: 3px;
   }
   .link-ink:hover {
-    color: var(--accent-raw);
+    color: var(--accent-ink);
   }
 
   /* ---------- the hero's one CTA ----------
@@ -761,10 +861,14 @@
 }
 
 /* ---------- subtle hover scale wrappers ----------
-   .hover-zoom keeps `overflow: hidden` for the parallax + image wrappers that
-   rely on clipping (PluginPage hero, alternating sections, ProductRow, About).
-   The hover scale itself is disabled per design call, images stay static. */
-.hover-zoom { overflow: hidden; }
+   .hover-zoom used to keep `overflow: hidden` on the parallax image wrappers.
+   That clip is gone: the plates carry their own rounded overflow now, and a
+   square-cornered clip on the wrapper squared their corners, swallowed their
+   shadow, and — because the parallax translates the plate up to ~66px — cut a
+   different slice off each image depending on where it sat in the viewport.
+   The wrapper only has to let the plate drift. The hover scale itself stays
+   disabled per design call; images are static. */
+.hover-zoom { overflow: visible; }
 
 /* ---------- the link underline draw ---------- */
 .link-draw {

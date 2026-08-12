@@ -114,7 +114,7 @@ const FilmPlate = ({ src, poster, label, aspect = "9/16", className }: FilmPlate
         aria-hidden="true"
         className={cn(
           "absolute bottom-2.5 right-2.5 inline-flex items-center h-[22px] px-3 rounded-[11px]",
-          "font-mono font-semibold text-[9px] uppercase tracking-[0.18em] text-[color:var(--ink)]",
+          "font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--ink)]",
           "border border-hairline transition-opacity duration-[200ms] ease-editorial",
           playing ? "opacity-0" : "opacity-100",
         )}

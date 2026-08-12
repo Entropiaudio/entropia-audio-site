@@ -1,5 +1,5 @@
 /**
- * The page collage, minus the paint: three torn parchment bands, a skewed
+ * The page collage, minus the paint: a slow parchment drift, a skewed
  * copper hatch column, the travelling rule with its bead, and (at the foot)
  * the plum wedge and the single pink fleck.
  *
@@ -21,12 +21,17 @@ interface PageBackdropProps {
 
 const PageBackdrop = ({ foot = true, plum = true, ruleTop = 124 }: PageBackdropProps) => (
   <div aria-hidden="true" className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-    {/* the three torn bands — a hair off horizontal, like laid paper */}
+    {/* the parchment drift — light at the head of the page, deeper at the
+        foot, blended the whole way so it never draws a line through content.
+        Hard ground changes are the sections' job (diag-band): they happen at
+        torn edges pinned to real section boundaries, never at a fixed
+        percentage of page height, which is where the old three-band gradient
+        kept slicing through paragraphs. */}
     <div
       className="absolute inset-0"
       style={{
         background:
-          "linear-gradient(178.3deg, #F9E7D1 0 33%, #F0DFC2 33.1% 63%, #DCC1A0 63.1% 100%)",
+          "linear-gradient(178.3deg, #F9E7D1 0%, #F4E3C9 36%, #F0DEC0 68%, #E9D3B3 100%)",
       }}
     />
 

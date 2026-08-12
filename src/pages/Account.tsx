@@ -1,15 +1,18 @@
 import { useState } from "react";
 import SiteLayout from "@/components/SiteLayout";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import Reveal from "@/components/motion/Reveal";
 import { MOTION } from "@/components/motion/timing";
 import { useAuth } from "@/context/AuthContext";
 import { Moonbase } from "@/lib/moonbase";
+import { copy } from "@/copy";
 
 /* ------------------------------------------------------------------ */
 /* Logged-out view — opens the Moonbase sign-in / sign-up modal.       */
 /* ------------------------------------------------------------------ */
 
 const LoggedOut = () => {
+  const c = copy.account;
   const [mode, setMode] = useState<"login" | "signup">("login");
 
   const open = () => {
@@ -31,20 +34,18 @@ const LoggedOut = () => {
           delay={MOTION.page.headline1.delay}
           duration={MOTION.duration.instant}
         >
-          {mode === "login" ? "sign in" : "create account"}
+          {mode === "login" ? c.signInTitle : c.signUpTitle}
         </Reveal>
       </h1>
 
       <Reveal variant="up" {...MOTION.page.body0}>
         <p className="font-mono text-[14.5px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] m-0 mb-11">
-          {mode === "login"
-            ? "access your licenses and downloads."
-            : "set up an entropia audio account."}
+          {mode === "login" ? c.signInBody : c.signUpBody}
         </p>
       </Reveal>
 
       <button type="button" onClick={open} className="link-ink">
-        <span>{mode === "login" ? "sign in" : "create account"}</span>
+        <span>{mode === "login" ? c.signInCta : c.signUpCta}</span>
         <span aria-hidden="true">→</span>
       </button>
 
@@ -52,11 +53,9 @@ const LoggedOut = () => {
         <button
           type="button"
           onClick={() => setMode(mode === "login" ? "signup" : "login")}
-          className="font-mono font-semibold text-[11px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-raw)]"
+          className="font-mono font-semibold text-[11px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-ink)]"
         >
-          {mode === "login"
-            ? "no account? create one →"
-            : "already have an account? sign in →"}
+          {mode === "login" ? c.signInSwitch : c.signUpSwitch}
         </button>
       </div>
     </div>
@@ -64,39 +63,15 @@ const LoggedOut = () => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Logged-in view — licenses, orders, and settings all live behind the */
-/* Moonbase account modal (the embedded SDK doesn't surface them as    */
-/* data), so the site delegates rather than half-rendering them.       */
+/* Logged-in view. Licenses, orders, and settings all live behind the  */
+/* same Moonbase account modal (the SDK exposes only `view_account`),  */
+/* so the page offers exactly one door in — three labelled links that  */
+/* all opened the same modal just made people pick between identical   */
+/* options.                                                            */
 /* ------------------------------------------------------------------ */
 
-/** One labelled CTA that opens the Moonbase account modal. All three intents
- *  land in the same modal (Moonbase exposes only `view_account`); the labels
- *  exist so the user's mental model — "licenses live there, orders live there" —
- *  stays explicit. */
-const MoonbaseAccountLink = ({
-  eyebrow,
-  description,
-  cta,
-}: {
-  eyebrow: string;
-  description: string;
-  cta: string;
-}) => (
-  <section className="border-t border-hairline pt-7 mb-12">
-    <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--ink-3)] mb-3.5">
-      {eyebrow}
-    </div>
-    <p className="font-mono text-[14px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] m-0 mb-4">
-      {description}
-    </p>
-    <button type="button" onClick={() => Moonbase.view_account()} className="link-ink">
-      <span>{cta}</span>
-      <span aria-hidden="true">→</span>
-    </button>
-  </section>
-);
-
 const LoggedIn = () => {
+  const c = copy.account;
   const { user, signOut } = useAuth();
   if (!user) return null;
 
@@ -107,38 +82,36 @@ const LoggedIn = () => {
         {...MOTION.page.eyebrow}
         className="flex items-start justify-between gap-6 flex-wrap mb-16"
       >
-        <p className="font-mono font-medium text-[clamp(20px,2.4vw,30px)] tracking-[0.02em] text-[color:var(--ink)] selectable m-0">
+        <h1 className="font-mono font-medium text-[clamp(20px,2.4vw,30px)] tracking-[0.02em] text-[color:var(--ink)] selectable m-0">
           {user.email}
-        </p>
+        </h1>
         <button
           type="button"
           onClick={signOut}
-          className="font-mono font-semibold text-[11px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] pt-5 transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-raw)]"
+          className="font-mono font-semibold text-[11px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] pt-5 transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-ink)]"
         >
-          sign out →
+          {c.signOut}
         </button>
       </Reveal>
 
-      <MoonbaseAccountLink
-        eyebrow="licenses & downloads"
-        description="view your active licenses, reveal license keys, and download installers in your moonbase account."
-        cta="open licenses"
-      />
-      <MoonbaseAccountLink
-        eyebrow="orders"
-        description="view your order history, receipts, and payment methods in your moonbase account."
-        cta="open orders"
-      />
-      <MoonbaseAccountLink
-        eyebrow="account settings"
-        description="change your email, password, or marketing preferences in your moonbase account."
-        cta="manage account"
-      />
+      <section className="rule-top-fade pt-7">
+        <h2 className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--ink-3)] m-0 mb-3.5">
+          {c.dashboardEyebrow}
+        </h2>
+        <p className="font-mono text-[14px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] m-0 mb-4">
+          {c.dashboardBody}
+        </p>
+        <button type="button" onClick={() => Moonbase.view_account()} className="link-ink">
+          <span>{c.dashboardCta}</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </section>
     </div>
   );
 };
 
 const Account = () => {
+  usePageTitle("account");
   const { isAuthed } = useAuth();
 
   return (

@@ -5,12 +5,14 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import Reveal from "@/components/motion/Reveal";
 import { MOTION } from "@/components/motion/timing";
 import { useCart } from "@/context/CartContext";
 import { Moonbase, MoonbaseEvent } from "@/lib/moonbase";
 
 const Checkout = () => {
+  usePageTitle("checkout");
   const { items } = useCart();
   const navigate = useNavigate();
 
@@ -57,7 +59,7 @@ const Checkout = () => {
               <button
                 type="button"
                 onClick={() => Moonbase.checkout()}
-                className="text-[color:var(--ink)] border-b border-[color:var(--ink)] pb-0.5 transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-raw)] hover:border-[color:var(--accent-raw)]"
+                className="text-[color:var(--ink)] border-b border-[color:var(--ink)] pb-0.5 transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-ink)] hover:border-[color:var(--accent-ink)]"
               >
                 open it manually
               </button>
@@ -65,7 +67,7 @@ const Checkout = () => {
             </p>
           </Reveal>
           <Reveal variant="up" {...MOTION.page.body1}>
-            <p className="font-mono font-semibold text-[11px] uppercase tracking-[0.16em] text-[color:var(--ink-4)] mt-11 mb-0">
+            <p className="font-mono font-semibold text-[11px] uppercase tracking-[0.16em] text-[color:var(--ink-3)] mt-11 mb-0">
               card details are handled by our payment processor. they never touch our servers.
             </p>
           </Reveal>

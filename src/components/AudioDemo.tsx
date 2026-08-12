@@ -11,7 +11,6 @@ import {
 
 type Props = {
   demo: PluginDemo;
-  index: number;
 };
 
 type Mode = "dry" | "dryWet" | "wet";
@@ -54,7 +53,7 @@ const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const AudioDemo = ({ demo, index }: Props) => {
+const AudioDemo = ({ demo }: Props) => {
   const [mode, setMode] = useState<Mode>("dryWet");
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -97,6 +96,24 @@ const AudioDemo = ({ demo, index }: Props) => {
 
   const availableModes = MODE_ORDER.filter((m) => !!stemUrl(demo, m));
   const anyStem = availableModes.length > 0;
+
+  /* A radiogroup is a single tab stop that the arrow keys move through — say
+     "radio, 1 of 3" to a screen reader and then ignore ArrowRight and you have
+     lied about the control. Selection follows focus, per the APG. */
+  const onModeKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const i = availableModes.indexOf(mode);
+    if (i < 0) return;
+    const last = availableModes.length - 1;
+    let next: number | null = null;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") next = i === last ? 0 : i + 1;
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = i === 0 ? last : i - 1;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = last;
+    if (next === null) return;
+    e.preventDefault();
+    setMode(availableModes[next]);
+    (e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]:not(:disabled)')[next])?.focus();
+  };
 
   const setVisualPosition = (offset: number) => {
     const dur = durationRef.current;
@@ -423,13 +440,9 @@ const AudioDemo = ({ demo, index }: Props) => {
 
   return (
     <article
-      className="grid md:grid-cols-[minmax(70px,90px)_1fr] gap-4 md:gap-6 pt-[30px] pb-[26px]"
+      className="pt-[30px] pb-[26px]"
       style={{ borderTop: "1px solid rgba(42,23,30,0.18)" }}
     >
-      <div className="font-mono font-semibold text-[10px] tabular-nums tracking-[0.18em] uppercase text-[color:var(--ink-3)] md:pt-1.5">
-        {String(index + 1).padStart(2, "0")} / demo
-      </div>
-
       <div>
         <h4 className="font-editorial italic text-[23px] leading-[1.25] text-[color:var(--ink)] mb-2">
           {demo.title}
@@ -500,9 +513,21 @@ const AudioDemo = ({ demo, index }: Props) => {
           )}
         </div>
 
+        {/* A three-way toggle, so the group is a radiogroup: the underline and
+            the ink weight say which stem is playing to anyone looking at it,
+            and aria-checked says the same thing to anyone who isn't. The
+            buttons carry their own padding — as bare 15px-wide labels they
+            were the smallest hit targets on the site. */}
         {anyStem && (
-          <div className="mt-3 flex items-baseline gap-4 font-mono font-semibold text-[10px] uppercase tracking-[0.16em]">
-            <span className="text-[9px] tracking-[0.18em] text-[color:var(--ink-4)]">mode</span>
+          <div
+            role="radiogroup"
+            aria-label={`playback stem for ${demo.title}`}
+            onKeyDown={onModeKeyDown}
+            className="mt-3 flex items-center gap-2 font-mono font-semibold text-[10px] uppercase tracking-[0.16em]"
+          >
+            <span className="text-[10px] tracking-[0.18em] text-[color:var(--ink-3)] mr-2">
+              mode
+            </span>
             {MODE_ORDER.map((m) => {
               const enabled = !!stemUrl(demo, m);
               const isActive = mode === m;
@@ -510,9 +535,12 @@ const AudioDemo = ({ demo, index }: Props) => {
                 <button
                   key={m}
                   type="button"
+                  role="radio"
+                  aria-checked={isActive}
+                  tabIndex={isActive ? 0 : -1}
                   disabled={!enabled}
                   onClick={() => setMode(m)}
-                  className={`pb-0.5 border-b transition-colors duration-[120ms] ease-editorial disabled:opacity-30 disabled:cursor-not-allowed ${
+                  className={`min-h-[30px] px-2 pb-0.5 border-b transition-colors duration-[120ms] ease-editorial disabled:opacity-30 disabled:cursor-not-allowed ${
                     isActive
                       ? "text-[color:var(--ink)] border-[color:var(--ink)]"
                       : "text-[color:var(--ink-3)] border-transparent hover:text-[color:var(--ink)]"
@@ -526,7 +554,7 @@ const AudioDemo = ({ demo, index }: Props) => {
         )}
 
         {!anyStem && (
-          <p className="mt-3 font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--ink-4)]">
+          <p className="mt-3 font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--ink-3)]">
             audio coming soon
           </p>
         )}

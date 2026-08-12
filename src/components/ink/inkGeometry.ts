@@ -37,9 +37,30 @@ const aspectOf = (src: string): number | null => {
 };
 
 /**
+ * Rendered mark width in px. Proportional to its box, gently boosted as the
+ * box narrows so the ink keeps its weight on a phone instead of shrinking to
+ * a speck: 1x for boxes 1280px and wider (desktop is untouched), ~1.5x around
+ * a 375px phone. Continuous, so marks keep their relative sizes to each other
+ * at every width. The renderer and the editor must both use this — a handle
+ * has to sit exactly on its mark.
+ *
+ * `lockToAnchor` opts a mark out of the boost. Marks pinned to a piece of
+ * artwork have to hold their exact relationship to it, and a boost changes
+ * their size *relative to the thing they are pinned to*. With it set, the
+ * whole composition is a pure zoom: same position, same proportion, every
+ * width. Marks that ride the page margins want the boost and don't set it.
+ */
+export const inkMarkWidthPx = (w: number, boxW: number, lockToAnchor = false): number => {
+  const boost = lockToAnchor
+    ? 1
+    : Math.min(1.7, Math.max(1, Math.pow(1280 / Math.max(boxW, 300), 0.35)));
+  return Math.max(6, w * boxW * boost);
+};
+
+/**
  * Where a mark's box lands in the viewport — the same arithmetic InkLayer uses
- * (centre at x/y of the anchor box, width a fraction of the anchor's width,
- * height from the brush's aspect), so a handle sits exactly on its mark.
+ * (centre at x/y of the anchor box, width from inkMarkWidthPx, height from the
+ * brush's aspect), so a handle sits exactly on its mark.
  */
 export const markBox = (m: InkItem, anchor: HTMLElement | null): Box | null => {
   if (!anchor) return null;
@@ -47,7 +68,7 @@ export const markBox = (m: InkItem, anchor: HTMLElement | null): Box | null => {
   if (!r.width) return null;
   const asp = aspectOf(m.src);
   if (asp == null) return null;
-  const w = m.w * r.width;
+  const w = inkMarkWidthPx(m.w, r.width, m.lockToAnchor);
   return {
     cx: Math.round((r.left + m.x * r.width) * 10) / 10,
     cy: Math.round((r.top + m.y * r.height) * 10) / 10,

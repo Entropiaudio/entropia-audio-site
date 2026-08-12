@@ -50,6 +50,8 @@ export default {
         'text-secondary': 'var(--text-secondary)',
         'text-tertiary':  'var(--text-tertiary)',
         copper:        'var(--accent-raw)',
+        // the copper that type below 24px must use — see index.css
+        'copper-ink':  'var(--accent-ink)',
         'copper-muted':'var(--accent-muted)',
         'border-soft': 'var(--border-soft)',
 

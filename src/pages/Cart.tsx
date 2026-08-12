@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import InkButton from "@/components/InkButton";
 import Reveal from "@/components/motion/Reveal";
 import { MOTION } from "@/components/motion/timing";
@@ -9,6 +10,7 @@ import { Moonbase } from "@/lib/moonbase";
 const cols = "grid-cols-[2.2fr_1fr_0.6fr_0.9fr_0.9fr]";
 
 const Cart = () => {
+  usePageTitle("cart");
   const { items, subtotal } = useCart();
   const navigate = useNavigate();
 
@@ -36,7 +38,7 @@ const Cart = () => {
               key="cart-empty"
               variant="up"
               {...MOTION.page.body0}
-              className="border-t border-hairline py-11"
+              className="rule-top-fade py-11"
             >
               <p className="font-mono text-[15.5px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] m-0 mb-6">
                 your cart is empty.
@@ -63,11 +65,11 @@ const Cart = () => {
                   {items.map((it) => (
                     <div
                       key={`${it.slug}:${it.license}`}
-                      className={`grid ${cols} gap-4 items-baseline border-t border-hairline py-5`}
+                      className={`grid ${cols} gap-4 items-baseline rule-top-fade py-5`}
                     >
                       <Link
                         to={`/plugins/${it.slug}`}
-                        className="font-mono text-[16px] text-[color:var(--ink)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-raw)]"
+                        className="font-mono text-[16px] text-[color:var(--ink)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-ink)]"
                       >
                         {it.name}
                       </Link>
@@ -90,11 +92,11 @@ const Cart = () => {
                 </div>
               </div>
 
-              <div className="flex items-end justify-between gap-8 flex-wrap border-t border-hairline pt-8 mt-4">
+              <div className="flex items-end justify-between gap-8 flex-wrap rule-top-fade pt-8 mt-4">
                 <button
                   type="button"
                   onClick={() => Moonbase.view_cart()}
-                  className="font-mono font-semibold text-[11px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-raw)]"
+                  className="font-mono font-semibold text-[11px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-ink)]"
                 >
                   edit cart →
                 </button>

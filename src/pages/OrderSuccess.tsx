@@ -1,11 +1,13 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import Reveal from "@/components/motion/Reveal";
 import { MOTION } from "@/components/motion/timing";
 import { useAuth } from "@/context/AuthContext";
 import { copy } from "@/copy";
 
 const OrderSuccess = () => {
+  usePageTitle("orderSuccess");
   const { id } = useParams();
   const { user } = useAuth();
   const order = user?.orders.find((o) => o.id === id);
@@ -62,7 +64,7 @@ const OrderSuccess = () => {
             variant="up"
             {...MOTION.section.headline}
             as="section"
-            className="border-t border-hairline pt-8 mb-14"
+            className="rule-top-fade pt-8 mb-14"
           >
             <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--ink-3)] mb-5">
               licenses issued
@@ -70,7 +72,7 @@ const OrderSuccess = () => {
             {issued.map((l) => (
               <div
                 key={l.key}
-                className="grid grid-cols-[1.4fr_0.7fr_2fr] gap-4 items-baseline border-t border-hairline py-4"
+                className="grid grid-cols-[1.4fr_0.7fr_2fr] gap-4 items-baseline rule-top-fade py-4"
               >
                 <span className="font-mono text-[15px] text-[color:var(--ink)]">{l.plugin}</span>
                 <span className="font-mono text-[12px] text-[color:var(--ink-3)]">{l.version}</span>
@@ -85,7 +87,7 @@ const OrderSuccess = () => {
             variant="up"
             {...MOTION.section.body}
             as="section"
-            className="border-t border-hairline pt-8 mb-16 max-w-[560px]"
+            className="rule-top-fade pt-8 mb-16 max-w-[560px]"
           >
             <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--ink-3)] mb-5">
               order
@@ -104,7 +106,7 @@ const OrderSuccess = () => {
                 </span>
               </div>
             ))}
-            <div className="flex justify-between items-baseline border-t border-hairline mt-3.5 pt-4">
+            <div className="flex justify-between items-baseline rule-top-fade mt-3.5 pt-4">
               <span className="font-mono text-[15px] text-[color:var(--ink)]">total</span>
               <span className="font-mono text-[16px] tabular-nums text-[color:var(--ink)]">
                 ${order.total.toFixed(2)}

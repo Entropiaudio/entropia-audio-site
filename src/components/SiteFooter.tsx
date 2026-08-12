@@ -9,7 +9,6 @@ import Logo from "./Logo";
 const SiteFooter = () => {
   const c = copy.footer;
   const { pathname } = useLocation();
-  const isHome = pathname === "/";
 
   const links = [
     { to: "/plugins/chaosverb", label: c.nav.chaosverb },
@@ -55,8 +54,8 @@ const SiteFooter = () => {
               "linear-gradient(90deg, transparent, rgba(42,23,30,0.28), transparent)",
           }}
         />
-        <span className="font-mono font-semibold text-[9px] uppercase tracking-[0.14em] text-[color:var(--ink-3)] text-center">
-          {isHome ? c.colophonHome : c.colophon} · {new Date().getFullYear()}
+        <span className="font-mono font-semibold text-[10px] uppercase tracking-[0.14em] text-[color:var(--ink-3)] text-center">
+          {c.colophon} · {new Date().getFullYear()}
         </span>
         <img
           src="/art/mark-footer.png"

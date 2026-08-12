@@ -51,7 +51,7 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
             {plugin.name}
           </Link>
           <span
-            className="font-mono font-semibold text-[9px] tracking-[0.14em] uppercase rounded-[10px] border px-2 py-[3px] whitespace-nowrap"
+            className="font-mono font-semibold text-[10px] tracking-[0.14em] uppercase rounded-[10px] border px-2 py-[3px] whitespace-nowrap"
             style={
               released
                 ? { color: "var(--ink-3)", borderColor: "var(--ink-line)" }
@@ -63,7 +63,7 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
         </div>
 
         <div
-          className="font-mono font-semibold text-[11.5px] tracking-[0.14em] uppercase mb-2.5"
+          className="font-mono font-semibold text-[12px] tracking-[0.14em] uppercase mb-2.5"
           style={{ color: plugin.accent }}
         >
           {card.tagline}
@@ -84,7 +84,7 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
                   <span className="font-mono text-[12px] tabular-nums line-through text-[color:var(--ink-3)]">
                     ${pricing.regularPrice}
                   </span>
-                  <span className="font-mono font-semibold text-[9px] uppercase tracking-[0.16em] text-[color:var(--accent-raw)]">
+                  <span className="font-mono font-semibold text-[10px] uppercase tracking-[0.16em] text-[color:var(--accent-ink)]">
                     {copy.chaosverb.card.saleNote}
                   </span>
                 </>
@@ -101,22 +101,27 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
 
           <span className="flex-1" />
 
-          {released ? (
-            <InkButton
-              variant="ghost"
-              size="sm"
-              onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
-            >
-              {card.secondaryButton}
+          {/* the pair wraps as a unit: on a narrow card the two buttons drop
+              below the price together, instead of the primary one peeling off
+              onto a line of its own */}
+          <div className="flex items-center gap-3">
+            {released ? (
+              <InkButton
+                variant="ghost"
+                size="sm"
+                onClick={() => Moonbase.download_product({ product_id: plugin.slug })}
+              >
+                {card.secondaryButton}
+              </InkButton>
+            ) : (
+              <InkButton variant="ghost" size="sm" to={`/plugins/${plugin.slug}#notify`}>
+                {card.secondaryButton}
+              </InkButton>
+            )}
+            <InkButton size="sm" to={`/plugins/${plugin.slug}`}>
+              {card.primaryButton}
             </InkButton>
-          ) : (
-            <InkButton variant="ghost" size="sm" to={`/plugins/${plugin.slug}#notify`}>
-              {card.secondaryButton}
-            </InkButton>
-          )}
-          <InkButton size="sm" to={`/plugins/${plugin.slug}`}>
-            {card.primaryButton}
-          </InkButton>
+          </div>
         </div>
       </div>
     </article>

@@ -28,6 +28,19 @@ export type PluginDemo = {
 /** "released" plugins are buyable; "in-development" ones only take signups. */
 export type PluginStatus = "released" | "in-development";
 
+/**
+ * One image + text block on a product page. `shot` is optional: give a section
+ * its own screenshot and that section shows it, leave it out and the section
+ * falls back to the plugin's main screenshot. `shotSize` is optional too — the
+ * frame measures the file if you don't declare it.
+ */
+export type PluginSection = {
+  heading: string;
+  body: string;
+  shot?: string;
+  shotSize?: { w: number; h: number };
+};
+
 export type Plugin = {
   slug: string;
   name: string;
@@ -39,12 +52,19 @@ export type Plugin = {
   /** crossed-out regular price; shown as "regular" when greater than price */
   regularPrice?: number;
   features: readonly string[];
-  sections?: readonly { heading: string; body: string }[];
+  sections?: readonly PluginSection[];
   demos: PluginDemo[];
   specs?: readonly { label: string; value: string }[];
   version: string;
   /** path under /public — the plugin UI, shown big on the product page. */
   screenshot: string;
+  /**
+   * The screenshot's natural pixel size. PluginShot needs it to crop the
+   * export's dirty edge ring in source pixels (so the trim is identical at
+   * every viewport) and to reserve the frame's box before the image loads.
+   * If you replace a screenshot, update these numbers to match the new file.
+   */
+  screenshotSize: { w: number; h: number };
   /** path under /public — the 3:2 art on the homepage card. */
   cardArt: string;
   /** the hue that codes this plugin on cards and in its numbered lists. */
@@ -53,6 +73,15 @@ export type Plugin = {
   downloadMacUrl?: string;
   downloadWinUrl?: string;
 };
+
+/* Fiction's story screenshots, indexed to match copy.fiction.stories. Save the
+   files under public/screenshots with exactly these names. Sizes are left
+   undeclared on purpose: PluginShot measures whatever you drop in, so a
+   re-export of the UI needs no code change. */
+const FICTION_STORY_SHOTS = [
+  "/screenshots/fiction-threshold.webp",
+  "/screenshots/fiction-more-than-a-gate.webp",
+];
 
 export const plugins: Plugin[] = [
   {
@@ -79,8 +108,11 @@ export const plugins: Plugin[] = [
     ],
     version: "1.0.0",
     screenshot: "/screenshots/chaosverb.webp",
+    screenshotSize: { w: 1249, h: 554 },
     cardArt: "/screenshots/chaosverb-card.webp",
-    accent: "var(--accent-raw)",
+    // the accent is set as *type* on the cards (tagline, status chip), so it
+    // has to be the readable copper, not the rule-and-border one
+    accent: "var(--accent-ink)",
   },
   {
     slug: "fiction",
@@ -89,9 +121,21 @@ export const plugins: Plugin[] = [
     tagline: copy.fiction.tagline,
     shortDescription: copy.fiction.shortDescription,
     features: copy.fiction.features,
+    // one screenshot per story, in the order the stories appear in copy.ts:
+    // the threshold curve being drawn for the variable-threshold block, the
+    // COLOR + ARP + GRAIN DELAY panels for "much more than a gate".
+    sections: copy.fiction.stories.map((s, i) => ({
+      ...s,
+      shot: FICTION_STORY_SHOTS[i],
+    })),
     demos: [],
+    specs: [
+      ...copy.fiction.specs,
+      { label: "Version", value: "1.42.0 · still moving" },
+    ],
     version: "1.42.0",
     screenshot: "/screenshots/fiction.webp",
+    screenshotSize: { w: 1306, h: 713 },
     cardArt: "/screenshots/fiction-card.webp",
     accent: "var(--section-motion)",
   },

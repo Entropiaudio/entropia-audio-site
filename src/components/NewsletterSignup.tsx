@@ -50,14 +50,14 @@ const NewsletterSignup = ({ id, subline }: NewsletterSignupProps) => {
   return (
     <div
       data-ink-anchor="Notify"
-      className="relative diag-band-top"
+      className="relative diag-band"
       style={{
         background: "var(--tan)",
         paddingTop: "calc(3vw + 56px)",
-        paddingBottom: "96px",
+        paddingBottom: "calc(3vw + 84px)",
       }}
     >
-      <LabelledSection id={id} label={c.eyebrow} labelTone="deep" labelPad="10px" className="scroll-mt-8">
+      <LabelledSection id={id} label={c.eyebrow} labelTone="copper" labelPad="10px" className="scroll-mt-8">
         <div className="max-w-[640px]">
           <Reveal variant="up" {...MOTION.section.headline}>
             <h3
@@ -78,7 +78,7 @@ const NewsletterSignup = ({ id, subline }: NewsletterSignupProps) => {
 
           <Reveal variant="up" {...MOTION.section.cta}>
             {submitted ? (
-              <p className="state-fade font-mono font-semibold text-[13px] uppercase tracking-[0.16em] text-[color:var(--accent-deep)] m-0">
+              <p className="state-fade font-mono font-semibold text-[13px] uppercase tracking-[0.16em] text-[color:var(--accent-ink)] m-0">
                 {c.successInline}
               </p>
             ) : (
@@ -88,6 +88,7 @@ const NewsletterSignup = ({ id, subline }: NewsletterSignupProps) => {
                     <span className="sr-only">email</span>
                     <input
                       type="email"
+                      autoComplete="email"
                       required
                       value={email}
                       onChange={(e) => {
@@ -97,6 +98,7 @@ const NewsletterSignup = ({ id, subline }: NewsletterSignupProps) => {
                       placeholder={c.placeholder}
                       aria-label="email address"
                       aria-invalid={error ? true : undefined}
+                      aria-describedby={error ? `${id ?? "notify"}-error` : undefined}
                       className="field-ink w-full"
                     />
                   </label>
@@ -104,8 +106,15 @@ const NewsletterSignup = ({ id, subline }: NewsletterSignupProps) => {
                     {busy ? "…" : c.button}
                   </InkButton>
                 </form>
+                {/* role="alert" so the failure is spoken, not just printed —
+                    the field is aria-describedby this same node, so it's also
+                    read back on refocus */}
                 {error && (
-                  <p className="mt-4 font-mono font-medium text-[13px] tracking-[0.04em] text-[color:var(--state-error)]">
+                  <p
+                    id={`${id ?? "notify"}-error`}
+                    role="alert"
+                    className="mt-4 font-mono font-medium text-[13px] tracking-[0.04em] text-[color:var(--state-error)]"
+                  >
                     {error}
                   </p>
                 )}

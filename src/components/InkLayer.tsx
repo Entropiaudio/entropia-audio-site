@@ -1,7 +1,8 @@
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useLocation } from "react-router-dom";
 import { InkItem, eraseFor } from "@/data/inkMarks";
 import { getInkPages, subscribeInkPages } from "@/lib/inkStore";
+import { inkMarkWidthPx } from "./ink/inkGeometry";
 import { inkPageKey } from "./ink/inkRoutes";
 
 /**
@@ -119,6 +120,14 @@ const makeMarkEl = (it: InkItem): HTMLElement => {
   return el;
 };
 
+/* Front ink is a desktop luxury: it paints OVER type, which only works while
+   there's whitespace beside the type to land on. Below this width every box
+   is full of text, so front marks render at the mid depth instead — same
+   spot, same blend, under the words rather than across them. (This is also
+   the exact range where the hamburger menu exists, so demoted marks can never
+   float over the open panel.) */
+const NARROW_QUERY = "(max-width: 767px)";
+
 const InkLayer = () => {
   const { pathname } = useLocation();
   const hostRef = useRef<HTMLDivElement | null>(null);
@@ -127,6 +136,14 @@ const InkLayer = () => {
   // INK_PAGES and never notifies, in dev the editor swaps it live.
   const pages = useSyncExternalStore(subscribeInkPages, getInkPages, getInkPages);
   const items = page ? pages[page] : undefined;
+
+  const [narrow, setNarrow] = useState(() => window.matchMedia(NARROW_QUERY).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(NARROW_QUERY);
+    const onChange = () => setNarrow(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -237,16 +254,22 @@ const InkLayer = () => {
     /** Marks living in a shell-level layer, so their box has to be measured
      *  against the anchor rather than inherited from it. */
     const pinned: Array<{ it: InkItem; el: HTMLElement }> = [];
+    /** Marks living inside an overlay (or the mount): centre stays a CSS
+     *  percentage of that box, but width is set in px by the layout pass so
+     *  the phone-size boost in inkMarkWidthPx applies to every depth. */
+    const flowed: Array<{ it: InkItem; el: HTMLElement }> = [];
     const erasedMarks: Array<{ it: InkItem; el: HTMLCanvasElement; painted: number }> = [];
 
     const place = (el: HTMLElement, box: HTMLElement, it: InkItem) => {
       el.style.left = `${it.x * 100}%`;
       el.style.top = `${it.y * 100}%`;
-      el.style.width = `${it.w * 100}%`;
       box.appendChild(el);
+      flowed.push({ it, el });
     };
 
-    for (const [i, it] of items.entries()) {
+    for (const [i, raw] of items.entries()) {
+      const it: InkItem =
+        narrow && raw.layer === "front" ? { ...raw, layer: "mid" } : raw;
       const anchor = anchorOf(it.anchor);
       if (!anchor) continue; // section not on this page (e.g. moonbase still loading)
       const el = makeMarkEl(it);
@@ -282,7 +305,12 @@ const InkLayer = () => {
         const a = anchor.getBoundingClientRect();
         el.style.left = `${a.left - base.left + it.x * a.width}px`;
         el.style.top = `${a.top - base.top + it.y * a.height}px`;
-        el.style.width = `${Math.max(6, it.w * a.width)}px`;
+        el.style.width = `${inkMarkWidthPx(it.w, a.width, it.lockToAnchor)}px`;
+      }
+      for (const { it, el } of flowed) {
+        const box = el.parentElement;
+        if (!box) continue;
+        el.style.width = `${inkMarkWidthPx(it.w, box.getBoundingClientRect().width, it.lockToAnchor)}px`;
       }
       for (const m of erasedMarks) {
         const w = m.el.getBoundingClientRect().width || 600;
@@ -324,7 +352,7 @@ const InkLayer = () => {
       for (const el of created) el.remove();
       for (const fn of cleanups) fn();
     };
-  }, [items]);
+  }, [items, narrow]);
 
   if (!items?.length) return null;
   // No z-index on the mount, on purpose: it would isolate the marks' blending

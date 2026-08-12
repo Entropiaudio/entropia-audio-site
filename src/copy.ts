@@ -17,13 +17,41 @@
  *   - prices and version numbers are numbers, not text. no quotes around them.
  *   - if you break the file, the browser shows a red error. just fix and save.
  *
+ * finding the placeholder text:
+ *   - any block marked  DRAFT  was written by an assistant as scaffolding,
+ *     not by us. search this file for "DRAFT" to find every one, rewrite the
+ *     text in your own voice, then delete that DRAFT line.
+ *
  * the only thing NOT in this file:
- *   - the browser tab title and SEO description, which live in `index.html`
- *     at the project root. there's a comment up top there showing where.
+ *   - the site's default tab title and SEO description, which live in
+ *     `index.html` at the project root. there's a comment up top there showing
+ *     where. (the per-page tab titles ARE here, under `tabTitles` below.)
  *
  * ============================================================================ */
 
 export const copy = {
+
+  /* -------------------------------------------------------------------------
+   * browser tab titles, one per page
+   *
+   * what shows in the browser tab and in google results. each page's name gets
+   * the suffix added to it automatically, so "cart" becomes
+   * "cart · entropia audio". the homepage keeps the title from index.html.
+   * ------------------------------------------------------------------------- */
+  tabTitles: {
+    suffix: " · entropia audio",
+    chaosverb: "Chaosverb, every destination one reverb",
+    fiction: "Fiction, spectral gate",
+    about: "about",
+    cart: "cart",
+    checkout: "checkout",
+    account: "your account",
+    activate: "activate your licence",
+    orderSuccess: "order confirmed",
+    eula: "licence agreement",
+    privacy: "privacy policy",
+    notFound: "page not found",
+  },
 
   /* -------------------------------------------------------------------------
    * top header (shows on every page)
@@ -50,56 +78,59 @@ export const copy = {
     heroCta: "Explore plugins",
 
     /* the plugin grid */
-    pluginsEyebrow: "VST3 · Made loud on purpose",
     pluginsHeadline: "The plugins",
-
-    /* three lines from the beta crew */
-    quotes: [
-      {
-        body: "The chaos engine is the first randomizer that makes musical decisions. I stopped programming automation.",
-        source: "beta crew, 2am",
-      },
-      {
-        body: "Chaosverb on the drum bus, chaos at nine o'clock. It's the room I kept pretending my samples had.",
-        source: "mix engineer, allegedly sleeping",
-      },
-      {
-        body: "Fiction flipped is my new favorite wrong answer.",
-        source: "sound designer, field notes",
-      },
-    ],
-
-    /* the tan band at the foot of the page */
-    approachEyebrow: "The approach",
-    approach: [
-      {
-        heading: "Measured, not vibed",
-        body: "Every release ships with null tests, BS.1770 loudness checks, and a changelog that admits what was broken.",
-      },
-      {
-        heading: "One shell, no relearning",
-        body: "Same sidebar, same knobs, same metering in every plugin. Your hands already know the next one.",
-      },
-      {
-        heading: "Trials that respect you",
-        body: "Seven days, full quality, no nag screens mid-session. If it earns a place in your template, buy it.",
-      },
-    ],
   },
 
   /* -------------------------------------------------------------------------
    * about page  (/about)
+   *
+   * the page reads top to bottom: headline → the message → the two of you
+   * (a photo and a story each) → the closing block → contact.
    * ------------------------------------------------------------------------- */
   about: {
-    eyebrow: "// about",
     headlineLine1: "an introduction",
     headlineLine2: "and a little message from us",
-    paragraph1:
-      "entropia audio is a studio of two. each of us had our own individual journey in the audio world, until we discovered that we had a shared dream: making the tools we wished existed.",
-    paragraph2:
-      "yeah so thats about it. we have good plugins. try them and unleash the chaos!",
-    paragraph3:
-      "we handle everything personally, from development to socials. if you have any feedback or questions, hit us up.",
+
+    /* the opening paragraph, set large and italic. want a plain follow-up
+       under it? add a `paragraph: "your text"` line right after `lede` and
+       the page shows it; leave it out and it doesn't. */
+    lede: "entropia audio is a studio of two. each of us had our own individual journey in the audio world, until we discovered that we had a shared dream: making the tools we wished existed.",
+
+    /* the two of you, at full story scale. each entry: the small label over
+       the name, the name itself, one italic line, then the story — every
+       string in `story` is its own paragraph, add or remove as you like.
+       photos: public/team/evyatar.jpg and public/team/noam.jpg — the frames
+       find them by first name, any capitalisation. */
+    teamHeadline: "the two of us.",
+    team: [
+      {
+        name: "Evyatar Eshel",
+        half: "one half",
+        story: [
+          "Evyatar is an established electronic music producer, DJ, mixing and mastering engineer and a teacher. after almost 10 years in the industry, his journey has led him to geek out about digital audio processing so hard that the only logical next step was to actually do something about it.",
+        ],
+      },
+      {
+        name: "Noam Ben Shabat",
+        half: "the other half",
+        story: [
+          "Noam is a renowned mixing and mastering engineer and ambient music producer. with over 15 years in the industry, working on the music of the best-known names in the Israeli pop and electronic music scene, millions of streams and thousands of hours of studio flight time, Noam knows exactly what the person sitting in the studio sweet spot needs.",
+        ],
+      },
+    ],
+    /* the portraits' alt text, for screen readers. the name and half slot in
+       from the entries above. */
+    portraitAlt: (name: string, half: string) => `${name}, ${half} of entropia audio`,
+
+    /* the closing block: a copper stroke, the big serif line, the summation
+       paragraph, your signature, and a pointer at the plugins. */
+    /* DRAFT — assistant text. rewrite in your voice, keep the key. */
+    visionLine: "precise tools for unpredictable music.",
+    summation:
+      "that's us. we genuinely love this stuff, and we make the plugins we always wanted to use. we handle everything personally, from development to socials. if you have a query or feedback, hit us up.",
+    signoff: "- evyatar & noam",
+    summationCta: "go try the plugins",
+
     contactEyebrow: "contact",
     contactSubline: "we read everything. we mostly reply.",
   },
@@ -131,7 +162,7 @@ export const copy = {
     sections: [
       {
         heading: "from mixing to sound design.",
-        body: "back the chaos off and it's a clean, three-dimensional reverb you can put on anything: a pad, a snare, your questionable vocal recordings. push it up and wierd stuff begins to happen, and the sounds you thought you knew begin to spiral out of control. the same plugin across a whole project, doing different jobs.",
+        body: "back the chaos off and it's a clean, three-dimensional reverb you can put on anything: a pad, a snare, your questionable vocal recordings. push it up and weird stuff begins to happen, and the sounds you thought you knew begin to spiral out of control. the same plugin across a whole project, doing different jobs.",
       },
       {
         heading: "made with care",
@@ -186,7 +217,7 @@ export const copy = {
       status: "v1.0.0",
       tagline: "Every destination, one reverb",
       blurb:
-        "a gorgeous reverb that can bring any sound to life — and a chaos engine that can randomize every parameter on the device, on the fly.",
+        "a gorgeous reverb that can bring any sound to life - and a chaos engine that can randomize every parameter on the device, on the fly.",
       saleNote: "launch sale",
       primaryButton: "see Chaosverb",
       secondaryButton: "try free",
@@ -196,26 +227,57 @@ export const copy = {
   /* -------------------------------------------------------------------------
    * fiction plugin  (/plugins/fiction) — not released yet
    *
-   * features: 4 numbered bullets shown big on the product page.
-   * the page has no price and no cart; it ends on the mailing-list block.
+   * the page mirrors the Chaosverb layout: sticky strip, the interface first,
+   * then name + pitch, features, two image/text stories, specifications, and
+   * the mailing list where Chaosverb has its trial card. no price and no cart
+   * anywhere.
+   *
+   * features: 4 numbered bullets. stories: 2 image+text blocks. specs: the
+   * technical table.
+   *
+   * optional blocks: a `screenshotCaption: "..."` line under the interface,
+   * and a `usesEyebrow: "..."` + `uses: [ {heading, body}, ... ]` grid on a
+   * tan band after the stories. they're not in the file right now — add them
+   * back and the page shows them again; leave them out and it doesn't.
    * ------------------------------------------------------------------------- */
   fiction: {
     name: "Fiction",
     headline: "make any sound dreamy",
-    tagline: "much more than a gate",
+    tagline: "a different story for every signal",
     shortDescription:
-      "Fiction features a spectral gate, color pitch quantization effect and a grain delay, all in one. this makes Fiction fit for every kind of sound or mission, from simple cleanup and tone control to complete spectral manipulation.",
+      "Fiction features a spectral gate, color pitch quantization effect and a grain delay, all in one. this makes Fiction fit for every kind of sound or mission, from simple cleanups and tone control to complete spectral manipulation.",
 
     status: "coming soon",
     notifyLink: "get notified",
-    screenshotCaption: "the interface at v1.42.0 · still moving",
 
     featuresEyebrow: "what it does",
     features: [
       "per-frequency gating - every band opens and closes on its own threshold.",
-      "sidechain another source to spectrally seperate sound from each other",
+      "sidechain another source to spectrally separate sounds from each other",
       "COLOR engine - make any sound in tune with per frequency pitch quantization",
       "DELAY - use grain delay for some extra glitter and depth",
+    ],
+
+    /* the pitch, in longform — two image + text blocks, like Chaosverb's */
+    /* DRAFT — assistant text. rewrite in your voice, keep the keys. */
+    stories: [
+      {
+        heading: "the first dynamic tool with a variable threshold",
+        body: "the thought that inspired this device was: 'what if I could change the threshold of a spectral dynamic device like I change an eq?'. while FFT spectral processing is not a new concept, changing the user's interaction with the known threshold control opens up a completely new path to gating. from cleanups and natural tone shifts to hipassing and lowpassing with gating and not a filter.",
+      },
+      {
+        heading: "much more than a gate",
+        body: "Fiction is built first and foremost as a production and sound design tool. gate controls are tuned that way so that extreme settings produce weird, but satisfying, artifacts. on top of that, fiction includes a color engine and a grain delay, to really tap into that granular and spectral sound signature present in genres like color bass, botanica, petalcore and ambient music.",
+      },
+    ],
+
+    /* the technical table. DRAFT — the format and OS lines are assumptions
+       copied from Chaosverb; correct them before release. */
+    specsEyebrow: "specifications",
+    specs: [
+      { label: "Format", value: "VST3" },
+      { label: "OS", value: "Windows 10+ / macOS 10.13+ (64-bit)" },
+      { label: "Status", value: "in development" },
     ],
 
     notifySubline: "first word on Fiction goes to the list.",
@@ -223,9 +285,9 @@ export const copy = {
     /* the homepage card */
     card: {
       status: "in development",
-      tagline: "Gate, but spectral",
+      tagline: "A Different Story for Every Signal",
       blurb:
-        "per-frequency gating with a COLOR stage. flip it to keep only the quiet stuff. the next one out of the workshop.",
+        "one of a kind spectral gate, color pitch quantization effect and grain delay, all in one",
       price: "coming soon",
       primaryButton: "preview",
       secondaryButton: "get notified",
@@ -251,6 +313,30 @@ export const copy = {
   },
 
   /* -------------------------------------------------------------------------
+   * account page  (/account)
+   *
+   * the logged-out side shows sign in / create account; the logged-in side
+   * shows one link into the moonbase dashboard, where everything lives.
+   * ------------------------------------------------------------------------- */
+  account: {
+    signInTitle: "sign in",
+    signInBody: "access your licenses and downloads.",
+    signInCta: "sign in",
+    signInSwitch: "no account? create one →",
+    signUpTitle: "create account",
+    signUpBody: "set up an entropia audio account.",
+    signUpCta: "create account",
+    signUpSwitch: "already have an account? sign in →",
+    signOut: "sign out →",
+    /* the single dashboard link */
+    /* DRAFT — assistant text. rewrite in your voice, keep the keys. */
+    dashboardEyebrow: "licenses, orders & settings",
+    dashboardBody:
+      "license keys, installers, order history, receipts and account settings live in one moonbase dashboard.",
+    dashboardCta: "open your dashboard",
+  },
+
+  /* -------------------------------------------------------------------------
    * footer (every page)
    * ------------------------------------------------------------------------- */
   footer: {
@@ -263,9 +349,8 @@ export const copy = {
       eula: "eula",
       privacy: "privacy",
     },
-    /* the small line centred on the hairline. `home` runs on the front page. */
+    /* the small line centred on the hairline, on every page */
     colophon: "© entropia audio · unleashing chaos",
-    colophonHome: "made loud on purpose · unleashing chaos",
   },
 
   /* -------------------------------------------------------------------------

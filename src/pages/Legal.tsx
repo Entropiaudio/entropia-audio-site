@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import SiteLayout from "@/components/SiteLayout";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import Reveal from "@/components/motion/Reveal";
 import { MOTION } from "@/components/motion/timing";
 import { copy } from "@/copy";
@@ -12,6 +13,7 @@ const tabs: { kind: Kind; to: string; label: string }[] = [
 ];
 
 const Legal = ({ kind }: { kind: Kind }) => {
+  usePageTitle(kind);
   const c = copy.legal[kind];
 
   return (
@@ -51,7 +53,7 @@ const Legal = ({ kind }: { kind: Kind }) => {
           </h1>
 
           <Reveal variant="up" delay={MOTION.page.headline2.delay} duration={MOTION.duration.base}>
-            <p className="font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--ink-4)] m-0 mb-7">
+            <p className="font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] m-0 mb-7">
               {c.lastUpdated}
             </p>
           </Reveal>
@@ -69,7 +71,7 @@ const Legal = ({ kind }: { kind: Kind }) => {
               duration={MOTION.duration.base}
               delay={i * MOTION.stagger.list}
               as="article"
-              className="border-t border-hairline py-6"
+              className="rule-top-fade py-6"
             >
               <h2 className="font-editorial italic text-[19px] text-[color:var(--ink)] mb-3">
                 {s.heading}
