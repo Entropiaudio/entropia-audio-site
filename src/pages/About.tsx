@@ -20,7 +20,7 @@ import { copy } from "@/copy";
    slides to 40% to put him in the middle of the frame. Evyatar's portrait
    crop is fine at the default centre. */
 const TEAM_PHOTOS: Record<string, { src: string; pos?: string }> = {
-  evyatar: { src: "/team/evyatar.jpg" },
+  evyatar: { src: "/team/evyatar.png" },
   noam: { src: "/team/noam.jpg", pos: "40% 50%" },
 };
 
@@ -35,9 +35,13 @@ type TeamMember = {
 
 /* One of us at the story-row scale the plugin pages use: the portrait as a
    printed object on one side, the name and story on the other, the two rows
-   mirrored like a book spread. The photos are one B&W and one colour shot
-   from different cameras — grayscale plus multiply prints both in the same
-   ink on the same paper, which is what lets them share a page. */
+   mirrored like a book spread. The photos keep their own colour; the frame
+   only grades their end points onto the site's palette: multiply against
+   the parchment frame pins the whites to paper (nothing prints brighter
+   than the page), and the ink `screen` layer over the print lifts the
+   blacks to the plum the site writes with. Both shots sit on near-black
+   backdrops, so their grounds land exactly on --ink — the portraits read
+   as dark plates the way the plugin screenshots do. */
 const TeamRow = ({ person, index }: { person: TeamMember; index: number }) => {
   const reversed = index % 2 === 1;
   const photo = TEAM_PHOTOS[person.name.trim().split(/\s+/)[0].toLowerCase()];
@@ -75,10 +79,19 @@ const TeamRow = ({ person, index }: { person: TeamMember; index: number }) => {
               loading="lazy"
               decoding="async"
               style={{ objectPosition: photo?.pos }}
-              className="absolute inset-0 w-full h-full object-cover grayscale mix-blend-multiply"
+              className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
               }}
+            />
+            {/* the black-point grade: `screen` with ink can only LIFT values,
+                so the photo's blacks rise to the site's plum while highlights
+                barely move (parchment gains ~1/255). Harmless over the empty
+                fallback frame too. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none mix-blend-screen"
+              style={{ background: "var(--ink)" }}
             />
           </div>
         </div>
