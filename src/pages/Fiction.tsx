@@ -16,9 +16,12 @@ import { copy } from "@/copy";
  * The layout mirrors Chaosverb's: sticky strip, the interface front and
  * centre, name + pitch, features, two image/text stories, the tan "three ways
  * in" band, specifications — and the mailing list where Chaosverb has its
- * trial card. No price, no cart, no trial anywhere. The mulberry accent
- * (--section-motion) codes the whole page as "in development", the way copper
- * codes Chaosverb as shipping.
+ * trial card. No price, no cart, no trial anywhere. Fiction's signature
+ * mulberry (--fiction-violet-ink, from its own spectrum wash) codes the page:
+ * the h1 pitch, the solid status chips, the numerals, and the hero stain —
+ * the way Chaosverb's slate blue codes its page (there the headline moment is
+ * the listen band's, since that page's h1 shares a block with the price).
+ * Copper stays the action voice on both.
  */
 
 /* One story at the Chaosverb scale: the interface on one side, the pitch on
@@ -105,7 +108,12 @@ const Fiction = () => {
             {plugin.name}
           </span>
           <span className="flex-1" />
-          <span className="chip" style={{ color: plugin.accent, borderColor: plugin.accent }}>
+          {/* filled, not outlined: the status is the page's flag, solid in
+              Fiction's mulberry with paper caps (6.5:1) */}
+          <span
+            className="chip"
+            style={{ color: "var(--paper)", background: plugin.accent, borderColor: plugin.accent }}
+          >
             {c.status}
           </span>
           <InkButton size="sm" magnetic href="#notify">
@@ -119,7 +127,14 @@ const Fiction = () => {
         data-ink-anchor="Fiction preview"
         className="relative px-[3.2vw] pt-14 pb-16"
         style={{
+          // Fiction's mulberry stains the hero — the plate's lavender
+          // spectrum bleeding into its page. Two passes of the tint over the
+          // parchment radial (full strength mid-field, ~2x at the corners),
+          // mirroring the blue wash on Chaosverb's hero. No type sits on
+          // this ground — the washed zone is safe to darken.
           background:
+            `radial-gradient(ellipse at 50% 24%, transparent 26%, ${plugin.accentWash} 62%), ` +
+            `radial-gradient(ellipse at 50% 24%, transparent 48%, ${plugin.accentWash} 100%), ` +
             "radial-gradient(ellipse at 50% 24%, var(--parchment-hi) 0%, var(--paper) 46%, var(--tan) 100%)",
         }}
       >
@@ -168,9 +183,12 @@ const Fiction = () => {
           labelAs="div"
         >
           <div className="max-w-[820px]" data-ink-anchor="Fiction copy">
+            {/* the page's one headline-scale signature-hue moment: the pitch
+                itself speaks in Fiction's mulberry (ink-grade, 6.5:1 on
+                paper) — Chaosverb's equivalent is its blue listen headline */}
             <h1
-              className="text-[clamp(38px,4.8vw,68px)] leading-[1.08] tracking-[-0.015em] text-[color:var(--ink)] m-0"
-              style={{ fontWeight: 470 }}
+              className="text-[clamp(38px,4.8vw,68px)] leading-[1.08] tracking-[-0.015em] m-0"
+              style={{ fontWeight: 470, color: plugin.accent }}
             >
               <RevealWords
                 as="span"
@@ -195,7 +213,7 @@ const Fiction = () => {
               <div className="flex items-center gap-[18px] mt-[30px] flex-wrap">
                 <span
                   className="chip"
-                  style={{ color: plugin.accent, borderColor: plugin.accent }}
+                  style={{ color: "var(--paper)", background: plugin.accent, borderColor: plugin.accent }}
                 >
                   {c.status}
                 </span>
@@ -222,7 +240,7 @@ const Fiction = () => {
               className="grid grid-cols-[48px_1fr] gap-7 rule-top-fade py-6"
             >
               <span
-                className="font-mono font-semibold text-[12px] tabular-nums pt-0.5"
+                className="font-mono font-semibold text-[15px] tabular-nums"
                 style={{ color: plugin.accent }}
               >
                 {String(i + 1).padStart(2, "0")}

@@ -478,16 +478,18 @@ const AudioDemo = ({ demo }: Props) => {
           >
             <div
               className="absolute inset-x-0 h-px"
-              style={{ background: "rgba(42,23,30,0.32)" }}
+              style={{ background: "var(--ink-4)" }}
             />
+            {/* fill + knob follow --demo-accent (the plugin's signature hue,
+                set by the listen band) and fall back to the copper deep */}
             <div
               ref={progressFillRef}
-              className="absolute h-px top-1/2 -translate-y-1/2 left-0 bg-[color:var(--accent-deep)]"
+              className="absolute h-px top-1/2 -translate-y-1/2 left-0 bg-[color:var(--demo-accent,var(--accent-deep))]"
               style={{ width: "0%" }}
             />
             <div
               ref={progressKnobRef}
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-[color:var(--accent-deep)] rounded-full"
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-[color:var(--demo-accent,var(--accent-deep))] rounded-full"
               style={{ left: "0%", opacity: anyStem ? 1 : 0 }}
             />
           </div>

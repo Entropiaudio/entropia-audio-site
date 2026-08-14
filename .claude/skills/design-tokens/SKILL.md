@@ -11,7 +11,7 @@ burnt-copper accent, hard 12° diagonals, paper grain over every surface. There 
 dark mode for the site chrome — the only dark surface is `plugin-surface`, reserved for
 plugin screenshots.
 
-Everything below is defined in [src/index.css](../../../src/index.css) (`:root`, ~163
+Everything below is defined in [src/index.css](../../../src/index.css) (`:root`, ~87
 custom properties) and exposed to Tailwind in
 [tailwind.config.ts](../../../tailwind.config.ts).
 
@@ -38,14 +38,28 @@ Plain CSS values, mapped to Tailwind colour names directly.
 | `--field` | `bg-field` | `#ECD9BD` | inset fields: inputs, tracks, meters |
 | `--tan` / `--clay` / `--umber` | `bg-tan` … | `#E2C5A1` / `#C59D74` / `#9A6A45` | banded sections, warm blocks |
 | `--ink` | `text-ink` | `#2A171E` | primary type + line |
-| `--ink-2/3/4` | `text-ink-2` … | ink at 74% / 52% / 32% | secondary, tertiary, faintest |
+| `--ink-2/3/4` | `text-ink-2` … | ink at 80% / 68% / 32% | secondary, tertiary, faintest |
 | `--accent-raw` | `text-copper` `bg-copper` | `#C25A1E` | the single accent — hover, focus, emphasis |
 | `--pop` | `text-pop` | `#F14E71` | the collage pink. One loud moment per page, max. |
 
 Also raw, no Tailwind class — use `var(--…)`: `--ink-line` (0.16) and `--ink-line-2`
-(0.30) for hairlines, `--accent-bright` / `--accent-deep` / `--accent-tint` /
-`--accent-muted`, `--plum`, `--plum-block` (the footer wedge), `--section-motion`
-(Fiction's mulberry — the last surviving per-section hue).
+(0.30) for hairlines, `--accent-bright` / `--accent-deep` / `--accent-ink` (the
+default copper for type below 24px) / `--accent-tint` / `--accent-muted`, `--plum`,
+`--plum-block` (the footer wedge).
+
+**Product signature hues** (raw, no Tailwind class): each plugin's own colour,
+sampled from its UI, coding the *product* wherever it appears — card tagline, solid
+status chip, feature numerals, demo transport, the hero stain, and one
+headline-scale moment per page (Fiction's h1; Chaosverb's listen headline). Copper
+remains the only *action* accent. Chaosverb: `--chaosverb-blue` `#4E7A8A` / `--chaosverb-blue-ink`
+`#2C5260` / `--chaosverb-blue-tint`. Fiction: `--fiction-violet` `#8A5A7E` /
+`--fiction-violet-ink` `#6C405F` (formerly `--section-motion`) /
+`--fiction-violet-tint`. The `*-ink` step is the only one that may carry type below
+24px (≥5:1 on tan, matching `--accent-ink`); the base step is for rules and arcs
+(the blue base clears 3:1 on paper only — 2.9:1 on tan, so keep blue-base marks off
+the tan band); tints are washes. Components reach these through `plugin.accent` / `plugin.accentWash`
+([src/data/plugins.ts](../../../src/data/plugins.ts)) rather than naming a product's
+token directly.
 
 States, warmed for paper: `--state-success` `#3E9A5E`, `--state-warning` `#C98A32`,
 `--state-error` `#C24A3A`, `--action-create` `#1F8F6B`.
@@ -134,9 +148,10 @@ Radius scale: buttons 4–6px, surfaces 8–12px (`rounded-sm/DEFAULT/md/lg` = 4
 - Body text is **unselectable by design** (editorial feel). Inputs, `code`, `pre`, and
   anything marked `.selectable` opt back in. If you add a surface with content a user
   needs to copy — a licence key, an error code, a price — mark it `.selectable`.
-- Contrast: ink-on-paper is the safe pairing. `--ink-3` (52%) and `--ink-4` (32%) fail
-  normal-text contrast on paper — they're for hairlines, ornament, and oversized
-  display type only.
+- Contrast: the ink ramp is tuned so every step that carries type clears 4.5:1 on the
+  darkest ground type ever sits on (`--tan`): `--ink-2` measures 6.4:1 on tan / 7.6:1
+  on paper, `--ink-3` 4.6:1 / 5.2:1. `--ink-4` (32%, ~2:1) is the one step below the
+  line — hairline ticks, ornament, disabled marks only, never type at any size.
 
 ## Known drift
 

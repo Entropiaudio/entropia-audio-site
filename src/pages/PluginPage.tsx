@@ -136,7 +136,16 @@ const PluginPage = () => {
         data-ink-anchor="Product hero"
         className="relative px-[3.2vw] pt-14 pb-[72px]"
         style={{
+          // the plugin's signature hue stains the hero — the plate bleeding
+          // into its page. Two passes of the tint over the parchment radial:
+          // the first reaches full strength mid-field, the second stacks on
+          // top of it toward the corners (~2x the tint at the far edge), so
+          // the first screen unmistakably carries the product's colour while
+          // the plate itself stays on clean parchment. No type sits on this
+          // ground — the washed zone is safe to darken.
           background:
+            `radial-gradient(ellipse at 50% 24%, transparent 26%, ${plugin.accentWash} 62%), ` +
+            `radial-gradient(ellipse at 50% 24%, transparent 48%, ${plugin.accentWash} 100%), ` +
             "radial-gradient(ellipse at 50% 24%, var(--parchment-hi) 0%, var(--paper) 46%, var(--tan) 100%)",
         }}
       >
@@ -219,7 +228,12 @@ const PluginPage = () => {
               as="li"
               className="grid grid-cols-[48px_1fr] gap-7 rule-top-fade py-6"
             >
-              <span className="font-mono font-semibold text-[12px] tabular-nums pt-0.5 text-[color:var(--accent-ink)]">
+              {/* the numerals carry the plugin's signature hue — same gesture
+                  as the Fiction page, so the two read as siblings */}
+              <span
+                className="font-mono font-semibold text-[15px] tabular-nums"
+                style={{ color: plugin.accent }}
+              >
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="font-mono text-[15.5px] leading-[1.65] tracking-[0.015em] text-[color:var(--ink)]">
@@ -252,14 +266,21 @@ const PluginPage = () => {
           background: "var(--tan)",
           paddingTop: "calc(3vw + 56px)",
           paddingBottom: "calc(3vw + 64px)",
+          // the demo transport (progress line, knob, level bars) plays in the
+          // plugin's signature hue — the ink-grade step, because it all sits
+          // on tan. AudioDemo and .eq read this var, copper-deep otherwise.
+          ["--demo-accent" as string]: plugin.accent,
         }}
       >
         <LabelledSection label={c.listenEyebrow} labelTone="copper" labelPad="10px">
           <div className="max-w-[780px]">
             <Reveal variant="up" {...MOTION.section.headline}>
+              {/* the page's one headline-scale signature-hue moment: the
+                  band where the plugin actually sounds speaks in its colour
+                  (ink-grade blue, 5.1:1 on tan) */}
               <h3
-                className="font-editorial italic text-[clamp(30px,3.2vw,48px)] leading-[1.05] text-[color:var(--ink)] mb-4"
-                style={{ fontWeight: 470 }}
+                className="font-editorial italic text-[clamp(30px,3.2vw,48px)] leading-[1.05] mb-4"
+                style={{ fontWeight: 470, color: plugin.accent }}
               >
                 {c.listenHeadline}
               </h3>
@@ -303,12 +324,14 @@ const PluginPage = () => {
       <LabelledSection id="try" label={c.tryEyebrow} className="pt-6 pb-[90px] scroll-mt-16">
         <div className="max-w-[780px]">
           <div className="relative overflow-hidden corner-cut rounded-lg border border-[color:var(--border-subtle)] bg-parchment-hi shadow-card px-8 py-10 md:px-12 md:py-11">
+            {/* the hatch is the plugin's signature wash — the same blue-over-
+                parchment pairing the Chaosverb UI itself makes with its copper
+                START button, which the card's CTA reprises on hover */}
             <div
               aria-hidden="true"
               className="absolute inset-0 pointer-events-none"
               style={{
-                background:
-                  "repeating-linear-gradient(102deg, rgba(194,90,30,0.10) 0 1.5px, transparent 1.5px 9px)",
+                background: `repeating-linear-gradient(102deg, ${plugin.accentWash} 0 1.5px, transparent 1.5px 9px)`,
               }}
             />
             <div className="relative">

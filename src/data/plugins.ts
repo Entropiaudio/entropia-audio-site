@@ -67,8 +67,18 @@ export type Plugin = {
   screenshotSize: { w: number; h: number };
   /** path under /public — the 3:2 art on the homepage card. */
   cardArt: string;
-  /** the hue that codes this plugin on cards and in its numbered lists. */
+  /**
+   * The hue that codes this plugin on cards and in its numbered lists — its
+   * signature colour, sampled from the plugin's own UI. Set as *type* (card
+   * tagline, status chip, numerals), so it must be the ink-grade step of the
+   * product family in index.css, never the raw one.
+   */
   accent: string;
+  /**
+   * The same signature hue as a low-alpha wash (the *-tint step). Product
+   * pages stain their hero edges with it; keep it out of anything textual.
+   */
+  accentWash: string;
   /** Public installer URLs. Leave undefined to show a "coming soon" state. */
   downloadMacUrl?: string;
   downloadWinUrl?: string;
@@ -110,9 +120,10 @@ export const plugins: Plugin[] = [
     screenshot: "/screenshots/chaosverb.webp",
     screenshotSize: { w: 1249, h: 554 },
     cardArt: "/screenshots/chaosverb-card.webp",
-    // the accent is set as *type* on the cards (tagline, status chip), so it
-    // has to be the readable copper, not the rule-and-border one
-    accent: "var(--accent-ink)",
+    // Chaosverb's signature slate blue — the hue of its slider fills. The
+    // -ink step, because the accent is set as *type* (tagline, numerals).
+    accent: "var(--chaosverb-blue-ink)",
+    accentWash: "var(--chaosverb-blue-tint)",
   },
   {
     slug: "fiction",
@@ -137,7 +148,10 @@ export const plugins: Plugin[] = [
     screenshot: "/screenshots/fiction.webp",
     screenshotSize: { w: 1306, h: 713 },
     cardArt: "/screenshots/fiction-card.webp",
-    accent: "var(--section-motion)",
+    // Fiction's signature mulberry — the hue of its spectrum wash and node
+    // badges. Same ink-grade rule as Chaosverb's blue.
+    accent: "var(--fiction-violet-ink)",
+    accentWash: "var(--fiction-violet-tint)",
   },
 ];
 

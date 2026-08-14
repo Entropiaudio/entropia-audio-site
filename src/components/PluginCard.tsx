@@ -55,7 +55,9 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
             style={
               released
                 ? { color: "var(--ink-3)", borderColor: "var(--ink-line)" }
-                : { color: plugin.accent, borderColor: plugin.accent }
+                : // filled in the plugin's signature hue, paper caps (6.5:1) —
+                  // matches the solid chip on its product page
+                  { color: "var(--paper)", background: plugin.accent, borderColor: plugin.accent }
             }
           >
             {card.status}

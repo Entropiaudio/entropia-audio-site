@@ -47,8 +47,8 @@
     /* ink — plum-black type + line.
        The ramp is tuned so every step that carries type clears 4.5:1 on the
        darkest ground type ever sits on (--tan). Measured on tan / paper:
-         ink-2  6.1 / 7.6      ink-3  4.6 / 5.2
-       --ink-4 is BELOW that line (2.5:1 on paper) and is decoration only —
+         ink-2  6.4 / 7.6      ink-3  4.6 / 5.2
+       --ink-4 is BELOW that line (~2:1 on paper) and is decoration only —
        hairline ticks, disabled marks. Never set type in it. */
     --ink:              #2A171E;
     --ink-2:            rgba(42, 23, 30, 0.80);
@@ -77,11 +77,28 @@
     --accent-muted:     rgba(194, 90, 30, 0.18);
     --pop:              #F14E71;
 
-    /* the one demoted section hue still in play — Fiction's mulberry.
-       Set as type on the Fiction page (status chip, numerals), so it carries
-       the same rule as --accent-ink: 5.0:1 on tan, 6.5:1 on paper. The lighter
-       #8A5A7E it replaces was 3.3:1 on tan. */
-    --section-motion:   #6C405F;
+    /* product signature hues — each plugin's own colour, sampled from its UI
+       and retuned for parchment. These code the PRODUCT wherever it appears
+       (card tagline, status chip, feature numerals, the demo transport);
+       copper stays the site's only ACTION accent — hover, focus, CTAs.
+         Chaosverb: the slate blue of its slider fills ("SPACE", the chaos
+                    sliders — UI value #5A8087).
+         Fiction:   the mulberry of its spectrum wash and node badges
+                    (UI value #8A5A7E; formerly --section-motion).
+       Same contrast contract as the coppers:
+         *-ink   the ONLY step that carries type below 24px. Blue 5.1:1 on
+                 tan, 6.6:1 on paper; violet 5.0:1 / 6.5:1 — the same bar
+                 --accent-ink clears.
+         base    rules, borders, arcs, fills. Blue 3.7:1 on paper ONLY (the
+                 --accent-raw class; 2.9:1 on tan — keep blue-base marks off
+                 the tan band). Violet 3.3:1 even on tan.
+         *-tint  washes and hatches only. */
+    --chaosverb-blue:      #4E7A8A;
+    --chaosverb-blue-ink:  #2C5260;
+    --chaosverb-blue-tint: rgba(78, 122, 138, 0.16);
+    --fiction-violet:      #8A5A7E;
+    --fiction-violet-ink:  #6C405F;
+    --fiction-violet-tint: rgba(138, 90, 126, 0.16);
 
     /* states, warmed for paper. Every one of these is only ever set as type —
        a form error, a confirmation line — so they follow the same rule as
@@ -834,7 +851,9 @@
 .eq > i {
   width: 2px;
   height: 100%;
-  background: var(--accent-deep);
+  /* the transport takes the plugin's signature hue when the page sets one
+     (see PluginPage's listen band); copper-deep is the neutral fallback */
+  background: var(--demo-accent, var(--accent-deep));
   border-radius: 1px;
   transform: scaleY(0.12);
   transform-origin: bottom;
