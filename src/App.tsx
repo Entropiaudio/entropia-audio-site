@@ -9,6 +9,7 @@ import ScrollToHash from "@/components/ScrollToHash";
 import Index from "./pages/Index.tsx";
 import PluginPage from "./pages/PluginPage.tsx";
 import Fiction from "./pages/Fiction.tsx";
+import Entropan from "./pages/Entropan.tsx";
 import About from "./pages/About.tsx";
 import Account from "./pages/Account.tsx";
 import Cart from "./pages/Cart.tsx";
@@ -31,9 +32,11 @@ const App = () => (
             <ScrollToHash />
             <Routes>
               <Route path="/" element={<Index />} />
-              {/* Fiction isn't out yet and has no storefront layout, so it
-                  claims its slug ahead of the generic product route. */}
+              {/* Fiction and Entropan aren't out yet and have no storefront
+                  layout, so they claim their slugs ahead of the generic
+                  product route. */}
               <Route path="/plugins/fiction" element={<Fiction />} />
+              <Route path="/plugins/entropan" element={<Entropan />} />
               <Route path="/plugins/:slug" element={<PluginPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/cart" element={<Cart />} />

@@ -42,6 +42,7 @@ export const copy = {
     suffix: " · entropia audio",
     chaosverb: "Chaosverb, every destination one reverb",
     fiction: "Fiction, spectral gate",
+    entropan: "Entropan, spectral auto-panner",
     about: "about",
     cart: "cart",
     checkout: "checkout",
@@ -59,9 +60,10 @@ export const copy = {
   header: {
     wordmark: "Entropia Audio",
     nav: {
-      /* the two products, linked from every page */
+      /* the products, linked from every page */
       chaosverb: "Chaosverb",
       fiction: "Fiction",
+      entropan: "Entropan",
       about: "about",
       account: "account",
       cart: "cart",
@@ -295,6 +297,75 @@ export const copy = {
   },
 
   /* -------------------------------------------------------------------------
+   * entropan plugin  (/plugins/entropan) — not released yet
+   *
+   * same page shape as Fiction's: sticky strip, the interface first, then
+   * name + pitch, features, two image/text stories, specifications, and the
+   * mailing list. no price and no cart anywhere.
+   *
+   * features: numbered bullets. stories: 2 image+text blocks. specs: the
+   * technical table. the same optional blocks as Fiction's work here too
+   * (screenshotCaption, usesEyebrow + uses).
+   * ------------------------------------------------------------------------- */
+  entropan: {
+    name: "Entropan",
+    headline: "set the stereo field in motion",
+    tagline: "movement, band by band",
+    shortDescription:
+      "Entropan splits your sound into five overlapping bands and gives each one its own panner. every band moves on its own shape, rate, depth and bias, so the low end can hold the middle while the highs drift wide - from gentle widening to full spectral swirl.",
+
+    status: "coming soon",
+    notifyLink: "get notified",
+
+    featuresEyebrow: "what it does",
+    /* DRAFT — assistant text from the v0.7.0 build. rewrite in your voice,
+       keep the keys. */
+    features: [
+      "five spectral bands - place each one by frequency, Q and lift, then set it moving",
+      "six motion shapes per band: sine, triangle, sample & hold, chaos, steps and envelope",
+      "a step sequencer with savable patterns, synced to the host or running free",
+      "wow, flutter and flux add tape-style drift on top of the panning",
+      "serial or parallel routing, per-band solo and bypass, and a global speed over everything",
+      "the CHAOS button - randomize the whole device, with undo for when it goes too far",
+    ],
+
+    /* the pitch, in longform — two image + text blocks, like Fiction's */
+    /* DRAFT — assistant text. rewrite in your voice, keep the keys. */
+    stories: [
+      {
+        heading: "a panner that thinks in bands",
+        body: "most auto-panners move the whole signal at once. Entropan splits it into five overlapping bands and moves each one separately - the low end can sit still while the mids sway and the highs wander. every band carries its own rate, depth, stereo bias and gain, right there on the curve, so the motion gets drawn exactly where the sound lives.",
+      },
+      {
+        heading: "six kinds of motion",
+        body: "each band picks its own modulator: sine and triangle for classic sweeps, sample & hold and steps for rhythm, chaos for slow unrepeatable drift, envelope to ride the input. patterns save and recall, everything syncs to your session or runs free, and wow, flutter and flux smear a little tape into the result. when you want somewhere new to start, the CHAOS button reshuffles the whole device.",
+      },
+    ],
+
+    /* the technical table. DRAFT — the format and OS lines are assumptions
+       copied from Fiction; correct them before release. */
+    specsEyebrow: "specifications",
+    specs: [
+      { label: "Format", value: "VST3" },
+      { label: "OS", value: "Windows 10+ / macOS 10.13+ (64-bit)" },
+      { label: "Status", value: "in development" },
+    ],
+
+    notifySubline: "first word on Entropan goes to the list.",
+
+    /* the homepage card */
+    card: {
+      status: "in development",
+      tagline: "Movement, Band by Band",
+      blurb:
+        "a spectral auto-panner - five bands, six motion shapes, tape wow and flutter, from gentle widening to full swirl",
+      price: "coming soon",
+      primaryButton: "preview",
+      secondaryButton: "get notified",
+    },
+  },
+
+  /* -------------------------------------------------------------------------
    * newsletter section (homepage)
    * ------------------------------------------------------------------------- */
   newsletter: {
@@ -344,6 +415,7 @@ export const copy = {
     nav: {
       chaosverb: "Chaosverb",
       fiction: "Fiction",
+      entropan: "Entropan",
       about: "about",
       account: "account",
       eula: "eula",

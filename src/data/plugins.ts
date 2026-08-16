@@ -93,6 +93,15 @@ const FICTION_STORY_SHOTS = [
   "/screenshots/fiction-more-than-a-gate.webp",
 ];
 
+/* Entropan's story screenshots, indexed to match copy.entropan.stories — the
+   per-band popover for "a panner that thinks in bands", the STEPS/CHAOS
+   modulator for "six kinds of motion". Same deal as Fiction's: save the files
+   under public/screenshots with exactly these names, sizes measure themselves. */
+const ENTROPAN_STORY_SHOTS = [
+  "/screenshots/entropan-bands.webp",
+  "/screenshots/entropan-motion.webp",
+];
+
 export const plugins: Plugin[] = [
   {
     slug: "chaosverb",
@@ -152,6 +161,35 @@ export const plugins: Plugin[] = [
     // badges. Same ink-grade rule as Chaosverb's blue.
     accent: "var(--fiction-violet-ink)",
     accentWash: "var(--fiction-violet-tint)",
+  },
+  {
+    slug: "entropan",
+    name: copy.entropan.name,
+    status: "in-development",
+    tagline: copy.entropan.tagline,
+    shortDescription: copy.entropan.shortDescription,
+    features: copy.entropan.features,
+    // one screenshot per story, in the order the stories appear in copy.ts
+    sections: copy.entropan.stories.map((s, i) => ({
+      ...s,
+      shot: ENTROPAN_STORY_SHOTS[i],
+    })),
+    demos: [],
+    specs: [
+      ...copy.entropan.specs,
+      { label: "Version", value: "0.7.0 · B106" },
+    ],
+    version: "0.7.0",
+    screenshot: "/screenshots/entropan.webp",
+    // PLACEHOLDER SIZE — the UI export isn't cut yet. When the real
+    // entropan.webp lands in public/screenshots, replace these numbers with
+    // that file's exact pixel size (PluginShot trims by them).
+    screenshotSize: { w: 1420, h: 890 },
+    cardArt: "/screenshots/entropan-card.webp",
+    // Entropan's signature moss — the glowing olive band in its analyzer.
+    // Same ink-grade rule as the other two.
+    accent: "var(--entropan-moss-ink)",
+    accentWash: "var(--entropan-moss-tint)",
   },
 ];
 

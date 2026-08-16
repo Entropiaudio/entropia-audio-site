@@ -85,13 +85,16 @@
                     sliders — UI value #5A8087).
          Fiction:   the mulberry of its spectrum wash and node badges
                     (UI value #8A5A7E; formerly --section-motion).
+         Entropan:  the moss green of its glowing active band (the olive
+                    bell + halo in its analyzer), retuned for parchment.
        Same contrast contract as the coppers:
          *-ink   the ONLY step that carries type below 24px. Blue 5.1:1 on
-                 tan, 6.6:1 on paper; violet 5.0:1 / 6.5:1 — the same bar
-                 --accent-ink clears.
+                 tan, 6.6:1 on paper; violet 5.0:1 / 6.5:1; moss 5.0:1 /
+                 6.5:1 — the same bar --accent-ink clears.
          base    rules, borders, arcs, fills. Blue 3.7:1 on paper ONLY (the
                  --accent-raw class; 2.9:1 on tan — keep blue-base marks off
-                 the tan band). Violet 3.3:1 even on tan.
+                 the tan band). Violet 3.3:1 even on tan. Moss 3.2:1 on
+                 paper ONLY (2.5:1 on tan — same rule as the blue).
          *-tint  washes and hatches only. */
     --chaosverb-blue:      #4E7A8A;
     --chaosverb-blue-ink:  #2C5260;
@@ -99,6 +102,9 @@
     --fiction-violet:      #8A5A7E;
     --fiction-violet-ink:  #6C405F;
     --fiction-violet-tint: rgba(138, 90, 126, 0.16);
+    --entropan-moss:       #75833F;
+    --entropan-moss-ink:   #4A5226;
+    --entropan-moss-tint:  rgba(117, 131, 63, 0.16);
 
     /* states, warmed for paper. Every one of these is only ever set as type —
        a form error, a confirmation line — so they follow the same rule as

@@ -117,6 +117,13 @@ const SiteHeader = ({ overlay = false }: SiteHeaderProps) => {
             {c.nav.fiction}
           </NavLink>
           <NavLink
+            to="/plugins/entropan"
+            className={navClass}
+            data-active={pathname === "/plugins/entropan" || undefined}
+          >
+            {c.nav.entropan}
+          </NavLink>
+          <NavLink
             to="/about"
             className={navClass}
             data-active={pathname === "/about" || undefined}
@@ -167,6 +174,9 @@ const SiteHeader = ({ overlay = false }: SiteHeaderProps) => {
             </NavLink>
             <NavLink to="/plugins/fiction" className={mobileNavLinkClass}>
               {c.nav.fiction}
+            </NavLink>
+            <NavLink to="/plugins/entropan" className={mobileNavLinkClass}>
+              {c.nav.entropan}
             </NavLink>
             <NavLink to="/about" className={mobileNavLinkClass}>
               {c.nav.about}
