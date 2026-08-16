@@ -309,6 +309,8 @@ export const copy = {
    * ------------------------------------------------------------------------- */
   entropan: {
     name: "Entropan",
+    /* DRAFT — the pitch trio (headline, tagline, shortDescription) is
+       assistant text too. rewrite in your voice, keep the keys. */
     headline: "set the stereo field in motion",
     tagline: "movement, band by band",
     shortDescription:
@@ -323,7 +325,7 @@ export const copy = {
     features: [
       "five spectral bands - place each one by frequency, Q and lift, then set it moving",
       "six motion shapes per band: sine, triangle, sample & hold, chaos, steps and envelope",
-      "a step sequencer with savable patterns, synced to the host or running free",
+      "a step sequencer with savable patterns, synced to your session or running free",
       "wow, flutter and flux add tape-style drift on top of the panning",
       "serial or parallel routing, per-band solo and bypass, and a global speed over everything",
       "the CHAOS button - randomize the whole device, with undo for when it goes too far",
@@ -334,7 +336,7 @@ export const copy = {
     stories: [
       {
         heading: "a panner that thinks in bands",
-        body: "most auto-panners move the whole signal at once. Entropan splits it into five overlapping bands and moves each one separately - the low end can sit still while the mids sway and the highs wander. every band carries its own rate, depth, stereo bias and gain, right there on the curve, so the motion gets drawn exactly where the sound lives.",
+        body: "most auto-panners move the whole signal at once. Entropan moves each band on its own - the low end can sit still while the mids sway and the highs wander. every band carries its own rate, depth, stereo bias and gain, right there on the curve, so the motion gets drawn exactly where the sound lives.",
       },
       {
         heading: "six kinds of motion",
