@@ -7,8 +7,8 @@ import { Moonbase } from "@/lib/moonbase";
 
 /**
  * One plugin, as a card on the home grid: the UI art on top, then the name,
- * the one-line pitch, the price, and two actions. The top-right corner is
- * sliced at the brand pitch; the whole card lifts a couple of pixels on hover.
+ * the one-line pitch, the price, and two actions. The whole card lifts a
+ * couple of pixels on hover.
  *
  * Released and in-development plugins share the shape — what changes is the
  * status chip, the accent hue, and whether the price row shows money or a
@@ -26,7 +26,7 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
 
   return (
     <article
-      className="group corner-cut overflow-hidden rounded-lg border border-[color:var(--border-subtle)] bg-parchment-hi shadow-card transition-[border-color,box-shadow,transform] duration-[200ms] ease-editorial hover:border-[color:var(--accent-raw)] hover:shadow-lift hover:-translate-y-0.5"
+      className="group overflow-hidden rounded-lg border border-[color:var(--border-subtle)] bg-parchment-hi shadow-card transition-[border-color,box-shadow,transform] duration-[200ms] ease-editorial hover:border-[color:var(--accent-raw)] hover:shadow-lift hover:-translate-y-0.5"
     >
       <Link
         to={`/plugins/${plugin.slug}`}

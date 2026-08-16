@@ -623,7 +623,7 @@
   }
 
   /* ---------- the hero's one CTA ----------
-     A notched box drawn in ink on the painting's clear field; it fills with
+     A box drawn in ink on the painting's clear field; it fills with
      ink on hover. Fraunces, because it sits with the headline, not with the
      technical labels. */
   .hero-cta {
@@ -637,7 +637,6 @@
     background: rgba(250, 236, 214, 0.42);
     border: 1px solid rgba(42, 23, 30, 0.8);
     padding: clamp(10px, 1.05vw, 20px) clamp(20px, 2vw, 38px);
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%);
     transition: background-color var(--t-base) var(--ease-editorial),
       color var(--t-base) var(--ease-editorial),
       border-color var(--t-base) var(--ease-editorial);
