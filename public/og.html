@@ -130,39 +130,42 @@
         text-shadow: 0 2px 14px var(--paper), 0 0 5px var(--paper);
       }
 
-      /* the hero headline lockup, seated in the collage's clear field */
+      /* the hero headline lockup, seated in the collage's clear field.
+         mirrors the live hero (src/pages/Index.tsx + copy.home): serif
+         headline over the copper rule over the italic subline. the hero
+         carries its own plum (#2A161F), a shade off --ink, kept verbatim. */
       .headline {
         left: 128px;
         top: 208px;
-        color: var(--ink);
+        color: #2A161F;
       }
-      .h-serif {
+      .h-headline {
         font-family: 'Fraunces', Georgia, serif;
-        font-weight: 500;
+        font-weight: 490;
         font-optical-sizing: auto;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        font-size: 58px;
-        line-height: 1.05;
-        /* ink-halo */
-        text-shadow: 0 2px 14px var(--paper), 0 0 5px var(--paper);
-      }
-      .h-display {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.015em;
-        font-size: 132px;
-        line-height: 0.92;
-        margin-top: 10px;
+        letter-spacing: -0.012em;
+        font-size: 100px;
+        line-height: 1.02;
         /* ink-halo-lg */
         text-shadow: 0 3px 22px var(--paper), 0 1px 6px var(--paper);
       }
-      /* the hero's copper rule, carrying the accent into the type lockup */
+      .h-sub {
+        font-family: 'Fraunces', Georgia, serif;
+        font-style: italic;
+        font-weight: 420;
+        font-optical-sizing: auto;
+        letter-spacing: 0.004em;
+        font-size: 36px;
+        line-height: 1.2;
+        color: rgba(42, 23, 30, 0.85);
+        /* ink-halo */
+        text-shadow: 0 2px 14px var(--paper), 0 0 5px var(--paper);
+      }
+      /* the hero's copper rule, seated between headline and subline */
       .rule {
         height: 2px;
         width: 62px;
-        margin: 26px 0 0 3px;
+        margin: 34px 0 26px 3px;
         background: var(--accent-raw);
       }
     </style>
@@ -193,9 +196,9 @@
       </div>
 
       <div class="headline">
-        <div class="h-serif">chaos,</div>
-        <div class="h-display">built precisely.</div>
+        <div class="h-headline">Entropia Audio</div>
         <div class="rule"></div>
+        <div class="h-sub">Precisely Chaotic</div>
       </div>
     </div>
   </body>
