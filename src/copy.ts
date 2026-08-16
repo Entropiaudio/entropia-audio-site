@@ -326,7 +326,7 @@ export const copy = {
       "five spectral bands - place each one by frequency, Q and lift, then set it moving",
       "six motion shapes per band: sine, triangle, sample & hold, chaos, steps and envelope",
       "a step sequencer with savable patterns, synced to your session or running free",
-      "wow, flutter and flux add tape-style drift on top of the panning",
+      "lush wow and flutter for extra movement - tape-style drift over the panning, with flux to push it further",
       "serial or parallel routing, per-band solo and bypass, and a global speed over everything",
       "the CHAOS button - randomize the whole device, with undo for when it goes too far",
     ],
@@ -340,15 +340,15 @@ export const copy = {
       },
       {
         heading: "six kinds of motion",
-        body: "each band picks its own modulator: sine and triangle for classic sweeps, sample & hold and steps for rhythm, chaos for slow unrepeatable drift, envelope to ride the input. patterns save and recall, everything syncs to your session or runs free, and wow, flutter and flux smear a little tape into the result. when you want somewhere new to start, the CHAOS button reshuffles the whole device.",
+        body: "each band picks its own modulator: sine and triangle for classic sweeps, sample & hold and steps for rhythm, chaos for slow unrepeatable drift, envelope to ride the input. patterns save and recall, everything syncs to your session or runs free, and the lush wow and flutter smear tape drift over everything for extra movement, with flux to loosen it further. when you want somewhere new to start, the CHAOS button reshuffles the whole device.",
       },
     ],
 
-    /* the technical table. DRAFT — the format and OS lines are assumptions
-       copied from Fiction; correct them before release. */
+    /* the technical table. DRAFT — the OS line is an assumption copied from
+       Fiction; correct it before release. formats are owner-confirmed. */
     specsEyebrow: "specifications",
     specs: [
-      { label: "Format", value: "VST3" },
+      { label: "Format", value: "VST3 / AU" },
       { label: "OS", value: "Windows 10+ / macOS 10.13+ (64-bit)" },
       { label: "Status", value: "in development" },
     ],
@@ -360,7 +360,7 @@ export const copy = {
       status: "in development",
       tagline: "Movement, Band by Band",
       blurb:
-        "a spectral auto-panner - five bands, six motion shapes, tape wow and flutter, from gentle widening to full swirl",
+        "a spectral auto-panner - five bands, six motion shapes, lush tape wow and flutter, from gentle widening to full swirl",
       price: "coming soon",
       primaryButton: "preview",
       secondaryButton: "get notified",
