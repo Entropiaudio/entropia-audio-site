@@ -181,10 +181,7 @@ export const plugins: Plugin[] = [
     ],
     version: "0.7.0",
     screenshot: "/screenshots/entropan.webp",
-    // PLACEHOLDER SIZE — the UI export isn't cut yet. When the real
-    // entropan.webp lands in public/screenshots, replace these numbers with
-    // that file's exact pixel size (PluginShot trims by them).
-    screenshotSize: { w: 1420, h: 890 },
+    screenshotSize: { w: 1220, h: 757 },
     cardArt: "/screenshots/entropan-card.webp",
     // Entropan's signature moss — the glowing olive band in its analyzer.
     // Same ink-grade rule as the other two.
