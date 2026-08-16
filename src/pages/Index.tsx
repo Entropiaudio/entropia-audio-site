@@ -111,6 +111,7 @@ const Index = () => {
               {plugins.map((p, i) => (
                 <Reveal
                   key={p.slug}
+                  className="h-full"
                   variant="up"
                   duration={MOTION.duration.base}
                   delay={MOTION.section.body.delay + i * MOTION.stagger.body}

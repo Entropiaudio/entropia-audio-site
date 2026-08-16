@@ -13,6 +13,11 @@ import { Moonbase } from "@/lib/moonbase";
  * Released and in-development plugins share the shape — what changes is the
  * status chip, the accent hue, and whether the price row shows money or a
  * "coming soon".
+ *
+ * Every card in a row is the same height: the article fills its grid cell and
+ * lays its body out as a column, so a shorter blurb grows the gap above the
+ * actions instead of shrinking the card. Price and buttons land on the same
+ * baseline across the row whatever the copy does.
  */
 const PluginCard = ({ plugin }: { plugin: Plugin }) => {
   const card = plugin.slug === "fiction" ? copy.fiction.card : copy.chaosverb.card;
@@ -26,13 +31,13 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
 
   return (
     <article
-      className="group overflow-hidden rounded-lg border border-[color:var(--border-subtle)] bg-parchment-hi shadow-card transition-[border-color,box-shadow,transform] duration-[200ms] ease-editorial hover:border-[color:var(--accent-raw)] hover:shadow-lift hover:-translate-y-0.5"
+      className="group flex h-full flex-col overflow-hidden rounded-lg border border-[color:var(--border-subtle)] bg-parchment-hi shadow-card transition-[border-color,box-shadow,transform] duration-[200ms] ease-editorial hover:border-[color:var(--accent-raw)] hover:shadow-lift hover:-translate-y-0.5"
     >
       <Link
         to={`/plugins/${plugin.slug}`}
         tabIndex={-1}
         aria-hidden="true"
-        className="block relative aspect-[3/2] overflow-hidden bg-[linear-gradient(120deg,#E9CDA8,#D8B68C)]"
+        className="block relative shrink-0 aspect-[3/2] overflow-hidden bg-[linear-gradient(120deg,#E9CDA8,#D8B68C)]"
       >
         <img
           src={plugin.cardArt}
@@ -42,7 +47,7 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
         />
       </Link>
 
-      <div className="px-[22px] pt-[18px] pb-[22px]">
+      <div className="flex flex-1 flex-col px-[22px] pt-[18px] pb-[22px]">
         <div className="flex items-baseline justify-between gap-2.5 mb-1">
           <Link
             to={`/plugins/${plugin.slug}`}
@@ -75,7 +80,7 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
           {card.blurb}
         </p>
 
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="mt-auto flex items-center gap-3 flex-wrap">
           {released ? (
             <div key={pricing.price} className="state-fade flex items-baseline gap-3">
               <span className="font-mono font-semibold text-[19px] tabular-nums text-[color:var(--ink)]">
