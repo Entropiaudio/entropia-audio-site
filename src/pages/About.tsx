@@ -50,83 +50,83 @@ const TeamRow = ({ person, index }: { person: TeamMember; index: number }) => {
   // sits right above it, and one line there is enough. Later rows separate
   // with the same decay.
   return (
-    <article
-      className={`grid gap-10 md:gap-14 items-center px-[3.2vw] py-14 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] ${
-        index > 0 ? "rule-top-fade" : ""
-      }`}
-    >
-      <Reveal
-        variant="up"
-        {...MOTION.section.image}
-        className={`hover-zoom ${reversed ? "md:order-2" : ""}`}
-      >
-        <div ref={parallaxRef}>
-          {/* isolate scopes the multiply to the frame's own parchment, so the
-              print never blends with the tan band behind it. Ring + shadow are
-              PluginShot's row values — portraits and plates are the same kind
-              of printed object. */}
-          <div
-            className={`relative isolate overflow-hidden rounded-lg aspect-[4/5] w-full max-w-[460px] mx-auto bg-parchment-hi ${
-              reversed ? "md:ml-auto md:mr-0" : "md:mx-0"
-            }`}
-            style={{
-              boxShadow: "inset 0 0 0 1px var(--ink-line), 0 12px 28px rgba(42, 23, 30, 0.20)",
-            }}
-          >
-            <img
-              src={photo?.src}
-              alt={copy.about.portraitAlt(person.name, person.half)}
-              loading="lazy"
-              decoding="async"
-              style={{ objectPosition: photo?.pos }}
-              className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
-            />
-            {/* the black-point grade: `screen` with ink can only LIFT values,
-                so the photo's blacks rise to the site's plum while highlights
-                barely move (parchment gains ~1/255). Harmless over the empty
-                fallback frame too. */}
+    <article className={`px-[3.2vw] py-14 ${index > 0 ? "rule-top-fade" : ""}`}>
+      {/* same frame cap as the plugin pages' story rows: on wide monitors the
+          uncapped grid pushed the copy a full column away from the portrait */}
+      <div className="grid gap-10 md:gap-14 items-center max-w-spread mx-auto grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
+        <Reveal
+          variant="up"
+          {...MOTION.section.image}
+          className={`hover-zoom ${reversed ? "md:order-2" : ""}`}
+        >
+          <div ref={parallaxRef}>
+            {/* isolate scopes the multiply to the frame's own parchment, so the
+                print never blends with the tan band behind it. Ring + shadow are
+                PluginShot's row values — portraits and plates are the same kind
+                of printed object. */}
             <div
-              aria-hidden="true"
-              className="absolute inset-0 pointer-events-none mix-blend-screen"
-              style={{ background: "var(--ink)" }}
-            />
-          </div>
-        </div>
-      </Reveal>
-      <div className={reversed ? "md:order-1" : ""}>
-        <Reveal variant="up" {...MOTION.section.eyebrow}>
-          <div className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--ink-3)] mb-3">
-            {person.half}
-          </div>
-        </Reveal>
-        <Reveal variant="up" {...MOTION.section.headline}>
-          <h3 className="font-serif-display text-[clamp(28px,2.6vw,42px)] leading-[1.05] text-[color:var(--ink)] m-0">
-            {person.name}
-          </h3>
-        </Reveal>
-        {person.line && (
-          <Reveal variant="up" {...MOTION.section.body}>
-            <p className="font-editorial italic text-[clamp(17px,1.5vw,21px)] leading-[1.35] text-[color:var(--ink-2)] mt-3 mb-0">
-              {person.line}
-            </p>
-          </Reveal>
-        )}
-        <div className="mt-6 flex flex-col gap-4">
-          {person.story.map((p, i) => (
-            <Reveal
-              key={i}
-              variant="up"
-              duration={MOTION.duration.base}
-              delay={MOTION.section.body.delay + (i + 1) * MOTION.stagger.body}
+              className={`relative isolate overflow-hidden rounded-lg aspect-[4/5] w-full max-w-[460px] mx-auto bg-parchment-hi ${
+                reversed ? "md:ml-auto md:mr-0" : "md:mx-0"
+              }`}
+              style={{
+                boxShadow: "inset 0 0 0 1px var(--ink-line), 0 12px 28px rgba(42, 23, 30, 0.20)",
+              }}
             >
-              <p className="font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[44ch] m-0">
-                {p}
+              <img
+                src={photo?.src}
+                alt={copy.about.portraitAlt(person.name, person.half)}
+                loading="lazy"
+                decoding="async"
+                style={{ objectPosition: photo?.pos }}
+                className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+              {/* the black-point grade: `screen` with ink can only LIFT values,
+                  so the photo's blacks rise to the site's plum while highlights
+                  barely move (parchment gains ~1/255). Harmless over the empty
+                  fallback frame too. */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 pointer-events-none mix-blend-screen"
+                style={{ background: "var(--ink)" }}
+              />
+            </div>
+          </div>
+        </Reveal>
+        <div className={reversed ? "md:order-1" : ""}>
+          <Reveal variant="up" {...MOTION.section.eyebrow}>
+            <div className="font-mono font-semibold text-fluid-10 uppercase tracking-[0.2em] text-[color:var(--ink-3)] mb-3">
+              {person.half}
+            </div>
+          </Reveal>
+          <Reveal variant="up" {...MOTION.section.headline}>
+            <h3 className="font-serif-display text-[clamp(28px,2.6vw,42px)] leading-[1.05] text-[color:var(--ink)] m-0">
+              {person.name}
+            </h3>
+          </Reveal>
+          {person.line && (
+            <Reveal variant="up" {...MOTION.section.body}>
+              <p className="font-editorial italic text-[clamp(17px,1.5vw,21px)] leading-[1.35] text-[color:var(--ink-2)] mt-3 mb-0">
+                {person.line}
               </p>
             </Reveal>
-          ))}
+          )}
+          <div className="mt-6 flex flex-col gap-4">
+            {person.story.map((p, i) => (
+              <Reveal
+                key={i}
+                variant="up"
+                duration={MOTION.duration.base}
+                delay={MOTION.section.body.delay + (i + 1) * MOTION.stagger.body}
+              >
+                <p className="font-mono text-fluid-15 leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[44ch] m-0">
+                  {p}
+                </p>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </article>
@@ -179,7 +179,7 @@ const About = () => {
           </Reveal>
           {extras.paragraph && (
             <Reveal variant="up" duration={MOTION.duration.base} delay={MOTION.stagger.body}>
-              <p className="font-mono text-[15.5px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-measure mt-7 mb-0">
+              <p className="font-mono text-fluid-15.5 leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-measure mt-7 mb-0">
                 {extras.paragraph}
               </p>
             </Reveal>
@@ -243,7 +243,7 @@ const About = () => {
             duration={MOTION.duration.base}
             delay={MOTION.section.body.delay + MOTION.stagger.body}
           >
-            <p className="font-editorial italic text-[17px] text-[color:var(--ink)] mt-6 mb-0">
+            <p className="font-editorial italic text-fluid-17 text-[color:var(--ink)] mt-6 mb-0">
               {c.signoff}
             </p>
           </Reveal>
@@ -283,7 +283,7 @@ const About = () => {
             >
               {copy.contactEmail}
             </MagneticLink>
-            <p className="font-mono text-[12px] tracking-[0.04em] text-[color:var(--ink-3)] mt-5 mb-0">
+            <p className="font-mono text-fluid-12 tracking-[0.04em] text-[color:var(--ink-3)] mt-5 mb-0">
               {c.contactSubline}
             </p>
           </Reveal>

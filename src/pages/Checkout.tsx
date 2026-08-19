@@ -53,7 +53,7 @@ const Checkout = () => {
             </Reveal>
           </h1>
           <Reveal variant="up" {...MOTION.page.body0}>
-            <p className="font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] m-0">
+            <p className="font-mono text-fluid-15 leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] m-0">
               if the checkout window doesn&apos;t appear, your browser may be
               blocking pop-ups.{" "}
               <button
@@ -67,7 +67,7 @@ const Checkout = () => {
             </p>
           </Reveal>
           <Reveal variant="up" {...MOTION.page.body1}>
-            <p className="font-mono font-semibold text-[11px] uppercase tracking-[0.16em] text-[color:var(--ink-3)] mt-11 mb-0">
+            <p className="font-mono font-semibold text-fluid-11 uppercase tracking-[0.16em] text-[color:var(--ink-3)] mt-11 mb-0">
               card details are handled by our payment processor. they never touch our servers.
             </p>
           </Reveal>

@@ -75,14 +75,14 @@ const Activate = () => {
             </Reveal>
           </h1>
           <Reveal variant="up" {...MOTION.page.body0}>
-            <p className="font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] m-0">
+            <p className="font-mono text-fluid-15 leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] m-0">
               {status === "missing"
                 ? "no activation token in this link. sign in and we'll try to match your account."
                 : "if the activation window doesn't appear, your browser may be blocking pop-ups. the plugin can resend the link from the activation screen."}
             </p>
           </Reveal>
           <Reveal variant="up" {...MOTION.page.body1}>
-            <p className="font-mono font-semibold text-[11px] uppercase tracking-[0.16em] text-[color:var(--ink-3)] mt-11 mb-0">
+            <p className="font-mono font-semibold text-fluid-11 uppercase tracking-[0.16em] text-[color:var(--ink-3)] mt-11 mb-0">
               your activation token is used once and scrubbed from the address bar.
             </p>
           </Reveal>

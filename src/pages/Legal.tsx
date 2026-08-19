@@ -25,7 +25,7 @@ const Legal = ({ kind }: { kind: Kind }) => {
               <Link
                 key={t.kind}
                 to={t.to}
-                className="font-mono font-semibold text-[11px] uppercase tracking-[0.18em] pb-1 transition-colors duration-[120ms] ease-editorial"
+                className="font-mono font-semibold text-fluid-11 uppercase tracking-[0.18em] pb-1 transition-colors duration-[120ms] ease-editorial"
                 style={
                   t.kind === kind
                     ? { color: "var(--ink)", borderBottom: "1px solid var(--ink)" }
@@ -53,13 +53,13 @@ const Legal = ({ kind }: { kind: Kind }) => {
           </h1>
 
           <Reveal variant="up" delay={MOTION.page.headline2.delay} duration={MOTION.duration.base}>
-            <p className="font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] m-0 mb-7">
+            <p className="font-mono font-semibold text-fluid-10 uppercase tracking-[0.18em] text-[color:var(--ink-3)] m-0 mb-7">
               {c.lastUpdated}
             </p>
           </Reveal>
 
           <Reveal variant="up" {...MOTION.page.body0}>
-            <p className="font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[62ch] m-0 mb-7">
+            <p className="font-mono text-fluid-15 leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[62ch] m-0 mb-7">
               {c.intro}
             </p>
           </Reveal>
@@ -73,10 +73,10 @@ const Legal = ({ kind }: { kind: Kind }) => {
               as="article"
               className="rule-top-fade py-6"
             >
-              <h2 className="font-editorial italic text-[19px] text-[color:var(--ink)] mb-3">
+              <h2 className="font-editorial italic text-fluid-19 text-[color:var(--ink)] mb-3">
                 {s.heading}
               </h2>
-              <p className="font-mono text-[14px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[66ch] m-0">
+              <p className="font-mono text-fluid-14 leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[66ch] m-0">
                 {s.body}
               </p>
             </Reveal>

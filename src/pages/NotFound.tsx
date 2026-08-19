@@ -40,7 +40,7 @@ const NotFound = () => {
             </Reveal>
           </h1>
           <Reveal variant="up" {...MOTION.page.body0}>
-            <p className="font-mono text-[15.5px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[48ch] mt-11 mb-0">
+            <p className="font-mono text-fluid-15.5 leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[48ch] mt-11 mb-0">
               the page at{" "}
               <span className="text-[color:var(--ink)] selectable">{location.pathname}</span>{" "}
               doesn&apos;t exist. the chaos engine may have randomized the URL.

@@ -25,11 +25,35 @@ export default {
         'tightest':      '-0.03em',
         'tight-display': '-0.02em',
       },
+      fontSize: {
+        // the reading scale, in fluid pixels (--fpx, index.css): text-fluid-15
+        // is exactly 15px up to a 1440px viewport, 18px at 2560px, frozen past
+        // that. Use these for content type; headlines keep their vw clamps and
+        // chrome (nav, buttons, chips) keeps plain px.
+        'fluid-10':   'calc(10 * var(--fpx))',
+        'fluid-11':   'calc(11 * var(--fpx))',
+        'fluid-12':   'calc(12 * var(--fpx))',
+        'fluid-13':   'calc(13 * var(--fpx))',
+        'fluid-13.5': 'calc(13.5 * var(--fpx))',
+        'fluid-14':   'calc(14 * var(--fpx))',
+        'fluid-14.5': 'calc(14.5 * var(--fpx))',
+        'fluid-15':   'calc(15 * var(--fpx))',
+        'fluid-15.5': 'calc(15.5 * var(--fpx))',
+        'fluid-16':   'calc(16 * var(--fpx))',
+        'fluid-17':   'calc(17 * var(--fpx))',
+        'fluid-19':   'calc(19 * var(--fpx))',
+        'fluid-20':   'calc(20 * var(--fpx))',
+        'fluid-22':   'calc(22 * var(--fpx))',
+        'fluid-23':   'calc(23 * var(--fpx))',
+        'fluid-26':   'calc(26 * var(--fpx))',
+      },
       maxWidth: {
         '2xs': '16rem',
         'measure': '62ch',
         'editorial': '920px',
-        'wide': '1280px',
+        // the image/text spread frame (story + team rows): caps a two-column
+        // grid's shots at ~640px — under the 1040px hero plate, sharp at 2x
+        'spread': '1320px',
       },
       spacing: {
         '18': '4.5rem',

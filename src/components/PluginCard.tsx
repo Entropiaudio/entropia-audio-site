@@ -51,12 +51,12 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
         <div className="flex items-baseline justify-between gap-2.5 mb-1">
           <Link
             to={`/plugins/${plugin.slug}`}
-            className="font-editorial italic text-[26px] leading-none text-[color:var(--ink)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-raw)]"
+            className="font-editorial italic text-fluid-26 leading-none text-[color:var(--ink)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-raw)]"
           >
             {plugin.name}
           </Link>
           <span
-            className="font-mono font-semibold text-[10px] tracking-[0.14em] uppercase rounded-[10px] border px-2 py-[3px] whitespace-nowrap"
+            className="font-mono font-semibold text-fluid-10 tracking-[0.14em] uppercase rounded-[10px] border px-[calc(8*var(--fpx))] py-[calc(3*var(--fpx))] whitespace-nowrap"
             style={
               released
                 ? { color: "var(--ink-3)", borderColor: "var(--ink-line)" }
@@ -70,28 +70,28 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
         </div>
 
         <div
-          className="font-mono font-semibold text-[12px] tracking-[0.14em] uppercase mb-2.5"
+          className="font-mono font-semibold text-fluid-12 tracking-[0.14em] uppercase mb-2.5"
           style={{ color: plugin.accent }}
         >
           {card.tagline}
         </div>
 
-        <p className="font-mono text-[13.5px] tracking-[0.015em] leading-[1.6] text-[color:var(--ink-2)] mb-[18px]">
+        <p className="font-mono text-fluid-13.5 tracking-[0.015em] leading-[1.6] text-[color:var(--ink-2)] mb-[18px]">
           {card.blurb}
         </p>
 
         <div className="mt-auto flex items-center gap-3 flex-wrap">
           {released ? (
             <div key={pricing.price} className="state-fade flex items-baseline gap-3">
-              <span className="font-mono font-semibold text-[19px] tabular-nums text-[color:var(--ink)]">
+              <span className="font-mono font-semibold text-fluid-19 tabular-nums text-[color:var(--ink)]">
                 ${pricing.price}
               </span>
               {onSale && (
                 <>
-                  <span className="font-mono text-[12px] tabular-nums line-through text-[color:var(--ink-3)]">
+                  <span className="font-mono text-fluid-12 tabular-nums line-through text-[color:var(--ink-3)]">
                     ${pricing.regularPrice}
                   </span>
-                  <span className="font-mono font-semibold text-[10px] uppercase tracking-[0.16em] text-[color:var(--accent-ink)]">
+                  <span className="font-mono font-semibold text-fluid-10 uppercase tracking-[0.16em] text-[color:var(--accent-ink)]">
                     {copy.chaosverb.card.saleNote}
                   </span>
                 </>
@@ -99,7 +99,7 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
             </div>
           ) : (
             <span
-              className="font-mono font-semibold text-[10px] uppercase tracking-[0.18em]"
+              className="font-mono font-semibold text-fluid-10 uppercase tracking-[0.18em]"
               style={{ color: plugin.accent }}
             >
               {copy.fiction.card.price}

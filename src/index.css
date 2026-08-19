@@ -190,6 +190,18 @@
     --grain-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     --grain-scale: 230px;
     --grain-amt: 0.09;
+
+    /* ---------- the fluid reading pixel ----------------------------------- */
+    /* One unit carries the whole small-type scale (the text-fluid-* sizes in
+       tailwind.config.ts are multiples of it): exactly 1px up to a 1440px
+       viewport, widening linearly to 1.2px at 2560px, frozen past that. Every
+       reading voice grows by the same factor, so the hierarchy between sizes
+       never shifts — laptops render the site exactly as before, and big
+       screens read the same proportions instead of a shrunken page. Headlines
+       don't ride this (they carry their own vw clamps), and chrome — header,
+       footer, buttons, chips, the buy strip — stays fixed on purpose:
+       controls don't need to grow with the monitor. */
+    --fpx: clamp(1px, 0.7429px + 0.01786vw, 1.2px);
   }
 }
 
@@ -604,7 +616,9 @@
     gap: 0.5em;
     font-family: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
     font-weight: 600;
-    font-size: 12px;
+    /* rides the reading pixel: this link lives inside editorial copy, unlike
+       .nav-link, which is chrome and stays fixed */
+    font-size: calc(12 * var(--fpx));
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink);
@@ -629,14 +643,16 @@
   .hero-cta {
     display: inline-flex;
     align-items: center;
-    gap: clamp(10px, 1vw, 18px);
+    /* the CTA sits inside the painting's clear field, so like the hero type it
+       tracks the collage: same vw slopes, caps landing together near 3440w */
+    gap: clamp(10px, 1vw, 34px);
     font-family: 'Fraunces', Georgia, serif;
     font-weight: 450;
-    font-size: clamp(14px, 1.15vw, 22px);
+    font-size: clamp(14px, 1.15vw, 40px);
     color: #2A161F;
     background: rgba(250, 236, 214, 0.42);
     border: 1px solid rgba(42, 23, 30, 0.8);
-    padding: clamp(10px, 1.05vw, 20px) clamp(20px, 2vw, 38px);
+    padding: clamp(10px, 1.05vw, 36px) clamp(20px, 2vw, 69px);
     transition: background-color var(--t-base) var(--ease-editorial),
       color var(--t-base) var(--ease-editorial),
       border-color var(--t-base) var(--ease-editorial);

@@ -58,7 +58,7 @@ export const LabelledSection = ({
     >
       <Label
         className={cn(
-          "font-mono font-semibold text-[10px] uppercase tracking-[0.2em] m-0",
+          "font-mono font-semibold text-fluid-10 uppercase tracking-[0.2em] m-0",
           toneClass[labelTone],
         )}
         style={{ paddingTop: labelPad }}

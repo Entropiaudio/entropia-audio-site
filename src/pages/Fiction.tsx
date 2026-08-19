@@ -45,31 +45,36 @@ const FictionStory = ({
   const reversed = index % 2 === 1;
   const parallaxRef = useParallax<HTMLDivElement>(24);
   return (
-    <article className="grid gap-10 items-center px-[3.2vw] py-14 rule-top-fade grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
-      <Reveal
-        variant="up"
-        {...MOTION.section.image}
-        className={`hover-zoom ${reversed ? "md:order-2" : ""}`}
-      >
-        <div ref={parallaxRef}>
-          <PluginShot
-            src={screenshot}
-            size={screenshotSize}
-            alt={`${pluginName}, ${heading}`}
-          />
+    <article className="px-[3.2vw] py-14 rule-top-fade">
+      {/* the frame cap is the big-screen fix, mirrored from StorySection:
+          uncapped, the story shots outgrew the hero plate on wide monitors.
+          1320 holds the spread's balance and keeps shots under the plate. */}
+      <div className="grid gap-10 items-center max-w-spread mx-auto grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
+        <Reveal
+          variant="up"
+          {...MOTION.section.image}
+          className={`hover-zoom ${reversed ? "md:order-2" : ""}`}
+        >
+          <div ref={parallaxRef}>
+            <PluginShot
+              src={screenshot}
+              size={screenshotSize}
+              alt={`${pluginName}, ${heading}`}
+            />
+          </div>
+        </Reveal>
+        <div className={reversed ? "md:order-1" : ""}>
+          <Reveal variant="up" {...MOTION.section.eyebrow}>
+            <h2 className="font-serif-display text-[clamp(28px,2.6vw,42px)] leading-[1.05] text-[color:var(--ink)] m-0 mb-5">
+              {heading}
+            </h2>
+          </Reveal>
+          <Reveal variant="up" {...MOTION.section.body}>
+            <p className="font-mono text-fluid-15 leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[44ch] m-0">
+              {body}
+            </p>
+          </Reveal>
         </div>
-      </Reveal>
-      <div className={reversed ? "md:order-1" : ""}>
-        <Reveal variant="up" {...MOTION.section.eyebrow}>
-          <h2 className="font-serif-display text-[clamp(28px,2.6vw,42px)] leading-[1.05] text-[color:var(--ink)] m-0 mb-5">
-            {heading}
-          </h2>
-        </Reveal>
-        <Reveal variant="up" {...MOTION.section.body}>
-          <p className="font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[44ch] m-0">
-            {body}
-          </p>
-        </Reveal>
       </div>
     </article>
   );
@@ -165,7 +170,7 @@ const Fiction = () => {
         </div>
         {extras.screenshotCaption && (
           <Reveal variant="up" {...MOTION.section.image}>
-            <p className="text-center font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] mt-4 mb-0">
+            <p className="text-center font-mono font-semibold text-fluid-10 uppercase tracking-[0.18em] text-[color:var(--ink-3)] mt-4 mb-0">
               {extras.screenshotCaption}
             </p>
           </Reveal>
@@ -205,7 +210,7 @@ const Fiction = () => {
               </p>
             </Reveal>
             <Reveal variant="up" {...MOTION.section.body}>
-              <p className="mt-6 font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[60ch]">
+              <p className="mt-6 font-mono text-fluid-15 leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[60ch]">
                 {c.shortDescription}
               </p>
             </Reveal>
@@ -240,12 +245,12 @@ const Fiction = () => {
               className="grid grid-cols-[48px_1fr] gap-7 rule-top-fade py-6"
             >
               <span
-                className="font-mono font-semibold text-[15px] tabular-nums"
+                className="font-mono font-semibold text-fluid-15 tabular-nums"
                 style={{ color: plugin.accent }}
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span className="font-mono text-[15.5px] leading-[1.65] tracking-[0.015em] text-[color:var(--ink)]">
+              <span className="font-mono text-fluid-15.5 leading-[1.65] tracking-[0.015em] text-[color:var(--ink)]">
                 {f}
               </span>
             </Reveal>
@@ -293,15 +298,15 @@ const Fiction = () => {
                   delay={MOTION.section.body.delay + i * MOTION.stagger.body}
                 >
                   <div
-                    className="font-mono font-semibold text-[10px] tracking-[0.14em] mb-3"
+                    className="font-mono font-semibold text-fluid-10 tracking-[0.14em] mb-3"
                     style={{ color: plugin.accent }}
                   >
                     {String(i + 1).padStart(2, "0")}
                   </div>
-                  <h3 className="font-editorial italic text-[20px] text-[color:var(--ink)] mb-2.5">
+                  <h3 className="font-editorial italic text-fluid-20 text-[color:var(--ink)] mb-2.5">
                     {u.heading}
                   </h3>
-                  <p className="font-mono text-[13.5px] tracking-[0.015em] leading-[1.65] text-[color:var(--ink-2)] m-0">
+                  <p className="font-mono text-fluid-13.5 tracking-[0.015em] leading-[1.65] text-[color:var(--ink-2)] m-0">
                     {u.body}
                   </p>
                 </Reveal>
@@ -328,10 +333,10 @@ const Fiction = () => {
                 key={spec.label}
                 className={i === all.length - 1 ? "rule-row-both-fade" : "rule-row-top-fade"}
               >
-                <td className="py-5 pr-5 align-top w-1/3 font-mono font-semibold text-[11px] uppercase tracking-[0.14em] text-[color:var(--ink-3)]">
+                <td className="py-5 pr-5 align-top w-1/3 font-mono font-semibold text-fluid-11 uppercase tracking-[0.14em] text-[color:var(--ink-3)]">
                   {spec.label}
                 </td>
-                <td className="py-5 font-mono text-[14px] text-[color:var(--ink)]">
+                <td className="py-5 font-mono text-fluid-14 text-[color:var(--ink)]">
                   {spec.value}
                 </td>
               </tr>

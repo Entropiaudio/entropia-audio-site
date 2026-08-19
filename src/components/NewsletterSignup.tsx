@@ -71,14 +71,14 @@ const NewsletterSignup = ({ id, subline }: NewsletterSignupProps) => {
           </Reveal>
 
           <Reveal variant="up" {...MOTION.section.body}>
-            <p className="font-mono text-[14px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] mb-6">
+            <p className="font-mono text-fluid-14 leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] mb-6">
               {subline ?? c.subline}
             </p>
           </Reveal>
 
           <Reveal variant="up" {...MOTION.section.cta}>
             {submitted ? (
-              <p className="state-fade font-mono font-semibold text-[13px] uppercase tracking-[0.16em] text-[color:var(--accent-ink)] m-0">
+              <p className="state-fade font-mono font-semibold text-fluid-13 uppercase tracking-[0.16em] text-[color:var(--accent-ink)] m-0">
                 {c.successInline}
               </p>
             ) : (
@@ -113,7 +113,7 @@ const NewsletterSignup = ({ id, subline }: NewsletterSignupProps) => {
                   <p
                     id={`${id ?? "notify"}-error`}
                     role="alert"
-                    className="mt-4 font-mono font-medium text-[13px] tracking-[0.04em] text-[color:var(--state-error)]"
+                    className="mt-4 font-mono font-medium text-fluid-13 tracking-[0.04em] text-[color:var(--state-error)]"
                   >
                     {error}
                   </p>

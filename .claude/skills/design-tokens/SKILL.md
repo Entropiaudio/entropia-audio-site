@@ -93,6 +93,37 @@ Barlow Condensed ships as a **single 300 master** — heavier weights render as 
 deliberately. Measure helpers: `.measure` (62ch), `.measure-tight` (48ch), or
 `max-w-measure` / `max-w-editorial` (920px).
 
+### The fluid reading scale (big screens)
+
+Small type rides one unit, `--fpx` (index.css): exactly 1px up to a 1440px viewport,
+widening linearly to 1.2px at 2560px, frozen past that. The `text-fluid-N` sizes in
+tailwind.config.ts are multiples of it — `text-fluid-15` is 15px on a laptop, 18px on
+a 27" monitor. Because every voice scales by the same factor, the hierarchy between
+sizes never shifts.
+
+- **Content type takes `text-fluid-N`**, never a raw `text-[Npx]` — a fixed size is
+  how the site ended up unreadably small on wide monitors.
+- **Chrome stays fixed px on purpose**: header/footer nav, buttons, the `.chip`
+  component, the buy strip. Controls don't need to grow with the monitor. (The
+  in-card status chip on PluginCard is content, not chrome — it rides the scale
+  with its card, box included: `px-[calc(8*var(--fpx))]`.)
+- **Headlines don't ride `--fpx`** — they carry their own `clamp(…vw…)` and their caps
+  are paired with whatever image or frame they sit against.
+- The homepage hero is the exception to headline caps: its type is composed *into* the
+  painting, so all its clamps share the painting's vw scale with caps landing together
+  near 3440w (see the comment in Index.tsx). Don't re-cap it at laptop width.
+- A box sized to fit fluid text scales with it: `w-[calc(88*var(--fpx))]` (the demo
+  transport's time readout does this).
+- `cn()`/tailwind-merge knows `text-fluid-*` is a font-size via the extended config in
+  [src/lib/utils.ts](../../../src/lib/utils.ts) — without that entry it reads the class
+  as a text *colour* and silently drops it on merge.
+
+Image/text spreads carry a frame cap for the same reason from the other side: the
+story rows (PluginPage, Fiction) and team rows (About) grid inside `max-w-spread
+mx-auto` (1320px, tailwind.config.ts), so their shots stop at ~640px — under the
+1040px hero plate, sharp at 2x from the ~1250px exports — instead of outgrowing
+both the plate and the paragraph beside them.
+
 ## Motion
 
 - Timings are canonical in

@@ -22,10 +22,16 @@ const Index = () => {
           className="hero-art absolute inset-0 bg-cover bg-[position:20%_center] md:bg-center"
           style={{ backgroundImage: "url(/art/hero-collage.webp)" }}
         />
+        {/* The type is composed INTO the painting — it sits in the collage's
+            clear field, positioned and sized as fractions of it. So every
+            clamp here shares the painting's own scale (vw), and the caps are
+            set where the whole poster stops being plausible (~3440w), not at
+            laptop width: capping the type early while the painting kept
+            growing is exactly what warped the hero on big screens. */}
         <div className="relative z-[4] px-[3.2vw] pt-[150px] pb-24 md:p-0 md:absolute md:left-[12%] md:top-[26.5%] md:max-w-[62%]">
           <Reveal variant="up" {...MOTION.page.headline1}>
             <h1
-              className="font-serif-display text-[clamp(46px,7vw,132px)] leading-[1.02] m-0"
+              className="font-serif-display text-[clamp(46px,7vw,240px)] leading-[1.02] m-0"
               style={{ color: "#2A161F" }}
             >
               {c.headline}
@@ -37,16 +43,16 @@ const Index = () => {
             <div
               className="h-0.5 bg-[color:var(--accent-raw)] ml-[3px]"
               style={{
-                width: "clamp(40px,3.6vw,68px)",
-                marginTop: "clamp(18px,2.2vw,42px)",
-                marginBottom: "clamp(13px,1.6vw,30px)",
+                width: "clamp(40px,3.6vw,124px)",
+                marginTop: "clamp(18px,2.2vw,76px)",
+                marginBottom: "clamp(13px,1.6vw,55px)",
               }}
             />
           </Reveal>
 
           <Reveal variant="up" {...MOTION.page.body0}>
             <p
-              className="font-editorial text-[clamp(16px,1.66vw,32px)] tracking-[0.004em] m-0"
+              className="font-editorial text-[clamp(16px,1.66vw,57px)] tracking-[0.004em] m-0"
               style={{ fontWeight: 420, color: "rgba(42,23,30,0.85)" }}
             >
               {c.subline}
@@ -54,7 +60,7 @@ const Index = () => {
           </Reveal>
 
           <Reveal variant="up" {...MOTION.page.cta}>
-            <div style={{ marginTop: "clamp(20px,2.4vw,46px)" }}>
+            <div style={{ marginTop: "clamp(20px,2.4vw,83px)" }}>
               <a href="#plugins" className="hero-cta">
                 {c.heroCta}
                 <span aria-hidden="true" className="font-mono text-[color:var(--accent-ink)]">

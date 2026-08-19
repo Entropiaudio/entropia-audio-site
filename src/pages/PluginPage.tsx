@@ -34,33 +34,39 @@ const StorySection = ({
   const reversed = index % 2 === 1;
   const parallaxRef = useParallax<HTMLDivElement>(24);
   return (
-    <article className="grid gap-10 items-center px-[3.2vw] py-14 rule-top-fade grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
-      <Reveal
-        variant="up"
-        {...MOTION.section.image}
-        className={`hover-zoom ${reversed ? "md:order-2" : ""}`}
-      >
-        <div ref={parallaxRef}>
-          <PluginShot
-            src={screenshot}
-            size={screenshotSize}
-            alt={`${pluginName}, ${heading}`}
-          />
+    <article className="px-[3.2vw] py-14 rule-top-fade">
+      {/* the frame cap is the big-screen fix: uncapped, these shots grew past
+          the hero plate itself (1171px wide at 2560w against a 44ch paragraph).
+          1320 holds the spread's balance, keeps every story shot under the
+          plate's 1040, and stays sharp at 2x from the ~1250px exports. */}
+      <div className="grid gap-10 items-center max-w-spread mx-auto grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
+        <Reveal
+          variant="up"
+          {...MOTION.section.image}
+          className={`hover-zoom ${reversed ? "md:order-2" : ""}`}
+        >
+          <div ref={parallaxRef}>
+            <PluginShot
+              src={screenshot}
+              size={screenshotSize}
+              alt={`${pluginName}, ${heading}`}
+            />
+          </div>
+        </Reveal>
+        <div className={reversed ? "md:order-1" : ""}>
+          <Reveal variant="up" {...MOTION.section.eyebrow}>
+            {/* h2: these panels are peers of "listen" and "specifications", not
+                children of anything — the page used to jump h1 → h3 here */}
+            <h2 className="font-serif-display text-[clamp(28px,2.6vw,42px)] leading-[1.05] text-[color:var(--ink)] mb-5">
+              {heading}
+            </h2>
+          </Reveal>
+          <Reveal variant="up" {...MOTION.section.body}>
+            <p className="font-mono text-fluid-15 leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[44ch] m-0">
+              {body}
+            </p>
+          </Reveal>
         </div>
-      </Reveal>
-      <div className={reversed ? "md:order-1" : ""}>
-        <Reveal variant="up" {...MOTION.section.eyebrow}>
-          {/* h2: these panels are peers of "listen" and "specifications", not
-              children of anything — the page used to jump h1 → h3 here */}
-          <h2 className="font-serif-display text-[clamp(28px,2.6vw,42px)] leading-[1.05] text-[color:var(--ink)] mb-5">
-            {heading}
-          </h2>
-        </Reveal>
-        <Reveal variant="up" {...MOTION.section.body}>
-          <p className="font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[44ch] m-0">
-            {body}
-          </p>
-        </Reveal>
       </div>
     </article>
   );
@@ -192,21 +198,21 @@ const PluginPage = () => {
             </RevealWords>
           </h1>
           <Reveal variant="up" {...MOTION.section.body}>
-            <p className="mt-6 font-mono text-[15px] leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[60ch]">
+            <p className="mt-6 font-mono text-fluid-15 leading-[1.75] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[60ch]">
               {plugin.shortDescription}
             </p>
           </Reveal>
           <Reveal variant="up" {...MOTION.section.cta}>
             <div key={pricing.price} className="state-fade mt-[30px] flex items-baseline gap-5">
-              <span className="font-mono font-semibold text-[22px] tabular-nums text-[color:var(--ink)]">
+              <span className="font-mono font-semibold text-fluid-22 tabular-nums text-[color:var(--ink)]">
                 ${pricing.price}
               </span>
               {onSale && (
                 <>
-                  <span className="font-mono text-[14px] tabular-nums line-through text-[color:var(--ink-3)]">
+                  <span className="font-mono text-fluid-14 tabular-nums line-through text-[color:var(--ink-3)]">
                     ${pricing.regularPrice}
                   </span>
-                  <span className="font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--accent-ink)]">
+                  <span className="font-mono font-semibold text-fluid-10 uppercase tracking-[0.18em] text-[color:var(--accent-ink)]">
                     {c.saleBadge}
                   </span>
                 </>
@@ -231,12 +237,12 @@ const PluginPage = () => {
               {/* the numerals carry the plugin's signature hue — same gesture
                   as the Fiction page, so the two read as siblings */}
               <span
-                className="font-mono font-semibold text-[15px] tabular-nums"
+                className="font-mono font-semibold text-fluid-15 tabular-nums"
                 style={{ color: plugin.accent }}
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span className="font-mono text-[15.5px] leading-[1.65] tracking-[0.015em] text-[color:var(--ink)]">
+              <span className="font-mono text-fluid-15.5 leading-[1.65] tracking-[0.015em] text-[color:var(--ink)]">
                 {f}
               </span>
             </Reveal>
@@ -308,10 +314,10 @@ const PluginPage = () => {
                 key={spec.label}
                 className={i === all.length - 1 ? "rule-row-both-fade" : "rule-row-top-fade"}
               >
-                <td className="py-5 pr-5 align-top w-1/3 font-mono font-semibold text-[11px] uppercase tracking-[0.14em] text-[color:var(--ink-3)]">
+                <td className="py-5 pr-5 align-top w-1/3 font-mono font-semibold text-fluid-11 uppercase tracking-[0.14em] text-[color:var(--ink-3)]">
                   {spec.label}
                 </td>
-                <td className="py-5 font-mono text-[14px] text-[color:var(--ink)]">
+                <td className="py-5 font-mono text-fluid-14 text-[color:var(--ink)]">
                   {spec.value}
                 </td>
               </tr>
@@ -344,7 +350,7 @@ const PluginPage = () => {
                 </h3>
               </Reveal>
               <Reveal variant="up" {...MOTION.section.body}>
-                <p className="font-mono text-[15px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] mb-7">
+                <p className="font-mono text-fluid-15 leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] mb-7">
                   {c.trySubline}
                 </p>
               </Reveal>

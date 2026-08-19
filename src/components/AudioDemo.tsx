@@ -444,10 +444,10 @@ const AudioDemo = ({ demo }: Props) => {
       style={{ borderTop: "1px solid rgba(42,23,30,0.18)" }}
     >
       <div>
-        <h4 className="font-editorial italic text-[23px] leading-[1.25] text-[color:var(--ink)] mb-2">
+        <h4 className="font-editorial italic text-fluid-23 leading-[1.25] text-[color:var(--ink)] mb-2">
           {demo.title}
         </h4>
-        <p className="font-mono text-[14px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] mb-[18px]">
+        <p className="font-mono text-fluid-14 leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] mb-[18px]">
           {demo.caption}
         </p>
 
@@ -494,7 +494,7 @@ const AudioDemo = ({ demo }: Props) => {
             />
           </div>
 
-          <span className="font-mono text-[11px] tabular-nums text-[color:var(--ink-3)] w-[88px] text-right">
+          <span className="font-mono text-fluid-11 tabular-nums text-[color:var(--ink-3)] w-[calc(88*var(--fpx))] text-right">
             {anyStem
               ? `${formatTime(currentSec)} / ${formatTime(duration)}`
               : "0:00 / 0:00"}
@@ -525,9 +525,9 @@ const AudioDemo = ({ demo }: Props) => {
             role="radiogroup"
             aria-label={`playback stem for ${demo.title}`}
             onKeyDown={onModeKeyDown}
-            className="mt-3 flex items-center gap-2 font-mono font-semibold text-[10px] uppercase tracking-[0.16em]"
+            className="mt-3 flex items-center gap-2 font-mono font-semibold text-fluid-10 uppercase tracking-[0.16em]"
           >
-            <span className="text-[10px] tracking-[0.18em] text-[color:var(--ink-3)] mr-2">
+            <span className="text-fluid-10 tracking-[0.18em] text-[color:var(--ink-3)] mr-2">
               mode
             </span>
             {MODE_ORDER.map((m) => {
@@ -556,7 +556,7 @@ const AudioDemo = ({ demo }: Props) => {
         )}
 
         {!anyStem && (
-          <p className="mt-3 font-mono font-semibold text-[10px] uppercase tracking-[0.18em] text-[color:var(--ink-3)]">
+          <p className="mt-3 font-mono font-semibold text-fluid-10 uppercase tracking-[0.18em] text-[color:var(--ink-3)]">
             audio coming soon
           </p>
         )}

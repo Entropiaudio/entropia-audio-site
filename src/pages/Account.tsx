@@ -39,7 +39,7 @@ const LoggedOut = () => {
       </h1>
 
       <Reveal variant="up" {...MOTION.page.body0}>
-        <p className="font-mono text-[14.5px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] m-0 mb-11">
+        <p className="font-mono text-fluid-14.5 leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] m-0 mb-11">
           {mode === "login" ? c.signInBody : c.signUpBody}
         </p>
       </Reveal>
@@ -53,7 +53,7 @@ const LoggedOut = () => {
         <button
           type="button"
           onClick={() => setMode(mode === "login" ? "signup" : "login")}
-          className="font-mono font-semibold text-[11px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-ink)]"
+          className="font-mono font-semibold text-fluid-11 uppercase tracking-[0.18em] text-[color:var(--ink-3)] transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-ink)]"
         >
           {mode === "login" ? c.signInSwitch : c.signUpSwitch}
         </button>
@@ -88,17 +88,17 @@ const LoggedIn = () => {
         <button
           type="button"
           onClick={signOut}
-          className="font-mono font-semibold text-[11px] uppercase tracking-[0.18em] text-[color:var(--ink-3)] pt-5 transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-ink)]"
+          className="font-mono font-semibold text-fluid-11 uppercase tracking-[0.18em] text-[color:var(--ink-3)] pt-5 transition-colors duration-[120ms] ease-editorial hover:text-[color:var(--accent-ink)]"
         >
           {c.signOut}
         </button>
       </Reveal>
 
       <section className="rule-top-fade pt-7">
-        <h2 className="font-mono font-semibold text-[10px] uppercase tracking-[0.2em] text-[color:var(--ink-3)] m-0 mb-3.5">
+        <h2 className="font-mono font-semibold text-fluid-10 uppercase tracking-[0.2em] text-[color:var(--ink-3)] m-0 mb-3.5">
           {c.dashboardEyebrow}
         </h2>
-        <p className="font-mono text-[14px] leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] m-0 mb-4">
+        <p className="font-mono text-fluid-14 leading-[1.7] tracking-[0.015em] text-[color:var(--ink-2)] max-w-[52ch] m-0 mb-4">
           {c.dashboardBody}
         </p>
         <button type="button" onClick={() => Moonbase.view_account()} className="link-ink">
