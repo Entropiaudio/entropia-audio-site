@@ -6,26 +6,21 @@ import { cn } from "@/lib/utils";
  * warm ink shadow. Every screenshot on the site goes through here, so the two
  * products are framed identically on every page.
  *
- * Why it crops. Both UI exports carry a dirty ring in their outermost pixels —
- * the plugin window's own rounded corner and border, flattened against a dark
- * background on export. Measured against an interior luminance of ~225:
+ * Why it can crop. Raw UI exports used to carry a dirty ring in their
+ * outermost pixels — the plugin window's own rounded corner and border,
+ * flattened against a dark background on export — and EDGE_CROP trimmed it in
+ * SOURCE pixels so the same ring vanished at 1920 and on a phone. The current
+ * exports (2026-08, the 2x set) are pre-cleaned: the ring is cropped off in
+ * the files themselves, so EDGE_CROP sits at 0 and the frame shows the file
+ * edge to edge. If a future re-export ships with a dirty ring again, either
+ * clean it at the source (preferred) or raise EDGE_CROP to cover it.
  *
- *   chaosverb.webp  edge 72, then 152 / 155 at 1-2px in, clean from 3px
- *   fiction.webp    edge 109, clean from 1px in
- *
- * Rendered straight, that ring reads as a grey smear around the artwork and
- * gets chewed up further by the frame's own radius. So the frame shows the
- * image inset by EDGE_CROP source pixels on every side: the ring is gone, the
- * artwork still reaches the frame's edge, and nothing of the UI is lost.
- *
- * The crop is expressed in SOURCE pixels, not rendered ones, so it trims the
- * same ring at 1920 and on a phone — which is why the natural size has to be
- * declared in plugins.ts. That also lets the frame reserve its exact box
- * before the image loads, so nothing jumps.
+ * Declaring the natural size in plugins.ts still matters: it lets the frame
+ * reserve its exact box before the image loads, so nothing jumps.
  */
 
-/** Source pixels trimmed from every edge. Covers both exports' rings. */
-const EDGE_CROP = 3;
+/** Source pixels trimmed from every edge. 0 — the exports are pre-cleaned. */
+const EDGE_CROP = 0;
 
 /* The hairline frame is an INSET shadow, not a border, and that is load
    bearing: a real border shrinks the img's containing block by 2px, which
@@ -105,6 +100,9 @@ export const PluginShot = ({
         src={src}
         alt={alt}
         loading={priority ? "eager" : "lazy"}
+        // React 18 has no camelCase fetchPriority prop (that's React 19);
+        // the lowercase spread passes it through as a plain DOM attribute.
+        {...(priority ? { fetchpriority: "high" } : null)}
         decoding="async"
         onLoad={onLoad}
         className={cn("block", natural ? "absolute max-w-none" : "w-full")}

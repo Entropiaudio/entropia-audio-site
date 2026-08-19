@@ -59,10 +59,9 @@ export type Plugin = {
   /** path under /public — the plugin UI, shown big on the product page. */
   screenshot: string;
   /**
-   * The screenshot's natural pixel size. PluginShot needs it to crop the
-   * export's dirty edge ring in source pixels (so the trim is identical at
-   * every viewport) and to reserve the frame's box before the image loads.
-   * If you replace a screenshot, update these numbers to match the new file.
+   * The screenshot's natural pixel size. PluginShot uses it to reserve the
+   * frame's exact box before the image loads, so nothing jumps. If you
+   * replace a screenshot, update these numbers to match the new file.
    */
   screenshotSize: { w: number; h: number };
   /** path under /public — the 3:2 art on the homepage card. */
@@ -118,7 +117,9 @@ export const plugins: Plugin[] = [
     ],
     version: "1.0.0",
     screenshot: "/screenshots/chaosverb.webp",
-    screenshotSize: { w: 1249, h: 554 },
+    // 2x export, re-rendered from the V1.1.1 webview UI itself (2026-08) —
+    // sharp on HiDPI at the plate's 1040px render width.
+    screenshotSize: { w: 2486, h: 1096 },
     cardArt: "/screenshots/chaosverb-card.webp",
     // Chaosverb's signature slate blue — the hue of its slider fills. The
     // -ink step, because the accent is set as *type* (tagline, numerals).
@@ -146,7 +147,9 @@ export const plugins: Plugin[] = [
     ],
     version: "1.42.0",
     screenshot: "/screenshots/fiction.webp",
-    screenshotSize: { w: 1306, h: 713 },
+    // 2x asset upsampled from the 1x capture (no higher-res export exists
+    // yet); replace with a true 2x export when one is available.
+    screenshotSize: { w: 2600, h: 1412 },
     cardArt: "/screenshots/fiction-card.webp",
     // Fiction's signature mulberry — the hue of its spectrum wash and node
     // badges. Same ink-grade rule as Chaosverb's blue.

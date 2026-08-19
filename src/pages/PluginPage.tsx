@@ -38,7 +38,7 @@ const StorySection = ({
       {/* the frame cap is the big-screen fix: uncapped, these shots grew past
           the hero plate itself (1171px wide at 2560w against a 44ch paragraph).
           1320 holds the spread's balance, keeps every story shot under the
-          plate's 1040, and stays sharp at 2x from the ~1250px exports. */}
+          plate's 1040, and stays sharp at 2x from the ~2500px export. */}
       <div className="grid gap-10 items-center max-w-spread mx-auto grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
         <Reveal
           variant="up"
