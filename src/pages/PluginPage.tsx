@@ -16,6 +16,22 @@ import { toast } from "@/hooks/use-toast";
 import { copy } from "@/copy";
 import { Moonbase } from "@/lib/moonbase";
 
+/**
+ * The copy blocks shaped like a storefront page, by slug. Every released
+ * plugin has one; the words live in copy.ts. The listen band is the one
+ * optional part — a block without `demos` (and the plugin record without
+ * audio files) simply has no listen band.
+ */
+const STOREFRONT_COPY = {
+  chaosverb: copy.chaosverb,
+  entropan: copy.entropan,
+} as const;
+
+type StorefrontCopy = (typeof STOREFRONT_COPY)[keyof typeof STOREFRONT_COPY] & {
+  listenEyebrow?: string;
+  listenHeadline?: string;
+};
+
 const StorySection = ({
   heading,
   body,
@@ -83,14 +99,14 @@ const PluginPage = () => {
     price: plugin?.price ?? 0,
     regularPrice: plugin?.regularPrice ?? 0,
   });
-  usePageTitle(plugin?.slug);
+  usePageTitle(plugin?.slug as Parameters<typeof usePageTitle>[0]);
 
   // This is the storefront layout. Unreleased plugins have their own routes
   // (see App.tsx) and never reach it; if one somehow does, go home rather
   // than render a page with a price and a buy button on it.
   if (!plugin || plugin.status !== "released") return <Navigate to="/" replace />;
 
-  const c = copy.chaosverb;
+  const c = STOREFRONT_COPY[plugin.slug as keyof typeof STOREFRONT_COPY] as StorefrontCopy;
   const onSale = pricing.regularPrice > pricing.price;
 
   const addToCart = (goToCart = false) => {
@@ -264,7 +280,8 @@ const PluginPage = () => {
         />
       ))}
 
-      {/* ---------- listen: the tan ground ---------- */}
+      {/* ---------- listen: the tan ground (only for a plugin with demos) ---------- */}
+      {plugin.demos.length > 0 && c.listenHeadline && (
       <div
         data-ink-anchor="Listen"
         className="relative diag-band mt-2"
@@ -304,6 +321,7 @@ const PluginPage = () => {
           </div>
         </LabelledSection>
       </div>
+      )}
 
       {/* ---------- specifications ---------- */}
       <LabelledSection label={c.specsEyebrow} className="py-16">

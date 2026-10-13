@@ -99,7 +99,7 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
                     ${pricing.regularPrice}
                   </span>
                   <span className="font-mono font-semibold text-fluid-10 uppercase tracking-[0.16em] text-[color:var(--accent-ink)]">
-                    {copy.chaosverb.card.saleNote}
+                    {"saleNote" in card ? card.saleNote : null}
                   </span>
                 </>
               )}

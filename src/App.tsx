@@ -31,11 +31,9 @@ const App = () => (
             <ScrollToHash />
             <Routes>
               <Route path="/" element={<Index />} />
-              {/* Fiction and Entropan aren't out yet and have no storefront
-                  layout, so they claim their slugs ahead of the generic
-                  product route. */}
+              {/* Fiction isn't out yet and has no storefront layout, so it
+                  claims its slug ahead of the generic product route. */}
               <Route path="/plugins/fiction" element={<PluginPreview slug="fiction" />} />
-              <Route path="/plugins/entropan" element={<PluginPreview slug="entropan" />} />
               <Route path="/plugins/:slug" element={<PluginPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/cart" element={<Cart />} />

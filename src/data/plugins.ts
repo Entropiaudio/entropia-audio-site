@@ -92,7 +92,7 @@ const FICTION_STORY_SHOTS = [
   "/screenshots/fiction-more-than-a-gate.webp",
 ];
 
-/* Entropan's story screenshots, indexed to match copy.entropan.stories: the
+/* Entropan's section screenshots, indexed to match copy.entropan.sections: the
    STEPS modulator with a pattern drawn, then the CHAOS modulator with FLUX,
    WOW and FLUTTER pushed. Cut from the owner's v0.7.0 exports (2026-08) with
    the window's rounded-corner ring trimmed off; sizes declared so the frames
@@ -169,20 +169,27 @@ export const plugins: Plugin[] = [
   {
     slug: "entropan",
     name: copy.entropan.name,
-    status: "in-development",
+    status: "released",
     tagline: copy.entropan.tagline,
     shortDescription: copy.entropan.shortDescription,
+    // what moonbase lists (one-off, no discount on 2026-10-13). Only the
+    // fallback until the storefront reports its live price — see
+    // usePluginPricing. Set regularPrice when a sale goes on.
+    price: 25,
     features: copy.entropan.features,
-    sections: copy.entropan.stories.map((s, i) => ({
+    sections: copy.entropan.sections.map((s, i) => ({
       ...s,
       ...ENTROPAN_STORY_SHOTS[i],
     })),
+    // no audio demos yet; the product page skips its listen band until some
+    // exist (see copy.ts for how to add them)
     demos: [],
     specs: [
       ...copy.entropan.specs,
-      { label: "Version", value: "0.7.0 · still moving" },
+      { label: "Version", value: "0.8.5" },
     ],
-    version: "0.7.0",
+    // the version moonbase ships; the UI exports below are from 0.7.0
+    version: "0.8.5",
     screenshot: "/screenshots/entropan.webp",
     // 2x export of the v0.7.0 UI (2440px wide before the 6px ring trim) —
     // sharp on HiDPI at the plate's 1040px render width.

@@ -12,8 +12,8 @@ import { getPlugin } from "@/data/plugins";
 import { copy } from "@/copy";
 
 /**
- * The preview page for a plugin that isn't out yet — Fiction and Entropan.
- * It sells the idea and takes an email. The layout mirrors Chaosverb's:
+ * The preview page for a plugin that isn't out yet — Fiction, today. It
+ * sells the idea and takes an email. The layout mirrors Chaosverb's:
  * sticky strip, the interface front and centre, name + pitch, features, two
  * image/text stories, the optional tan "ways in" band, specifications — and
  * the mailing list where Chaosverb has its trial card. No price, no cart, no
@@ -33,7 +33,6 @@ import { copy } from "@/copy";
 /** The copy blocks shaped like a preview page, by slug. */
 const PREVIEW_COPY = {
   fiction: copy.fiction,
-  entropan: copy.entropan,
 } as const;
 
 export type PreviewSlug = keyof typeof PREVIEW_COPY;
@@ -110,7 +109,7 @@ const PluginPreview = ({ slug }: { slug: PreviewSlug }) => {
   };
 
   // The ink marks (data/inkMarks.ts) pin to these labels, so they carry the
-  // product's name: "Fiction shot", "Entropan shot".
+  // product's name: "Fiction shot".
   const anchor = (part: string) => `${plugin.name} ${part}`;
 
   return (

@@ -471,8 +471,10 @@ export const INK_PAGES: Record<string, InkItem[]> = {
       note: "A wash, not a mark: half the section wide, stood on end at 89 deg, 15% opacity. It exists to warm the left of the notify block, and should read as uneven paper.",
     },
   ],
-  // entropan — 3 marks, Fiction's set re-anchored: the same plate-corner
-  // pair and notify wash, so the two preview pages treat their plates alike
+  // entropan — 2 marks: Fiction's plate-corner pair, re-anchored to the
+  // storefront page's plate ("Product shot", as on Chaosverb) so the two
+  // plates of that layout read alike. No notify wash: the page has no
+  // notify band.
   "entropan": [
     // The plate's top-right corner. Anchored to the plate itself, and locked to
     // it: position AND size are fractions of the artwork, so the pair holds the
@@ -481,7 +483,7 @@ export const INK_PAGES: Record<string, InkItem[]> = {
     // full-width box let them drift outward on wide screens.
     {
       src: "/ink/el-2-0.webp",
-      anchor: "Entropan shot",
+      anchor: "Product shot",
       layer: "mid",
       x: 0.9907,
       y: -0.009,
@@ -499,7 +501,7 @@ export const INK_PAGES: Record<string, InkItem[]> = {
     // the plate's bottom-left corner.
     {
       src: "/ink/el-2-0.webp",
-      anchor: "Entropan shot",
+      anchor: "Product shot",
       layer: "mid",
       x: 0.0018,
       y: 1.0311,
@@ -511,23 +513,6 @@ export const INK_PAGES: Record<string, InkItem[]> = {
       fy: false,
       lockToAnchor: true,
       note: "The mirror of the corner mark, flipped by rotation (187.2 deg, not 180) so the pair never reads as a symmetrical clip-art frame. Pinned and locked to the plate's bottom-left corner.",
-    },
-    // A wash, not a mark: half the section wide, stood on end at 89 deg, 15%
-    // opacity. It exists to warm the left of the notify block, and should read
-    // as uneven paper.
-    {
-      src: "/ink/el-4-7.webp",
-      anchor: "Notify",
-      layer: "mid",
-      x: 0.1659,
-      y: 0.5455,
-      w: 0.325,
-      rot: 90.9,
-      op: 0.15,
-      blend: "hard-light",
-      fx: false,
-      fy: false,
-      note: "A wash, not a mark: half the section wide, stood on end at 89 deg, 15% opacity. It exists to warm the left of the notify block, and should read as uneven paper.",
     },
   ],
   // about — 2 marks
