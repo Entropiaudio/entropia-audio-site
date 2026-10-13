@@ -11,6 +11,7 @@ const PAGE_FOR: ReadonlyArray<[RegExp, string]> = [
   [/^\/about\/?$/, "about"],
   [/^\/plugins\/chaosverb\/?$/, "chaosverb"],
   [/^\/plugins\/fiction\/?$/, "fiction"],
+  [/^\/plugins\/entropan\/?$/, "entropan"],
   [/^\/checkout\/?$/, "checkout"],
   [/^\/activate\/?$/, "activate"],
   [/^\/order\/[^/]+\/?$/, "ordersuccess"],
@@ -18,7 +19,7 @@ const PAGE_FOR: ReadonlyArray<[RegExp, string]> = [
 
 /** Pages that stay clean. Cart, account and legal are deliberately bare —
  *  someone is doing a task or reading terms, so the paper keeps out of it.
- *  Plugin pages other than the two above have no marks placed yet. Everything
+ *  Plugin pages other than the three above have no marks placed yet. Everything
  *  else falls through to the 404 page and gets its two. */
 const NO_INK = [/^\/cart\/?$/, /^\/account\/?$/, /^\/legal(\/|$)/, /^\/plugins\/[^/]+\/?$/];
 

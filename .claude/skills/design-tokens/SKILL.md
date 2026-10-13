@@ -50,14 +50,15 @@ default copper for type below 24px) / `--accent-tint` / `--accent-muted`, `--plu
 **Product signature hues** (raw, no Tailwind class): each plugin's own colour,
 sampled from its UI, coding the *product* wherever it appears — card tagline, solid
 status chip, feature numerals, demo transport, the hero stain, and one
-headline-scale moment per page (Fiction's h1; Chaosverb's listen headline). Copper
+headline-scale moment per page (the preview pages' h1; Chaosverb's listen headline). Copper
 remains the only *action* accent. Chaosverb: `--chaosverb-blue` `#4E7A8A` / `--chaosverb-blue-ink`
 `#2C5260` / `--chaosverb-blue-tint`. Fiction: `--fiction-violet` `#8A5A7E` /
 `--fiction-violet-ink` `#6C405F` (formerly `--section-motion`) /
-`--fiction-violet-tint`. The `*-ink` step is the only one that may carry type below
-24px (≥5:1 on tan, matching `--accent-ink`); the base step is for rules and arcs
-(the blue base clears 3:1 on paper only — 2.9:1 on tan, so keep blue-base marks off
-the tan band); tints are washes. Components reach these through `plugin.accent` / `plugin.accentWash`
+`--fiction-violet-tint`. Entropan: `--entropan-olive` `#6E7738` /
+`--entropan-olive-ink` `#4A5226` / `--entropan-olive-tint`. The `*-ink` step is the
+only one that may carry type below 24px (≥5:1 on tan, matching `--accent-ink`); the
+base step is for rules and arcs (the blue and olive bases clear 3:1 on paper only —
+2.9:1 on tan, so keep those marks off the tan band); tints are washes. Components reach these through `plugin.accent` / `plugin.accentWash`
 ([src/data/plugins.ts](../../../src/data/plugins.ts)) rather than naming a product's
 token directly.
 
@@ -119,7 +120,7 @@ sizes never shifts.
   as a text *colour* and silently drops it on merge.
 
 Image/text spreads carry a frame cap for the same reason from the other side: the
-story rows (PluginPage, Fiction) and team rows (About) grid inside `max-w-spread
+story rows (PluginPage, PluginPreview) and team rows (About) grid inside `max-w-spread
 mx-auto` (1320px, tailwind.config.ts), so their shots stop at ~640px — under the
 1040px hero plate, sharp at 2x from the ~1250px exports — instead of outgrowing
 both the plate and the paragraph beside them.

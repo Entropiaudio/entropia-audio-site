@@ -19,8 +19,15 @@ import { Moonbase } from "@/lib/moonbase";
  * actions instead of shrinking the card. Price and buttons land on the same
  * baseline across the row whatever the copy does.
  */
+/** Each product's card copy, by slug — the words live in copy.ts. */
+const CARD_COPY = {
+  chaosverb: copy.chaosverb.card,
+  fiction: copy.fiction.card,
+  entropan: copy.entropan.card,
+} as const;
+
 const PluginCard = ({ plugin }: { plugin: Plugin }) => {
-  const card = plugin.slug === "fiction" ? copy.fiction.card : copy.chaosverb.card;
+  const card = CARD_COPY[plugin.slug as keyof typeof CARD_COPY] ?? copy.chaosverb.card;
   const released = plugin.status === "released";
 
   const pricing = usePluginPricing(plugin.slug, {
@@ -102,7 +109,7 @@ const PluginCard = ({ plugin }: { plugin: Plugin }) => {
               className="font-mono font-semibold text-fluid-10 uppercase tracking-[0.18em]"
               style={{ color: plugin.accent }}
             >
-              {copy.fiction.card.price}
+              {"price" in card ? card.price : null}
             </span>
           )}
 

@@ -13,6 +13,7 @@ const SiteFooter = () => {
   const links = [
     { to: "/plugins/chaosverb", label: c.nav.chaosverb },
     { to: "/plugins/fiction", label: c.nav.fiction },
+    { to: "/plugins/entropan", label: c.nav.entropan },
     { to: "/about", label: c.nav.about },
     { to: "/account", label: c.nav.account },
     { to: "/legal/eula", label: c.nav.eula },

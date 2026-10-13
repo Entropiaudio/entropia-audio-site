@@ -101,7 +101,7 @@ const SiteHeader = ({ overlay = false }: SiteHeaderProps) => {
         <nav className="hidden md:flex items-center gap-6">
           {/* the products lead, and they lead everywhere — the home-only
               "#plugins" jump link and the demo button both pointed at the same
-              two records, so these replace them rather than joining them */}
+              product records, so these replace them rather than joining them */}
           <NavLink
             to="/plugins/chaosverb"
             className={navClass}
@@ -115,6 +115,13 @@ const SiteHeader = ({ overlay = false }: SiteHeaderProps) => {
             data-active={pathname === "/plugins/fiction" || undefined}
           >
             {c.nav.fiction}
+          </NavLink>
+          <NavLink
+            to="/plugins/entropan"
+            className={navClass}
+            data-active={pathname === "/plugins/entropan" || undefined}
+          >
+            {c.nav.entropan}
           </NavLink>
           <NavLink
             to="/about"
@@ -167,6 +174,9 @@ const SiteHeader = ({ overlay = false }: SiteHeaderProps) => {
             </NavLink>
             <NavLink to="/plugins/fiction" className={mobileNavLinkClass}>
               {c.nav.fiction}
+            </NavLink>
+            <NavLink to="/plugins/entropan" className={mobileNavLinkClass}>
+              {c.nav.entropan}
             </NavLink>
             <NavLink to="/about" className={mobileNavLinkClass}>
               {c.nav.about}

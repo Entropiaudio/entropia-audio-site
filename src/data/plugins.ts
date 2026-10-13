@@ -92,6 +92,16 @@ const FICTION_STORY_SHOTS = [
   "/screenshots/fiction-more-than-a-gate.webp",
 ];
 
+/* Entropan's story screenshots, indexed to match copy.entropan.stories: the
+   STEPS modulator with a pattern drawn, then the CHAOS modulator with FLUX,
+   WOW and FLUTTER pushed. Cut from the owner's v0.7.0 exports (2026-08) with
+   the window's rounded-corner ring trimmed off; sizes declared so the frames
+   don't reflow. */
+const ENTROPAN_STORY_SHOTS = [
+  { shot: "/screenshots/entropan-steps.webp", shotSize: { w: 2426, h: 1504 } },
+  { shot: "/screenshots/entropan-flux.webp", shotSize: { w: 2428, h: 1358 } },
+];
+
 export const plugins: Plugin[] = [
   {
     slug: "chaosverb",
@@ -155,6 +165,33 @@ export const plugins: Plugin[] = [
     // badges. Same ink-grade rule as Chaosverb's blue.
     accent: "var(--fiction-violet-ink)",
     accentWash: "var(--fiction-violet-tint)",
+  },
+  {
+    slug: "entropan",
+    name: copy.entropan.name,
+    status: "in-development",
+    tagline: copy.entropan.tagline,
+    shortDescription: copy.entropan.shortDescription,
+    features: copy.entropan.features,
+    sections: copy.entropan.stories.map((s, i) => ({
+      ...s,
+      ...ENTROPAN_STORY_SHOTS[i],
+    })),
+    demos: [],
+    specs: [
+      ...copy.entropan.specs,
+      { label: "Version", value: "0.7.0 · still moving" },
+    ],
+    version: "0.7.0",
+    screenshot: "/screenshots/entropan.webp",
+    // 2x export of the v0.7.0 UI (2440px wide before the 6px ring trim) —
+    // sharp on HiDPI at the plate's 1040px render width.
+    screenshotSize: { w: 2428, h: 1502 },
+    cardArt: "/screenshots/entropan-card.webp",
+    // Entropan's signature olive — the hue of its selected band and the
+    // active modulator chip. Same ink-grade rule as the other two.
+    accent: "var(--entropan-olive-ink)",
+    accentWash: "var(--entropan-olive-tint)",
   },
 ];
 

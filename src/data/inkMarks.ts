@@ -471,6 +471,65 @@ export const INK_PAGES: Record<string, InkItem[]> = {
       note: "A wash, not a mark: half the section wide, stood on end at 89 deg, 15% opacity. It exists to warm the left of the notify block, and should read as uneven paper.",
     },
   ],
+  // entropan — 3 marks, Fiction's set re-anchored: the same plate-corner
+  // pair and notify wash, so the two preview pages treat their plates alike
+  "entropan": [
+    // The plate's top-right corner. Anchored to the plate itself, and locked to
+    // it: position AND size are fractions of the artwork, so the pair holds the
+    // exact same relationship to the picture at every window width. The plate is
+    // capped at 1040px while the page keeps widening, so anchoring these to any
+    // full-width box let them drift outward on wide screens.
+    {
+      src: "/ink/el-2-0.webp",
+      anchor: "Entropan shot",
+      layer: "mid",
+      x: 0.9907,
+      y: -0.009,
+      w: 0.1782,
+      rot: 0,
+      op: 0.75,
+      blend: "multiply",
+      fx: false,
+      fy: false,
+      lockToAnchor: true,
+      note: "The plate's top-right corner. Anchored to the plate itself, and locked to it: position AND size are fractions of the artwork, so the pair holds the exact same relationship to the picture at every window width. The plate is capped at 1040px while the page keeps widening, so anchoring these to any full-width box let them drift outward on wide screens.",
+    },
+    // The mirror of the corner mark, flipped by rotation (187.2 deg, not 180) so
+    // the pair never reads as a symmetrical clip-art frame. Pinned and locked to
+    // the plate's bottom-left corner.
+    {
+      src: "/ink/el-2-0.webp",
+      anchor: "Entropan shot",
+      layer: "mid",
+      x: 0.0018,
+      y: 1.0311,
+      w: 0.1782,
+      rot: 187.2,
+      op: 0.75,
+      blend: "multiply",
+      fx: false,
+      fy: false,
+      lockToAnchor: true,
+      note: "The mirror of the corner mark, flipped by rotation (187.2 deg, not 180) so the pair never reads as a symmetrical clip-art frame. Pinned and locked to the plate's bottom-left corner.",
+    },
+    // A wash, not a mark: half the section wide, stood on end at 89 deg, 15%
+    // opacity. It exists to warm the left of the notify block, and should read
+    // as uneven paper.
+    {
+      src: "/ink/el-4-7.webp",
+      anchor: "Notify",
+      layer: "mid",
+      x: 0.1659,
+      y: 0.5455,
+      w: 0.325,
+      rot: 90.9,
+      op: 0.15,
+      blend: "hard-light",
+      fx: false,
+      fy: false,
+      note: "A wash, not a mark: half the section wide, stood on end at 89 deg, 15% opacity. It exists to warm the left of the notify block, and should read as uneven paper.",
+    },
+  ],
   // about — 2 marks
   "about": [
     // Over the headline block, right of centre, at half strength — a smudge
