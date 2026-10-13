@@ -12,22 +12,35 @@ import { getPlugin } from "@/data/plugins";
 import { copy } from "@/copy";
 
 /**
- * Fiction — not out yet, so this page sells the idea and takes an email.
- * The layout mirrors Chaosverb's: sticky strip, the interface front and
- * centre, name + pitch, features, two image/text stories, the tan "three ways
- * in" band, specifications — and the mailing list where Chaosverb has its
- * trial card. No price, no cart, no trial anywhere. Fiction's signature
- * mulberry (--fiction-violet-ink, from its own spectrum wash) codes the page:
- * the h1 pitch, the solid status chips, the numerals, and the hero stain —
- * the way Chaosverb's slate blue codes its page (there the headline moment is
- * the listen band's, since that page's h1 shares a block with the price).
- * Copper stays the action voice on both.
+ * The preview page for a plugin that isn't out yet — Fiction, today. It
+ * sells the idea and takes an email. The layout mirrors Chaosverb's:
+ * sticky strip, the interface front and centre, name + pitch, features, two
+ * image/text stories, the optional tan "ways in" band, specifications — and
+ * the mailing list where Chaosverb has its trial card. No price, no cart, no
+ * trial anywhere.
+ *
+ * The plugin's signature hue (`plugin.accent`, sampled from its own UI) codes
+ * the page: the h1 pitch, the solid status chips, the numerals, and the hero
+ * stain — the way Chaosverb's slate blue codes its page (there the headline
+ * moment is the listen band's, since that page's h1 shares a block with the
+ * price). Copper stays the action voice on every product page.
+ *
+ * Which plugin is a prop, not a route param: each preview claims its own
+ * route in App.tsx ahead of the generic storefront page, so an unreleased
+ * slug can never render a price and a buy button.
  */
+
+/** The copy blocks shaped like a preview page, by slug. */
+const PREVIEW_COPY = {
+  fiction: copy.fiction,
+} as const;
+
+export type PreviewSlug = keyof typeof PREVIEW_COPY;
 
 /* One story at the Chaosverb scale: the interface on one side, the pitch on
    the other, alternating. Same markup as PluginPage's StorySection — the two
    pages must read as siblings. */
-const FictionStory = ({
+const PreviewStory = ({
   heading,
   body,
   index,
@@ -80,20 +93,24 @@ const FictionStory = ({
   );
 };
 
-const Fiction = () => {
-  usePageTitle("fiction");
-  const c = copy.fiction;
-  const plugin = getPlugin("fiction")!;
+const PluginPreview = ({ slug }: { slug: PreviewSlug }) => {
+  usePageTitle(slug);
+  const c = PREVIEW_COPY[slug];
+  const plugin = getPlugin(slug)!;
 
   // Optional copy blocks. The owner adds or removes these in copy.ts without
   // touching this file — an absent key hides its section, nothing more. (The
-  // caption and the "three ways in" band were removed on purpose; this keeps
-  // the page standing either way.)
+  // caption and the "three ways in" band were removed from Fiction on
+  // purpose; this keeps the page standing either way.)
   const extras = c as typeof c & {
     screenshotCaption?: string;
     usesEyebrow?: string;
     uses?: readonly { heading: string; body: string }[];
   };
+
+  // The ink marks (data/inkMarks.ts) pin to these labels, so they carry the
+  // product's name: "Fiction shot".
+  const anchor = (part: string) => `${plugin.name} ${part}`;
 
   return (
     // the page ends on the tan mailing-list band, so the plum wedge would
@@ -114,7 +131,7 @@ const Fiction = () => {
           </span>
           <span className="flex-1" />
           {/* filled, not outlined: the status is the page's flag, solid in
-              Fiction's mulberry with paper caps (6.5:1) */}
+              the plugin's signature hue with paper caps (6.5:1) */}
           <span
             className="chip"
             style={{ color: "var(--paper)", background: plugin.accent, borderColor: plugin.accent }}
@@ -129,30 +146,30 @@ const Fiction = () => {
 
       {/* ---------- the UI, front and centre ---------- */}
       <section
-        data-ink-anchor="Fiction preview"
+        data-ink-anchor={anchor("preview")}
         className="relative px-[3.2vw] pt-14 pb-16"
         style={{
-          // Fiction's mulberry stains the hero — the plate's lavender
-          // spectrum bleeding into its page. Two passes of the tint over the
-          // parchment radial (full strength mid-field, ~2x at the corners),
-          // mirroring the blue wash on Chaosverb's hero. No type sits on
-          // this ground — the washed zone is safe to darken.
+          // the plugin's signature hue stains the hero — the plate bleeding
+          // into its page. Two passes of the tint over the parchment radial
+          // (full strength mid-field, ~2x at the corners), mirroring the
+          // blue wash on Chaosverb's hero. No type sits on this ground — the
+          // washed zone is safe to darken.
           background:
             `radial-gradient(ellipse at 50% 24%, transparent 26%, ${plugin.accentWash} 62%), ` +
             `radial-gradient(ellipse at 50% 24%, transparent 48%, ${plugin.accentWash} 100%), ` +
             "radial-gradient(ellipse at 50% 24%, var(--parchment-hi) 0%, var(--paper) 46%, var(--tan) 100%)",
         }}
       >
-        {/* "Fiction plate row": full width but exactly plate-tall. The corner
-            marks anchor here — x rides the page margins (which scale with the
+        {/* "plate row": full width but exactly plate-tall. The corner marks
+            anchor here — x rides the page margins (which scale with the
             window), y rides the plate's row (which scales with the plate) —
             so they hold the plate's corners at every viewport. */}
-        <div className="relative" data-ink-anchor="Fiction plate row">
+        <div className="relative" data-ink-anchor={anchor("plate row")}>
           {/* The interface plate sweeps in behind the brand-pitch wipe. The
               width cap sits on an anchor div OUTSIDE the Reveal so ink pinned
               to the plate tracks its exact box, and doesn't inherit the wipe's
               lingering clip-path (which would isolate the marks' blending). */}
-          <div className="relative w-[min(1040px,96%)] mx-auto" data-ink-anchor="Fiction shot">
+          <div className="relative w-[min(1040px,96%)] mx-auto" data-ink-anchor={anchor("shot")}>
             <Reveal
               variant="wipe"
               delay={MOTION.page.headline1.delay}
@@ -180,16 +197,16 @@ const Fiction = () => {
       {/* ---------- name, pitch, status ---------- */}
       {/* labelAs="div": this block opens on the page's h1, and the margin label
           only repeats the product name — it must not outrank it. */}
-      <div data-ink-anchor="Fiction hero">
+      <div data-ink-anchor={anchor("hero")}>
         <LabelledSection
           label={plugin.name}
           className="pt-16 pb-14"
           labelPad="14px"
           labelAs="div"
         >
-          <div className="max-w-[820px]" data-ink-anchor="Fiction copy">
+          <div className="max-w-[820px]" data-ink-anchor={anchor("copy")}>
             {/* the page's one headline-scale signature-hue moment: the pitch
-                itself speaks in Fiction's mulberry (ink-grade, 6.5:1 on
+                itself speaks in the plugin's colour (ink-grade, 6.5:1 on
                 paper) — Chaosverb's equivalent is its blue listen headline */}
             <h1
               className="text-[clamp(38px,4.8vw,68px)] leading-[1.08] tracking-[-0.015em] m-0"
@@ -258,9 +275,9 @@ const Fiction = () => {
         </ul>
       </section>
 
-      {/* ---------- the two stories ---------- */}
+      {/* ---------- the stories ---------- */}
       {(plugin.sections ?? []).map((section, i) => (
-        <FictionStory
+        <PreviewStory
           key={i}
           heading={section.heading}
           body={section.body}
@@ -272,11 +289,11 @@ const Fiction = () => {
         />
       ))}
 
-      {/* ---------- three ways in: the tan ground (only when copy.ts has a
-          `uses` block — absent right now, on purpose) ---------- */}
+      {/* ---------- ways in: the tan ground (only when copy.ts has a `uses`
+          block — absent on both pages right now, on purpose) ---------- */}
       {!!extras.uses?.length && (
         <div
-          data-ink-anchor="Fiction uses"
+          data-ink-anchor={anchor("uses")}
           className="relative diag-band mt-2"
           style={{
             background: "var(--tan)",
@@ -351,4 +368,4 @@ const Fiction = () => {
   );
 };
 
-export default Fiction;
+export default PluginPreview;

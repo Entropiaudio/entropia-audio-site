@@ -42,6 +42,7 @@ export const copy = {
     suffix: " · entropia audio",
     chaosverb: "Chaosverb, every destination one reverb",
     fiction: "Fiction, spectral gate",
+    entropan: "Entropan, multiband panner",
     about: "about",
     cart: "cart",
     checkout: "checkout",
@@ -59,9 +60,10 @@ export const copy = {
   header: {
     wordmark: "Entropia Audio",
     nav: {
-      /* the two products, linked from every page */
+      /* the products, linked from every page */
       chaosverb: "Chaosverb",
       fiction: "Fiction",
+      entropan: "Entropan",
       about: "about",
       account: "account",
       cart: "cart",
@@ -295,6 +297,85 @@ export const copy = {
   },
 
   /* -------------------------------------------------------------------------
+   * entropan plugin  (/plugins/entropan)
+   *
+   * the same page as Chaosverb: sticky buy strip, the interface first, then
+   * name + pitch + price, features, two image+text sections, specifications,
+   * and the trial card. the price itself comes from moonbase (the product id
+   * there is "entropan", same as the URL); the number in src/data/plugins.ts
+   * only shows until moonbase answers.
+   *
+   * features: 5 numbered bullets. sections: 2 image+text blocks, each with its
+   * own screenshot (the step sequencer first, then the flux / wow / flutter
+   * output). there's no listen band yet — add `listenEyebrow`,
+   * `listenHeadline` and `demos` like Chaosverb's, plus the audio files, and
+   * the page shows one. specs: the technical table.
+   * ------------------------------------------------------------------------- */
+  entropan: {
+    name: "Entropan",
+    /* DRAFT — assistant text, written from the v0.7.0 interface. rewrite in
+       your voice, keep the keys. */
+    tagline: "a different place for every frequency.",
+    shortDescription:
+      "Entropan is a multiband panner. split a sound into bands, then move each one through the stereo field on its own clock: a slow sine on the lows, a step pattern on the mids, chaos on the top. subtle width for a mix, or a whole arrangement in motion from one channel.",
+
+    /* shows next to the crossed-out price whenever moonbase has a discount on */
+    saleBadge: "launch sale",
+
+    /* DRAFT — assistant text. rewrite in your voice, keep the key. */
+    features: [
+      "multiband panning - draw bands over the spectrum and send each one somewhere else, with its own frequency, Q, depth and bias.",
+      "six modulators per band - sine, triangle, sample & hold, chaos, a step sequencer and an envelope follower, synced to the host or free.",
+      "global speed - one control multiplies every band's rate at once, so a whole pattern halves or doubles in time.",
+      "flux, wow and flutter - loosen the movement so nothing lands in quite the same place twice.",
+      "serial or parallel - run the bands into each other, or sum them side by side.",
+    ],
+
+    /* DRAFT — assistant text. rewrite in your voice, keep the keys. */
+    sections: [
+      {
+        heading: "a step sequencer for the stereo field",
+        body: "every band has its own modulator, and one of them is a sequencer: steps drawn left to right, synced to the grid, saved as a pattern. a hi-hat that walks across the room once a bar, a pad whose top end skips from side to side while its body stays put. smooth the steps until they're a curve, or leave them hard.",
+      },
+      {
+        heading: "nothing has to repeat",
+        body: "panning that loops perfectly gets heard as a loop. flux drifts each band's movement away from its clock, wow and flutter wobble the output the way tape would, and the chaos modulator doesn't repeat at all. push them and the stereo field starts to feel like weather rather than an LFO.",
+      },
+    ],
+
+    /* the technical table. DRAFT — the format, OS and activation lines are
+       assumptions copied from Chaosverb; correct them before launch. */
+    specsEyebrow: "specifications",
+    specs: [
+      { label: "Format", value: "VST3" },
+      { label: "OS", value: "Windows 10+ / macOS 10.13+ (64-bit)" },
+      { label: "Activation", value: "license key, 7-day free trial" },
+    ],
+
+    /* DRAFT — copied from Chaosverb's trial card; check the trial terms. */
+    tryEyebrow: "take it for a test drive",
+    tryHeadline: "free for seven days",
+    trySubline:
+      "a fully featured trial for you to try. why not give it a go?",
+    download: "download",
+
+    /* sticky CTA bar buttons */
+    ctaTry: "try free",
+    ctaBuy: "buy",
+
+    /* the homepage card */
+    card: {
+      status: "v0.8.5",
+      tagline: "A Different Place for Every Frequency",
+      blurb:
+        "a multiband panner: every band moves through the stereo field on its own modulator, from a slow sine to a step pattern to chaos.",
+      saleNote: "launch sale",
+      primaryButton: "see Entropan",
+      secondaryButton: "try free",
+    },
+  },
+
+  /* -------------------------------------------------------------------------
    * newsletter section (homepage)
    * ------------------------------------------------------------------------- */
   newsletter: {
@@ -344,6 +425,7 @@ export const copy = {
     nav: {
       chaosverb: "Chaosverb",
       fiction: "Fiction",
+      entropan: "Entropan",
       about: "about",
       account: "account",
       eula: "eula",
