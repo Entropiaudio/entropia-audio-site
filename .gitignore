@@ -34,3 +34,6 @@ dist-ssr
 
 # Stale bun lockfile — package-lock.json is the single source of truth
 bun.lockb
+
+# Netlify CLI local link state
+.netlify
