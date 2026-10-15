@@ -54,10 +54,21 @@ describe("plugin records", () => {
 
   it("point at screenshots and card art that exist under /public", () => {
     for (const p of plugins) {
-      const files = [p.screenshot, p.cardArt, ...(p.sections ?? []).map((s) => s.shot).filter(Boolean)];
+      const files = [
+        p.screenshot,
+        p.cardArt,
+        ...(p.skins ? [p.skins.night, p.skins.daylight] : []),
+        ...(p.sections ?? []).map((s) => s.shot).filter(Boolean),
+      ];
       for (const f of files) {
         expect(existsSync(join(PUBLIC, f)), `${p.slug}: ${f}`).toBe(true);
       }
+    }
+  });
+
+  it("show the daylight skin wherever there's no switch", () => {
+    for (const p of plugins) {
+      if (p.skins) expect(p.screenshot, p.slug).toBe(p.skins.daylight);
     }
   });
 
@@ -65,6 +76,10 @@ describe("plugin records", () => {
     for (const p of plugins) {
       const declared = [
         { file: p.screenshot, size: p.screenshotSize },
+        // the skin switch crossfades in one frame, so both skins share its size
+        ...(p.skins
+          ? [p.skins.night, p.skins.daylight].map((file) => ({ file, size: p.screenshotSize }))
+          : []),
         ...(p.sections ?? [])
           .filter((s) => s.shot && s.shotSize)
           .map((s) => ({ file: s.shot, size: s.shotSize })),

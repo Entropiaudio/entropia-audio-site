@@ -4,13 +4,15 @@ import AudioDemo from "@/components/AudioDemo";
 import InkButton from "@/components/InkButton";
 import LabelledSection from "@/components/primitives/LabelledSection";
 import PluginShot from "@/components/primitives/PluginShot";
+import SkinSwitch from "@/components/primitives/SkinSwitch";
 import Reveal from "@/components/motion/Reveal";
 import RevealWords from "@/components/motion/RevealWords";
 import { MOTION } from "@/components/motion/timing";
 import { useParallax } from "@/hooks/useScrollMotion";
 import { usePluginPricing } from "@/hooks/usePluginPricing";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { getPlugin } from "@/data/plugins";
+import { getPlugin, plateFor } from "@/data/plugins";
+import { usePluginSkin } from "@/lib/pluginSkin";
 import { useCart } from "@/context/CartContext";
 import { toast } from "@/hooks/use-toast";
 import { copy } from "@/copy";
@@ -39,6 +41,7 @@ const StorySection = ({
   pluginName,
   screenshot,
   screenshotSize,
+  alternates,
 }: {
   heading: string;
   body: string;
@@ -46,6 +49,7 @@ const StorySection = ({
   pluginName: string;
   screenshot: string;
   screenshotSize?: { w: number; h: number };
+  alternates?: readonly string[];
 }) => {
   const reversed = index % 2 === 1;
   const parallaxRef = useParallax<HTMLDivElement>(24);
@@ -65,6 +69,7 @@ const StorySection = ({
             <PluginShot
               src={screenshot}
               size={screenshotSize}
+              alternates={alternates}
               alt={`${pluginName}, ${heading}`}
             />
           </div>
@@ -100,6 +105,7 @@ const PluginPage = () => {
     regularPrice: plugin?.regularPrice ?? 0,
   });
   usePageTitle(plugin?.slug as Parameters<typeof usePageTitle>[0]);
+  const [skin] = usePluginSkin();
 
   // This is the storefront layout. Unreleased plugins have their own routes
   // (see App.tsx) and never reach it; if one somehow does, go home rather
@@ -108,6 +114,7 @@ const PluginPage = () => {
 
   const c = STOREFRONT_COPY[plugin.slug as keyof typeof STOREFRONT_COPY] as StorefrontCopy;
   const onSale = pricing.regularPrice > pricing.price;
+  const plate = plateFor(plugin, skin);
 
   const addToCart = (goToCart = false) => {
     add({ slug: plugin.slug, name: plugin.name, price: pricing.price, license: "perpetual" });
@@ -179,8 +186,12 @@ const PluginPage = () => {
             marks' blending into a grey rectangle. */}
         <div className="relative w-[min(1040px,96%)] mx-auto" data-ink-anchor="Product shot">
           <Reveal variant="wipe" delay={MOTION.page.headline1.delay} duration={MOTION.duration.image}>
+            {/* keyed by product: the route reuses this page between plugins,
+                and another product's UI is a new plate, not a skin flip */}
             <PluginShot
-              src={plugin.screenshot}
+              key={plugin.slug}
+              src={plate.src}
+              alternates={plate.alternates}
               size={plugin.screenshotSize}
               alt={`${plugin.name} plugin interface`}
               elevation="hero"
@@ -188,6 +199,17 @@ const PluginPage = () => {
             />
           </Reveal>
         </div>
+        {/* outside the plate's anchor div, so the ink pinned to the plate
+            keeps its exact box */}
+        {plugin.skins && (
+          <Reveal
+            variant="up"
+            {...MOTION.page.cta}
+            className="w-[min(1040px,96%)] mx-auto mt-5 flex justify-end"
+          >
+            <SkinSwitch />
+          </Reveal>
+        )}
       </section>
 
       {/* ---------- name, pitch, price ---------- */}
@@ -269,13 +291,15 @@ const PluginPage = () => {
       {/* ---------- the two stories ---------- */}
       {(plugin.sections ?? []).map((section, i) => (
         <StorySection
-          key={i}
+          key={`${plugin.slug}-${i}`}
           heading={section.heading}
           body={section.body}
           index={i}
           pluginName={plugin.name}
-          // the section's own shot when it has one, the main plate otherwise
-          screenshot={section.shot ?? plugin.screenshot}
+          // the section's own shot when it has one, the main plate (in the
+          // chosen skin, flipping with the switch) otherwise
+          screenshot={section.shot ?? plate.src}
+          alternates={section.shot ? undefined : plate.alternates}
           screenshotSize={section.shot ? section.shotSize : plugin.screenshotSize}
         />
       ))}

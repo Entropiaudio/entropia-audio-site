@@ -1,5 +1,6 @@
 import { CSSProperties, SyntheticEvent, useState } from "react";
 import { cn } from "@/lib/utils";
+import { MOTION } from "@/components/motion/timing";
 
 /**
  * A plugin UI screenshot as a printed object: hairline frame, soft radius,
@@ -17,6 +18,12 @@ import { cn } from "@/lib/utils";
  *
  * Declaring the natural size in plugins.ts still matters: it lets the frame
  * reserve its exact box before the image loads, so nothing jumps.
+ *
+ * Skins. A plate can hold other renderings of the same UI (`alternates`, the
+ * plugin's other skin, same pixel size). They mount hidden once `src` has
+ * painted — the hero's first paint never waits on them — so flipping `src` to
+ * one of them is a crossfade with nothing left to download: the incoming
+ * layer fades in on top, the outgoing one drops away after it lands.
  */
 
 /** Source pixels trimmed from every edge. 0 — the exports are pre-cleaned. */
@@ -45,6 +52,11 @@ interface PluginShotProps {
    * works with no numbers to look up.
    */
   size?: { w: number; h: number };
+  /**
+   * Other renderings of this shot at the same pixel size (the plugin's other
+   * skin). Preloaded behind `src`; set `src` to one of them to crossfade.
+   */
+  alternates?: readonly string[];
   /** how far off the page it sits: the big plate, or a story row */
   elevation?: keyof typeof SHADOW;
   className?: string;
@@ -55,6 +67,7 @@ export const PluginShot = ({
   src,
   alt,
   size,
+  alternates,
   elevation = "row",
   className,
   priority = false,
@@ -62,6 +75,22 @@ export const PluginShot = ({
   const [measured, setMeasured] = useState<{ w: number; h: number } | null>(null);
   // a declared size always wins; the measurement is the fallback path
   const natural = size ?? measured;
+
+  // Every source this frame has shown or preloaded, in first-seen order. It
+  // only grows, so a layer is never torn down and re-fetched mid-flip. (A
+  // different shot entirely — another product — wants a fresh frame: callers
+  // key the plate by product.)
+  const [layers, setLayers] = useState<string[]>([src]);
+  const [loaded, setLoaded] = useState<string[]>([]);
+  const wanted = loaded.length ? [src, ...(alternates ?? [])] : [src];
+  const missing = wanted.filter((s) => !layers.includes(s));
+  if (missing.length) setLayers([...layers, ...missing]);
+
+  // The last shown layer that has actually painted. Flip faster than the
+  // other skin downloads and this one holds under the blank newcomer until
+  // it arrives, instead of dropping to the empty frame.
+  const [settled, setSettled] = useState<string | null>(null);
+  if (loaded.includes(src) && settled !== src) setSettled(src);
 
   const frameStyle: CSSProperties = {
     // only ever visible in the moment before the image paints
@@ -72,8 +101,9 @@ export const PluginShot = ({
     frameStyle.aspectRatio = `${natural.w - EDGE_CROP * 2} / ${natural.h - EDGE_CROP * 2}`;
   }
 
-  const onLoad = (e: SyntheticEvent<HTMLImageElement>) => {
-    if (size) return;
+  const onLoad = (e: SyntheticEvent<HTMLImageElement>, layer: string) => {
+    setLoaded((l) => (l.includes(layer) ? l : [...l, layer]));
+    if (size || measured) return;
     const el = e.currentTarget;
     if (el.naturalWidth && el.naturalHeight) {
       setMeasured({ w: el.naturalWidth, h: el.naturalHeight });
@@ -96,18 +126,42 @@ export const PluginShot = ({
       className={cn("relative block w-full overflow-hidden rounded-lg", className)}
       style={frameStyle}
     >
-      <img
-        src={src}
-        alt={alt}
-        loading={priority ? "eager" : "lazy"}
-        // React 18 has no camelCase fetchPriority prop (that's React 19);
-        // the lowercase spread passes it through as a plain DOM attribute.
-        {...(priority ? { fetchpriority: "high" } : null)}
-        decoding="async"
-        onLoad={onLoad}
-        className={cn("block", natural ? "absolute max-w-none" : "w-full")}
-        style={imgStyle}
-      />
+      {layers.map((layer, i) => {
+        const active = layer === src;
+        const first = i === 0;
+        const holding = !active && layer === settled && !loaded.includes(src);
+        return (
+          <img
+            key={layer}
+            src={layer}
+            alt={active ? alt : ""}
+            aria-hidden={active ? undefined : true}
+            // alternates only mount after the first paint, so they load now
+            loading={priority || !first ? "eager" : "lazy"}
+            // React 18 has no camelCase fetchPriority prop (that's React 19);
+            // the lowercase spread passes it through as a plain DOM attribute.
+            {...(priority && first ? { fetchpriority: "high" } : null)}
+            decoding="async"
+            onLoad={(e) => onLoad(e, layer)}
+            className={cn(
+              "block",
+              natural ? "absolute max-w-none" : first ? "w-full" : "absolute inset-0 w-full h-full",
+            )}
+            style={{
+              ...imgStyle,
+              // the incoming layer fades in on top; the outgoing one waits
+              // under it and only drops once the fade has landed (and the
+              // newcomer has loaded), so the frame's parchment never shows
+              // through mid-flip
+              opacity: active || holding ? 1 : 0,
+              zIndex: active ? 1 : 0,
+              transition: active
+                ? `opacity ${MOTION.duration.base}ms var(--ease-editorial)`
+                : `opacity 0s linear ${MOTION.duration.base}ms`,
+            }}
+          />
+        );
+      })}
     </div>
   );
 };
