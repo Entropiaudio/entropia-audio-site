@@ -305,7 +305,7 @@ export const copy = {
    * there is "entropan", same as the URL); the number in src/data/plugins.ts
    * only shows until moonbase answers.
    *
-   * features: 5 numbered bullets. sections: 2 image+text blocks, each with its
+   * features: 6 numbered bullets. sections: 2 image+text blocks, each with its
    * own screenshot (the step sequencer first, then the flux / wow / flutter
    * output). there's no listen band yet — add `listenEyebrow`,
    * `listenHeadline` and `demos` like Chaosverb's, plus the audio files, and
@@ -325,8 +325,8 @@ export const copy = {
     /* DRAFT — assistant text. rewrite in your voice, keep the key. */
     features: [
       "multiband panning - draw bands over the spectrum and send each one somewhere else, with its own frequency, Q, depth and bias.",
-      "five band shapes - bell, low, high, notch and tilt. tilt splits its band in two and pans the halves in opposite directions.",
-      "six modulators per band - sine, triangle, sample & hold, chaos, a step sequencer and an envelope follower, synced to the host or free. drag one onto almost any knob to modulate it.",
+      "five band shapes - bell, low shelf, high shelf, notch and tilt. tilt splits the whole sound at the band's frequency and pans the two halves opposite ways.",
+      "six modulators per band - sine, triangle, sample & hold, chaos, a step sequencer and an envelope follower, synced to the host or free. drag one onto almost any knob or fader to modulate it.",
       "global speed - one control multiplies every band's rate at once, so a whole pattern halves or doubles in time.",
       "flux, wow and flutter - loosen the movement so nothing lands in quite the same place twice.",
       "serial or parallel - run the bands into each other, or sum them side by side.",
