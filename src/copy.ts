@@ -313,8 +313,8 @@ export const copy = {
    * ------------------------------------------------------------------------- */
   entropan: {
     name: "Entropan",
-    /* DRAFT — assistant text, written from the v0.7.0 interface. rewrite in
-       your voice, keep the keys. */
+    /* DRAFT — assistant text, written from the v0.7.0 interface and checked
+       against 1.0.0. rewrite in your voice, keep the keys. */
     tagline: "a different place for every frequency.",
     shortDescription:
       "Entropan is a multiband panner. split a sound into bands, then move each one through the stereo field on its own clock: a slow sine on the lows, a step pattern on the mids, chaos on the top. subtle width for a mix, or a whole arrangement in motion from one channel.",
@@ -325,7 +325,8 @@ export const copy = {
     /* DRAFT — assistant text. rewrite in your voice, keep the key. */
     features: [
       "multiband panning - draw bands over the spectrum and send each one somewhere else, with its own frequency, Q, depth and bias.",
-      "six modulators per band - sine, triangle, sample & hold, chaos, a step sequencer and an envelope follower, synced to the host or free.",
+      "five band shapes - bell, low, high, notch and tilt. tilt splits its band in two and pans the halves in opposite directions.",
+      "six modulators per band - sine, triangle, sample & hold, chaos, a step sequencer and an envelope follower, synced to the host or free. drag one onto almost any knob to modulate it.",
       "global speed - one control multiplies every band's rate at once, so a whole pattern halves or doubles in time.",
       "flux, wow and flutter - loosen the movement so nothing lands in quite the same place twice.",
       "serial or parallel - run the bands into each other, or sum them side by side.",
@@ -343,12 +344,13 @@ export const copy = {
       },
     ],
 
-    /* the technical table. DRAFT — the format, OS and activation lines are
-       assumptions copied from Chaosverb; correct them before launch. */
+    /* the technical table. format and OS are from the 1.0.0 readme: VST3 +
+       AU on the mac, VST3 on windows. the activation line is still copied
+       from Chaosverb — check the trial length matches moonbase. */
     specsEyebrow: "specifications",
     specs: [
-      { label: "Format", value: "VST3" },
-      { label: "OS", value: "Windows 10+ / macOS 10.13+ (64-bit)" },
+      { label: "Format", value: "VST3 / AU" },
+      { label: "OS", value: "Windows 10+ / macOS 10.15+ (64-bit, Intel + Apple Silicon)" },
       { label: "Activation", value: "license key, 7-day free trial" },
     ],
 
@@ -365,7 +367,7 @@ export const copy = {
 
     /* the homepage card */
     card: {
-      status: "v0.8.5",
+      status: "v1.0.0",
       tagline: "A Different Place for Every Frequency",
       blurb:
         "a multiband panner: every band moves through the stereo field on its own modulator, from a slow sine to a step pattern to chaos.",
@@ -541,6 +543,15 @@ export const copy = {
    * ------------------------------------------------------------------------- */
   shared: {
     addedToCart: (name: string) => `${name} added to cart.`,
+
+    /* the little switch under each plugin's big screenshot, flipping it
+       between the plugin's two skins. night and daylight are the plugins'
+       own names for them. */
+    skinSwitch: {
+      label: "skin",
+      night: "night",
+      daylight: "daylight",
+    },
   },
 
   /* -------------------------------------------------------------------------

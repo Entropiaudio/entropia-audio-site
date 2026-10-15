@@ -4,11 +4,13 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 import InkButton from "@/components/InkButton";
 import LabelledSection from "@/components/primitives/LabelledSection";
 import PluginShot from "@/components/primitives/PluginShot";
+import SkinSwitch from "@/components/primitives/SkinSwitch";
 import Reveal from "@/components/motion/Reveal";
 import RevealWords from "@/components/motion/RevealWords";
 import { MOTION } from "@/components/motion/timing";
 import { useParallax } from "@/hooks/useScrollMotion";
-import { getPlugin } from "@/data/plugins";
+import { getPlugin, plateFor } from "@/data/plugins";
+import { usePluginSkin } from "@/lib/pluginSkin";
 import { copy } from "@/copy";
 
 /**
@@ -47,6 +49,7 @@ const PreviewStory = ({
   pluginName,
   screenshot,
   screenshotSize,
+  alternates,
 }: {
   heading: string;
   body: string;
@@ -54,6 +57,7 @@ const PreviewStory = ({
   pluginName: string;
   screenshot: string;
   screenshotSize?: { w: number; h: number };
+  alternates?: readonly string[];
 }) => {
   const reversed = index % 2 === 1;
   const parallaxRef = useParallax<HTMLDivElement>(24);
@@ -72,6 +76,7 @@ const PreviewStory = ({
             <PluginShot
               src={screenshot}
               size={screenshotSize}
+              alternates={alternates}
               alt={`${pluginName}, ${heading}`}
             />
           </div>
@@ -97,6 +102,8 @@ const PluginPreview = ({ slug }: { slug: PreviewSlug }) => {
   usePageTitle(slug);
   const c = PREVIEW_COPY[slug];
   const plugin = getPlugin(slug)!;
+  const [skin] = usePluginSkin();
+  const plate = plateFor(plugin, skin);
 
   // Optional copy blocks. The owner adds or removes these in copy.ts without
   // touching this file — an absent key hides its section, nothing more. (The
@@ -176,7 +183,8 @@ const PluginPreview = ({ slug }: { slug: PreviewSlug }) => {
               duration={MOTION.duration.image}
             >
               <PluginShot
-                src={plugin.screenshot}
+                src={plate.src}
+                alternates={plate.alternates}
                 size={plugin.screenshotSize}
                 alt={`${plugin.name} plugin interface`}
                 elevation="hero"
@@ -185,6 +193,16 @@ const PluginPreview = ({ slug }: { slug: PreviewSlug }) => {
             </Reveal>
           </div>
         </div>
+        {/* below the plate row, so the corner marks keep their box */}
+        {plugin.skins && (
+          <Reveal
+            variant="up"
+            {...MOTION.page.cta}
+            className="w-[min(1040px,96%)] mx-auto mt-5 flex justify-end"
+          >
+            <SkinSwitch />
+          </Reveal>
+        )}
         {extras.screenshotCaption && (
           <Reveal variant="up" {...MOTION.section.image}>
             <p className="text-center font-mono font-semibold text-fluid-10 uppercase tracking-[0.18em] text-[color:var(--ink-3)] mt-4 mb-0">
@@ -283,8 +301,10 @@ const PluginPreview = ({ slug }: { slug: PreviewSlug }) => {
           body={section.body}
           index={i}
           pluginName={plugin.name}
-          // the section's own shot when it has one, the main plate otherwise
-          screenshot={section.shot ?? plugin.screenshot}
+          // the section's own shot when it has one, the main plate (in the
+          // chosen skin, flipping with the switch) otherwise
+          screenshot={section.shot ?? plate.src}
+          alternates={section.shot ? undefined : plate.alternates}
           screenshotSize={section.shot ? section.shotSize : plugin.screenshotSize}
         />
       ))}

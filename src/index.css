@@ -687,6 +687,50 @@
     white-space: nowrap;
   }
 
+  /* ---------- skin switch (night / daylight, under a product plate) ---------- */
+  /* The plugins' own theme switch at chip scale: one pill, two halves, the
+     chosen half inked solid. Chrome, so fixed px like the chip — the options
+     stay a thumb-sized 26px tall inside the 32px pill. */
+  .skin-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: 32px;
+    padding: 2px;
+    border: 1px solid var(--ink-line-2);
+    border-radius: 16px;
+    background: rgba(255, 252, 245, 0.72);
+  }
+  .skin-switch-label,
+  .skin-switch-option {
+    font-family: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .skin-switch-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 26px;
+    padding: 0 12px;
+    border-radius: 13px;
+    cursor: pointer;
+    transition:
+      color var(--t-fast) var(--ease-editorial),
+      background-color var(--t-base) var(--ease-editorial);
+  }
+  .skin-switch-option:hover:not([aria-pressed="true"]) {
+    color: var(--accent-ink);
+  }
+  .skin-switch-option[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--paper);
+    cursor: default;
+  }
+
   /* ---------- inset field (inputs) ---------- */
   .field-ink {
     height: 40px;
