@@ -689,8 +689,8 @@
 
   /* ---------- skin switch (night / daylight, under a product plate) ---------- */
   /* The plugins' own theme switch at chip scale: one pill, two halves, the
-     chosen half inked solid. Chrome, so fixed px like the chip — the options
-     stay a thumb-sized 26px tall inside the 32px pill. */
+     chosen half inked solid. Chrome, so fixed px like the chip: 26px options
+     in a 32px pill, grown to 34px on touch screens. */
   .skin-switch {
     display: inline-flex;
     align-items: center;
@@ -709,6 +709,11 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink-3);
+  }
+  /* the label sits on the hero's stained ground, not the pill — tan plus two
+     tint passes takes --ink-3 under 4.5:1 there, --ink-2 holds ~5:1 */
+  .skin-switch-label {
+    color: var(--ink-2);
   }
   .skin-switch-option {
     display: inline-flex;
@@ -729,6 +734,22 @@
     background: var(--ink);
     color: var(--paper);
     cursor: default;
+  }
+  /* the global ring sits 3px out, which here lands on the stained hero
+     ground (copper ~2:1). Tucked to 0 it draws inside the pill's padding,
+     on the pill (3.5:1) and beside the inked half (3.9:1). */
+  .skin-switch-option:focus-visible {
+    outline-offset: 0;
+  }
+  @media (pointer: coarse) {
+    .skin-switch {
+      height: 40px;
+      border-radius: 20px;
+    }
+    .skin-switch-option {
+      height: 34px;
+      border-radius: 17px;
+    }
   }
 
   /* ---------- inset field (inputs) ---------- */

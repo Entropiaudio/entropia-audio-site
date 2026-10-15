@@ -43,6 +43,22 @@ describe("PluginShot with skins", () => {
     expect(night).toHaveAttribute("aria-hidden", "true");
   });
 
+  it("holds the old skin under a newcomer that hasn't loaded yet", () => {
+    const { container, rerender } = render(
+      <PluginShot src={NIGHT} alternates={[NIGHT, DAY]} size={size} alt="X interface" />,
+    );
+    fireEvent.load(screen.getByAltText("X interface"));
+    const [night, day] = imgs(container);
+
+    // flipped before the daylight file arrived: night stays up beneath it
+    rerender(<PluginShot src={DAY} alternates={[NIGHT, DAY]} size={size} alt="X interface" />);
+    expect(night.style.opacity).toBe("1");
+
+    // once it lands, night is released
+    fireEvent.load(day);
+    expect(night.style.opacity).toBe("0");
+  });
+
   it("renders a plain shot unchanged when there are no alternates", () => {
     const { container } = render(<PluginShot src={DAY} size={size} alt="X interface" />);
     fireEvent.load(screen.getByAltText("X interface"));

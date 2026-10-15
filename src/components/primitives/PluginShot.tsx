@@ -80,11 +80,17 @@ export const PluginShot = ({
   // only grows, so a layer is never torn down and re-fetched mid-flip. (A
   // different shot entirely — another product — wants a fresh frame: callers
   // key the plate by product.)
-  const [painted, setPainted] = useState(false);
   const [layers, setLayers] = useState<string[]>([src]);
-  const wanted = painted ? [src, ...(alternates ?? [])] : [src];
+  const [loaded, setLoaded] = useState<string[]>([]);
+  const wanted = loaded.length ? [src, ...(alternates ?? [])] : [src];
   const missing = wanted.filter((s) => !layers.includes(s));
   if (missing.length) setLayers([...layers, ...missing]);
+
+  // The last shown layer that has actually painted. Flip faster than the
+  // other skin downloads and this one holds under the blank newcomer until
+  // it arrives, instead of dropping to the empty frame.
+  const [settled, setSettled] = useState<string | null>(null);
+  if (loaded.includes(src) && settled !== src) setSettled(src);
 
   const frameStyle: CSSProperties = {
     // only ever visible in the moment before the image paints
@@ -95,8 +101,8 @@ export const PluginShot = ({
     frameStyle.aspectRatio = `${natural.w - EDGE_CROP * 2} / ${natural.h - EDGE_CROP * 2}`;
   }
 
-  const onLoad = (e: SyntheticEvent<HTMLImageElement>) => {
-    setPainted(true);
+  const onLoad = (e: SyntheticEvent<HTMLImageElement>, layer: string) => {
+    setLoaded((l) => (l.includes(layer) ? l : [...l, layer]));
     if (size || measured) return;
     const el = e.currentTarget;
     if (el.naturalWidth && el.naturalHeight) {
@@ -123,6 +129,7 @@ export const PluginShot = ({
       {layers.map((layer, i) => {
         const active = layer === src;
         const first = i === 0;
+        const holding = !active && layer === settled && !loaded.includes(src);
         return (
           <img
             key={layer}
@@ -135,7 +142,7 @@ export const PluginShot = ({
             // the lowercase spread passes it through as a plain DOM attribute.
             {...(priority && first ? { fetchpriority: "high" } : null)}
             decoding="async"
-            onLoad={onLoad}
+            onLoad={(e) => onLoad(e, layer)}
             className={cn(
               "block",
               natural ? "absolute max-w-none" : first ? "w-full" : "absolute inset-0 w-full h-full",
@@ -143,9 +150,10 @@ export const PluginShot = ({
             style={{
               ...imgStyle,
               // the incoming layer fades in on top; the outgoing one waits
-              // under it and only drops once the fade has landed, so the
-              // frame's parchment never shows through mid-flip
-              opacity: active ? 1 : 0,
+              // under it and only drops once the fade has landed (and the
+              // newcomer has loaded), so the frame's parchment never shows
+              // through mid-flip
+              opacity: active || holding ? 1 : 0,
               zIndex: active ? 1 : 0,
               transition: active
                 ? `opacity ${MOTION.duration.base}ms var(--ease-editorial)`
