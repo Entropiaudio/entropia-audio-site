@@ -104,13 +104,13 @@ any new animation must respect it.
   a PostToolUse hook runs it on every edited file.
 - Tests: Vitest + Testing Library + jsdom, `src/**/*.{test,spec}.{ts,tsx}`. Coverage is
   currently one placeholder test — new logic in `src/lib/` deserves a real one.
-- **Deploys:** Netlify only builds pushes from the one linked GitHub account
-  (Entropiaudio, free plan). Merges made through anyone else, Claude sessions
-  included, are blocked at "Pending approval". So
-  [.github/workflows/netlify-deploy.yml](.github/workflows/netlify-deploy.yml)
-  calls the production build hook (the `NETLIFY_BUILD_HOOK` secret) on every
-  push to `main`; build-hook deploys are exempt. Don't push "rebuild" commits to
-  work around a blocked deploy. Re-run that workflow instead.
+- **Deploys:** Netlify builds every push to `main` by itself, from any account.
+  That only works while the repo stays public: on Netlify's free plan a private
+  repo builds nothing but pushes from the one linked GitHub account
+  (Entropiaudio), and every merge made through another login, Claude sessions
+  included, is "Build blocked". Build hooks don't get around it (tried
+  2026-10-15). If a deploy is ever blocked again, check the repo's visibility
+  first; don't push "rebuild" commits.
 - One git remote: `entropia` — canonical, and what Netlify deploys from. The old
   `origin` (`Absalontunes/entropy-audio-site` on GitHub) was deleted upstream and
   removed from this clone in Aug 2026 — don't re-add it.
