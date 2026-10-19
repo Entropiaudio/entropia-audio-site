@@ -114,3 +114,23 @@ any new animation must respect it.
 - One git remote: `entropia` — canonical, and what Netlify deploys from. The old
   `origin` (`Absalontunes/entropy-audio-site` on GitHub) was deleted upstream and
   removed from this clone in Aug 2026 — don't re-add it.
+
+## Web change procedure
+
+The owner asks for a change in one message and does nothing else. The session
+does all of the below, in order, and never asks them to deploy, approve, push
+or click anything.
+
+1. Branch off `main` and make the change. Words go in `src/copy.ts`, product
+   data in `src/data/plugins.ts`, images under `public/` (the owner attaches
+   new images to the message; `src/data/plugins.test.ts` pins their sizes).
+2. Verify: `npm run lint` (no *new* problems; `main` carries a few in the
+   generated `src/components/ui/` files), `npm test`, `npm run build:dev`.
+3. Commit, push, open a PR against `main` and merge it yourself. Netlify builds
+   `main` on every push and publishes in about two minutes.
+4. Confirm on https://entropiaudio.com itself, not a preview: fetch the changed
+   page or asset and check the new content is there. Reply with one line and a
+   screenshot of the live page.
+
+If a deploy is blocked, don't hand the owner a workaround: say exactly what
+blocked it and fix the cause (see **Deploys** above).
