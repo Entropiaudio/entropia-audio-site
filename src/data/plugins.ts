@@ -192,10 +192,10 @@ export const plugins: Plugin[] = [
     status: "released",
     tagline: copy.entropan.tagline,
     shortDescription: copy.entropan.shortDescription,
-    // what moonbase lists (one-off, no discount on 2026-10-13). Only the
+    // what moonbase lists (one-off, no discount on 2026-10-20). Only the
     // fallback until the storefront reports its live price — see
     // usePluginPricing. Set regularPrice when a sale goes on.
-    price: 25,
+    price: 19,
     features: copy.entropan.features,
     sections: copy.entropan.sections.map((s, i) => ({
       ...s,
